@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_resumo"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Resumo" />
+        <item
+            android:id="@+id/nav_cadastrarSalario"
+            android:icon="@drawable/ic_arrow_upward_black_24dp"
+            android:title="Cadastrar salário" />
+        <item
+            android:id="@+id/nav_cadastrarDespesas"
+            android:icon="@drawable/ic_arrow_downward_black_24dp"
+            android:title="Cadastrar despesas" />
+        <item
+            android:id="@+id/nav_contasVencer"
+            android:icon="@drawable/ic_add_alert_black_24dp"
+            android:title="Contas a vencer" />
+        <item
+            android:id="@+id/nav_definirMetas"
+            android:icon="@drawable/ic_assignment_late_black_24dp"
+            android:title="Definir metas" />
+        <item
+            android:id="@+id/nav_simularPoupanca"
+            android:icon="@drawable/ic_trending_up_black_24dp"
+            android:title="Simular poupança" />
+        <item
+            android:id="@+id/nav_gerarRelatorios"
+            android:icon="@drawable/ic_assessment_black_24dp"
+            android:title="Gerar relatórios" />
+    </group>
+
+    <item android:title="Definições e logout">
+        <menu>
+            <item
+                android:id="@+id/nav_configuracoes"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Configurações" />
+            <item
+                android:id="@+id/nav_sair"
+                android:icon="@drawable/ic_backspace_black_24dp"
+                android:title="Sair" />
+        </menu>
+    </item>
+
+</menu>
