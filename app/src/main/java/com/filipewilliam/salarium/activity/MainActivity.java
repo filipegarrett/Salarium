@@ -135,12 +135,24 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_resumo) {
-            // Handle the camera action
+            ResumoFragment resumoFragment = new ResumoFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
+            transaction.commit();
+
         } else if (id == R.id.nav_cadastrarSalario) {
+            RecebiFragment recebiFragment = new RecebiFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayoutConteudo, recebiFragment);
+            transaction.commit();
 
         } else if (id == R.id.nav_cadastrarDespesas) {
+            GasteiFragment gasteiFragment = new GasteiFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
+            transaction.commit();
 
-        } else if (id == R.id.nav_contasVencer){
+        } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
 
