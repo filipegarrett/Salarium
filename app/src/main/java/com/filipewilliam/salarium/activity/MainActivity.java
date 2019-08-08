@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private RecebiFragment recebiFragment;
     private GasteiFragment gasteiFragment;
     //private RecyclerView recyclerViewSaldo;
+    //private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setElevation(0); //Remove elevação da titleBar sobre os botões-aba dos fragments. Ou não =/
+        toolbar.setElevation(0); //Remove elevação da titleBar sobre os botões-aba dos fragments. Ou não =/.....
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,10 +135,24 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_resumo) {
-            // Handle the camera action
+            ResumoFragment resumoFragment = new ResumoFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
+            transaction.commit();
+
         } else if (id == R.id.nav_cadastrarSalario) {
+            RecebiFragment recebiFragment = new RecebiFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayoutConteudo, recebiFragment);
+            transaction.commit();
 
         } else if (id == R.id.nav_cadastrarDespesas) {
+            GasteiFragment gasteiFragment = new GasteiFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
+            transaction.commit();
+
+        } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
 
