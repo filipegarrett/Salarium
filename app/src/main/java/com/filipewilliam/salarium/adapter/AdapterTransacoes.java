@@ -8,8 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.model.Transacao;
+
+import java.util.List;
 
 public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.MyViewHolder> {
+
+    private List<Transacao> listaTransacoes;
+
+    public AdapterTransacoes(List<Transacao> lista) {
+        this.listaTransacoes = lista;
+    }
 
     @NonNull
     @Override
@@ -21,12 +30,14 @@ public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        myViewHolder.tipoTransacao.setText("Gasto");
-        myViewHolder.valorTransacao.setText("50.00");
-        myViewHolder.categoriaTransacao.setText("Lazer");
-        myViewHolder.dataTransacao.setText("7/8/2019");
 
-        if (myViewHolder.tipoTransacao.equals("Gasto")){
+        Transacao transacao = listaTransacoes.get(i);
+        myViewHolder.tipoTransacao.setText(transacao.getTipoTransacao());
+        myViewHolder.valorTransacao.setText(transacao.getValorTransacao());
+        myViewHolder.categoriaTransacao.setText(transacao.getCategoriaTransacao());
+        myViewHolder.dataTransacao.setText(transacao.getDataTransacao());
+
+        if (myViewHolder.tipoTransacao.equals("Gastei")){
             myViewHolder.setaTransacao.setImageResource(R.drawable.ic_arrow_downward_vermelho_24dp);
         } else {
             myViewHolder.setaTransacao.setImageResource(R.drawable.ic_arrow_upward_verde_24dp);
@@ -36,7 +47,7 @@ public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.My
 
     @Override
     public int getItemCount() {
-        return 5;
+        return listaTransacoes.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

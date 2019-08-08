@@ -11,12 +11,17 @@ import android.view.ViewGroup;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.AdapterTransacoes;
+import com.filipewilliam.salarium.model.Transacao;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ResumoFragment extends Fragment {
 
+    private List<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
     private AdapterTransacoes adapterTransacoes;
 
@@ -33,7 +38,8 @@ public class ResumoFragment extends Fragment {
 
         recyclerViewTransacoes = (RecyclerView) view.findViewById(R.id.recyclerViewTransacoes);
 
-        AdapterTransacoes adapterTransacoes = new AdapterTransacoes();
+        this.criarTransacoes();
+        AdapterTransacoes adapterTransacoes = new AdapterTransacoes(listaTransacoes);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewTransacoes.setLayoutManager(layoutManager);
@@ -41,6 +47,22 @@ public class ResumoFragment extends Fragment {
         recyclerViewTransacoes.setAdapter(adapterTransacoes);
 
         return view;
+
+    }
+
+    public void criarTransacoes(){
+
+        Transacao transacao = new Transacao("Gastei", "Mercado", "85.00", "7/8/2019");
+        this.listaTransacoes.add(transacao);
+
+        transacao = new Transacao("Gastei", "Combustível", "150.00", "7/8/2019");
+        this.listaTransacoes.add(transacao);
+
+        transacao = new Transacao("Gastei", "Água", "92.00", "7/8/2019");
+        this.listaTransacoes.add(transacao);
+
+        transacao = new Transacao("Recebi", "Salário", "2.000,00", "7/8/2019");
+        this.listaTransacoes.add(transacao);
 
     }
 
