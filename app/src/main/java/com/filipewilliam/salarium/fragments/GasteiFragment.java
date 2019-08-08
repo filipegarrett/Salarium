@@ -1,6 +1,5 @@
 package com.filipewilliam.salarium.fragments;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,12 +15,9 @@ import com.filipewilliam.salarium.R;
  */
 public class GasteiFragment extends Fragment {
 
-
-
     public GasteiFragment() {
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,8 +32,6 @@ public class GasteiFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
-
-
 
         return view;
     }

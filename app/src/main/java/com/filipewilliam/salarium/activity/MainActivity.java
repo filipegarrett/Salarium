@@ -19,9 +19,14 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.adapter.AdapterTransacoes;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
+import com.filipewilliam.salarium.model.Transacao;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,7 +36,7 @@ public class MainActivity extends AppCompatActivity
     private RecebiFragment recebiFragment;
     private GasteiFragment gasteiFragment;
     //private RecyclerView recyclerViewSaldo;
-    //private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
+    private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         buttonResumo = findViewById(R.id.buttonResumo);
         buttonRecebi = findViewById(R.id.buttonRecebi);
         buttonGastei = findViewById(R.id.buttonGastei);
+        recyclerViewTransacoes = findViewById(R.id.recyclerViewTransacoes);
 
         final ResumoFragment resumoFragment = new ResumoFragment();
         final RecebiFragment recebiFragment = new RecebiFragment();
@@ -139,19 +145,16 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
             transaction.commit();
-
         } else if (id == R.id.nav_cadastrarSalario) {
             RecebiFragment recebiFragment = new RecebiFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frameLayoutConteudo, recebiFragment);
             transaction.commit();
-
         } else if (id == R.id.nav_cadastrarDespesas) {
             GasteiFragment gasteiFragment = new GasteiFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
             transaction.commit();
-
         } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
@@ -164,6 +167,7 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
