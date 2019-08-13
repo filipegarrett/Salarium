@@ -1,10 +1,10 @@
 package com.filipewilliam.salarium.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -19,14 +19,9 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.AdapterTransacoes;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
-import com.filipewilliam.salarium.model.Transacao;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -158,7 +153,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
-
+            //maneira de abrir outra activity em vez de fragment
+            Intent intent = new Intent(this, MetasActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_configuracoes) {
 
         } else if (id == R.id.nav_sair) {
