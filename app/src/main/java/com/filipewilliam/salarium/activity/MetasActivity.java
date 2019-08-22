@@ -22,6 +22,7 @@ public class MetasActivity extends AppCompatActivity implements DatePickerDialog
     protected void onCreate(Bundle savedInstanceState) {
         //ativa a seta do menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metas);
 
@@ -35,6 +36,7 @@ public class MetasActivity extends AppCompatActivity implements DatePickerDialog
         });
     }
 
+    //recuperar data selecionada
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar c = Calendar.getInstance();

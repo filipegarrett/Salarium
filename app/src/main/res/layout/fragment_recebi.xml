@@ -119,20 +119,12 @@
             android:id="@+id/checkBoxRepete"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="45dp"
             android:layout_marginBottom="8dp"
             android:text="Repete"
             app:layout_constraintBottom_toTopOf="@+id/guideline16"
-            app:layout_constraintStart_toEndOf="@+id/checkBoxRecebido" />
-
-        <CheckBox
-            android:id="@+id/checkBoxRecebido"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="Recebido"
-            app:layout_constraintBottom_toTopOf="@+id/guideline16"
+            app:layout_constraintEnd_toStartOf="@+id/guideline10"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
@@ -145,17 +137,6 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline16"
             app:layout_constraintEnd_toEndOf="parent" />
 
-
-        <EditText
-            android:id="@+id/editTextData"
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp"
-            android:ems="10"
-            android:inputType="date"
-            app:layout_constraintBottom_toTopOf="@+id/guideline14"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline10"
@@ -205,6 +186,28 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.65339965" />
+
+        <TextView
+            android:id="@+id/textViewTeste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline16" />
+
+        <Button
+            android:id="@+id/buttonData"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="Selecionar Data"
+            app:layout_constraintBottom_toTopOf="@+id/guideline14"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
     </android.support.constraint.ConstraintLayout>
