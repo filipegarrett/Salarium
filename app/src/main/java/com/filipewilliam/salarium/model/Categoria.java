@@ -7,10 +7,6 @@ public class Categoria {
     public Categoria() {
     }
 
-    public Categoria(String descricaoCategoria) {
-        this.descricaoCategoria = descricaoCategoria;
-    }
-
     public String getDescricaoCategoria() {
         return descricaoCategoria;
     }
