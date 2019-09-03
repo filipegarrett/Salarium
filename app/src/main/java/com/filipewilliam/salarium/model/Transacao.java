@@ -35,18 +35,22 @@ public class Transacao {
     }
 
     public String getValorTransacao() {
+
         return valorTransacao;
     }
 
     public void setValorTransacao(String valorTransacao) {
+
         this.valorTransacao = valorTransacao;
     }
 
     public String getDataTransacao() {
+
         return dataTransacao;
     }
 
     public void setDataTransacao(String dataTransacao) {
+
         this.dataTransacao = dataTransacao;
     }
 }
