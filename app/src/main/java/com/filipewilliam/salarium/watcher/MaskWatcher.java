@@ -12,8 +12,8 @@ public class MaskWatcher implements TextWatcher {
         this.mask = mask;
     }
 
-    public static MaskWatcher buildCpf() {
-        return new MaskWatcher("###.###.###-##");
+    public static MaskWatcher aplicarMaskDataNascimento() {
+        return new MaskWatcher("##/##/####");
     }
 
     @Override
