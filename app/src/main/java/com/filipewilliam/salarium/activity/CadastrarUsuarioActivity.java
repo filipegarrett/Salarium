@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.model.Usuario;
+import com.filipewilliam.salarium.watcher.MaskWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -32,6 +33,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
         editTextNome = findViewById(R.id.editTextNome);
         editTextDataNascimento = findViewById(R.id.editTextDadaNascimento);
+        editTextDataNascimento.addTextChangedListener(new MaskWatcher("##/##/####"));
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
         botaoCadastrarUsuario = findViewById(R.id.buttonCadastrar);
