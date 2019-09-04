@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 public class CadastrarUsuarioActivity extends AppCompatActivity {
 
@@ -37,7 +40,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
         editTextDataNascimento.addTextChangedListener(maskDataNascimento.aplicarMaskDataNascimento());
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
-        botaoCadastrarUsuario = findViewById(R.id.buttonCadastrar);
+        botaoCadastrarUsuario = findViewById(R.id.buttonEntrar);
 
         botaoCadastrarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,10 +91,25 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(CadastrarUsuarioActivity.this, "Usuário cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CadastrarUsuarioActivity.this, "Usuário cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+                    finish();
 
                 }else{
-                    Toast.makeText(CadastrarUsuarioActivity.this, "Erro ao realizar cadastro de usuário!", Toast.LENGTH_SHORT).show();
+                    String excecao = "";
+                    try{
+                        throw task.getException();
+                    }catch (FirebaseAuthWeakPasswordException e){
+                        excecao = "Senha inválida. Escolha uma senha mais forte";
+                    }catch (FirebaseAuthInvalidCredentialsException e){
+                        excecao = "Por favor, escolha um e-mail válido";
+                    }catch (FirebaseAuthUserCollisionException e){
+                        excecao = "Já existe um usuário cadastrado com o e-mail informado";
+                    }catch (Exception e){
+                        excecao = "Erro ao cadastrar o usuário: " + e.getMessage();
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(CadastrarUsuarioActivity.this, excecao, Toast.LENGTH_SHORT).show();
                 }
             }
         });

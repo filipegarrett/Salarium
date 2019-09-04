@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.google.firebase.auth.FirebaseAuth;
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 
 public class IntroducaoActivity extends IntroActivity {
+
+    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,12 @@ public class IntroducaoActivity extends IntroActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        verificarUsuarioLogado(); //tira a tela de cadastro da pilha e joga o usuário para a MainActivity
+    }
+
     public void cadastrarUsuario(View view){
         startActivity(new Intent(this, CadastrarUsuarioActivity.class));
 
@@ -53,6 +63,22 @@ public class IntroducaoActivity extends IntroActivity {
 
     public void realizarLogin(View view){
         startActivity(new Intent(this, LoginActivity.class));
+
+    }
+
+    public void verificarUsuarioLogado(){
+
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+
+        if(autenticacao.getCurrentUser() != null){
+            abrirMainActivity();
+
+        }
+
+    }
+
+    public void abrirMainActivity(){
+        startActivity(new Intent(this, MainActivity.class));
 
     }
 
