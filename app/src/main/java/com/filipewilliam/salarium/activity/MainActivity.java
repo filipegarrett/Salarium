@@ -15,9 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
+    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +136,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_configuracoes) {
 
         } else if (id == R.id.nav_sair) {
+            autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+            autenticacao.signOut();
 
         }
 
