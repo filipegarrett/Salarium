@@ -6,6 +6,7 @@ import android.view.View;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 
@@ -70,7 +71,9 @@ public class IntroducaoActivity extends IntroActivity {
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        if(autenticacao.getCurrentUser() != null){
+        final FirebaseUser usuario = autenticacao.getCurrentUser();
+
+        if(usuario.isEmailVerified() && usuario != null){
             abrirMainActivity();
 
         }

@@ -13,7 +13,13 @@ public class MaskWatcher implements TextWatcher {
     }
 
     public static MaskWatcher aplicarMaskDataNascimento() {
+
         return new MaskWatcher("##/##/####");
+    }
+
+    public static MaskWatcher aplicarMaskValores() {
+
+        return new MaskWatcher("###.###.###,##");
     }
 
     @Override

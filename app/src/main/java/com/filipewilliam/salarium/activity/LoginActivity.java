@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.fragments.ResetarSenhaDialog;
 import com.filipewilliam.salarium.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,14 +21,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
     private TextView resetarSenha;
-    private Button botaoEntrar;
+    private Button botaoEntrar, reset;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
 
@@ -63,6 +62,14 @@ public class LoginActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(LoginActivity.this, "Preencha o campo e-mail", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        resetarSenha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetarSenha();
+
             }
         });
 
@@ -114,23 +121,11 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void resetarSenha(View view){
+    public void resetarSenha() {
 
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        String email = editTextEmail.getText().toString();
-
-        autenticacao.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    Toast.makeText(LoginActivity.this, "Ocorreu um erro no envio do e-mail!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        ResetarSenhaDialog resetarSenhaDialog = new ResetarSenhaDialog();
+        resetarSenhaDialog.show(getSupportFragmentManager(), "dialog");
 
     }
+
 }
