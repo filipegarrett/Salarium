@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
@@ -25,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
+    private TextView resetarSenha;
     private Button botaoEntrar;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
@@ -38,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
         botaoEntrar = findViewById(R.id.buttonEntrar);
+        resetarSenha = findViewById(R.id.textViewResetarSenha);
 
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,5 +112,25 @@ public class LoginActivity extends AppCompatActivity {
 
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    public void resetarSenha(View view){
+
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        String email = editTextEmail.getText().toString();
+
+        autenticacao.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(LoginActivity.this, "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    Toast.makeText(LoginActivity.this, "Ocorreu um erro no envio do e-mail!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
 }
