@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String email = editTextEmail.getText().toString();
                 String senha = editTextSenha.getText().toString();
 
@@ -86,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void validarLogin(){
-
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         autenticacao.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -116,13 +114,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void abrirMainActivity(){
-
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     public void resetarSenha() {
-
         ResetarSenhaDialog resetarSenhaDialog = new ResetarSenhaDialog();
         resetarSenhaDialog.show(getSupportFragmentManager(), "dialog");
 

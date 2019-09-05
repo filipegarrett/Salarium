@@ -44,9 +44,9 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
         botaoCadastrarUsuario = findViewById(R.id.buttonEntrar);
 
         botaoCadastrarUsuario.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-
                 String nome = editTextNome.getText().toString();
                 String dataNascimento = editTextDataNascimento.getText().toString();
                 String email = editTextEmail.getText().toString();
@@ -86,18 +86,17 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
     }
 
     public void cadastrarUsuario(){
-
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         autenticacao.createUserWithEmailAndPassword(usuario.getEmail(),  usuario.getSenha()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-
                     final FirebaseUser user = autenticacao.getCurrentUser();
                     user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-
                             if(task.isSuccessful()){
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para" + user.getEmail(), Toast.LENGTH_SHORT).show();
                             }else{
@@ -123,7 +122,6 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         excecao = "Erro ao cadastrar o usuário: " + e.getMessage();
                         e.printStackTrace();
                     }
-
                     Toast.makeText(CadastrarUsuarioActivity.this, excecao, Toast.LENGTH_SHORT).show();
                 }
             }
