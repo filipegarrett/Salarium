@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_sair) {
             autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             autenticacao.signOut();
+            finish();
 
         }
 
