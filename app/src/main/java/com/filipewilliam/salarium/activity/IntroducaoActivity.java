@@ -68,9 +68,7 @@ public class IntroducaoActivity extends IntroActivity {
     }
 
     public void verificarUsuarioLogado(){
-
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-
         final FirebaseUser usuario = autenticacao.getCurrentUser();
 
         if(usuario.isEmailVerified() && usuario != null){

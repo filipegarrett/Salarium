@@ -13,12 +13,10 @@ public class MaskWatcher implements TextWatcher {
     }
 
     public static MaskWatcher aplicarMaskDataNascimento() {
-
         return new MaskWatcher("##/##/####");
     }
 
-    public static MaskWatcher aplicarMaskValores() {
-
+    public static MaskWatcher aplicarMaskValores() { //não funciona =(
         return new MaskWatcher("###.###.###,##");
     }
 
@@ -46,7 +44,6 @@ public class MaskWatcher implements TextWatcher {
                 editable.insert(editableLength-1, mask, editableLength-1, editableLength);
             }
         }
-
         isRunning = false;
     }
 }

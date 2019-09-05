@@ -25,9 +25,7 @@ public class ResetarSenhaDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_reset_senha_dialog, null);
         editTextEmail = view.findViewById(R.id.editTextResetEmail);
@@ -35,6 +33,7 @@ public class ResetarSenhaDialog extends AppCompatDialogFragment {
         dialog.setView(view)
                 .setTitle("Informe o seu e-mail:")
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -44,10 +43,10 @@ public class ResetarSenhaDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-
                         autenticacao.sendPasswordResetEmail(editTextEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+
                                 if (task.isSuccessful()) {
                                     Toast.makeText(dialog.getContext(), "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -59,7 +58,6 @@ public class ResetarSenhaDialog extends AppCompatDialogFragment {
 
                     }
                 });
-
         return dialog.create();
     }
 }
