@@ -132,7 +132,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
-
+            //maneira de abrir outra activity em vez de fragment
+            Intent intent = new Intent(this, MetasActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_configuracoes) {
 
         } else if (id == R.id.nav_sair) {

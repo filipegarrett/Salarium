@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "927713942863",
+    "firebase_url": "https://salarium-94400.firebaseio.com",
+    "project_id": "salarium-94400",
+    "storage_bucket": "salarium-94400.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927713942863:android:721bfe5b66b68547",
+        "android_client_info": {
+          "package_name": "com.filipewilliam.salarium"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927713942863-mqebt1lo5b6i88f1s9s9tb5u55kn9etj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.filipewilliam.salarium",
+            "certificate_hash": "37403f9b0a6a340d7cf9a6f0c66519a9015f0961"
+          }
+        },
+        {
+          "client_id": "927713942863-eqa3gs4lpsiai0buffhcdug0oeeikv8m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7WukuiQM5geZRpmzQAjAQ3vJr_-effCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "927713942863-eqa3gs4lpsiai0buffhcdug0oeeikv8m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
