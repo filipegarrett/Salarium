@@ -1,10 +1,9 @@
 package com.filipewilliam.salarium.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -12,26 +11,30 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.Button;
-
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Button buttonResumo, buttonRecebi, buttonGastei;
+    //private Button buttonResumo, buttonRecebi, buttonGastei;
     private ResumoFragment resumoFragment;
     private RecebiFragment recebiFragment;
     private GasteiFragment gasteiFragment;
-    //private RecyclerView recyclerViewSaldo;
+    private ViewPager viewPager;
+    private SmartTabLayout smartTabLayout;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
+    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,45 +59,24 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        buttonResumo = findViewById(R.id.buttonResumo);
-        buttonRecebi = findViewById(R.id.buttonRecebi);
-        buttonGastei = findViewById(R.id.buttonGastei);
+        viewPager = findViewById(R.id.viewPager);
+        smartTabLayout = findViewById(R.id.viewPagerTab);
         recyclerViewTransacoes = findViewById(R.id.recyclerViewTransacoes);
 
         final ResumoFragment resumoFragment = new ResumoFragment();
         final RecebiFragment recebiFragment = new RecebiFragment();
         final GasteiFragment gasteiFragment = new GasteiFragment();
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        /*FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
-        transaction.commit();
+        transaction.commit();*/
 
-        buttonResumo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
-                transaction.commit();
-            }
-        });
+        FragmentPagerItemAdapter adapterSmartTab = new FragmentPagerItemAdapter(getSupportFragmentManager(), FragmentPagerItems.with(this)
+                .add("Resumo", ResumoFragment.class).add("Recebi", RecebiFragment.class).add("Gastei", GasteiFragment.class).create());
 
-        buttonRecebi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameLayoutConteudo, recebiFragment);
-                transaction.commit();
-            }
-        });
+        viewPager.setAdapter(adapterSmartTab);
+        smartTabLayout.setViewPager(viewPager);
 
-        buttonGastei.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
-                transaction.commit();
-            }
-        });
     }
 
     @Override
@@ -136,20 +118,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_resumo) {
-            ResumoFragment resumoFragment = new ResumoFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
-            transaction.commit();
+
         } else if (id == R.id.nav_cadastrarSalario) {
-            RecebiFragment recebiFragment = new RecebiFragment();
+            /*RecebiFragment recebiFragment = new RecebiFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frameLayoutConteudo, recebiFragment);
-            transaction.commit();
+            transaction.replace(R.id.viewPager, recebiFragment);
+            transaction.commit();*/
         } else if (id == R.id.nav_cadastrarDespesas) {
-            GasteiFragment gasteiFragment = new GasteiFragment();
+            /*GasteiFragment gasteiFragment = new GasteiFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
-            transaction.commit();
+            transaction.commit();*/
         } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
@@ -159,6 +138,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_configuracoes) {
 
         } else if (id == R.id.nav_sair) {
+            autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+            autenticacao.signOut();
 
         }
 
