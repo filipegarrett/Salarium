@@ -71,8 +71,11 @@ public class IntroducaoActivity extends IntroActivity {
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final FirebaseUser usuario = autenticacao.getCurrentUser();
 
-        if(usuario.isEmailVerified() && usuario != null){
-            abrirMainActivity();
+        if(usuario != null){
+            if(usuario.isEmailVerified()){
+                abrirMainActivity();
+            }
+
 
         }
 
