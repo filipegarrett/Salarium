@@ -98,7 +98,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para" + user.getEmail(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para " + user.getEmail(), Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Ocorreu uma falha na verificação de seu e-mail", Toast.LENGTH_SHORT).show();
 
