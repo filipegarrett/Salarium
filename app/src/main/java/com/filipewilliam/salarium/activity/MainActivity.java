@@ -127,22 +127,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_resumo) {
 
-        } else if (id == R.id.nav_cadastrarSalario) {
-            /*RecebiFragment recebiFragment = new RecebiFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.viewPager, recebiFragment);
-            transaction.commit();*/
-        } else if (id == R.id.nav_cadastrarDespesas) {
-            /*GasteiFragment gasteiFragment = new GasteiFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
-            transaction.commit();*/
         } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
             //maneira de abrir outra activity em vez de fragment
             Intent intent = new Intent(this, MetasActivity.class);
             startActivity(intent);
+            
         } else if (id == R.id.nav_configuracoes) {
             Intent intent = new Intent(this, ConfiguracoesActivity.class);
             startActivity(intent);

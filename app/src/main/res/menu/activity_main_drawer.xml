@@ -9,14 +9,6 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="Resumo" />
         <item
-            android:id="@+id/nav_cadastrarSalario"
-            android:icon="@drawable/ic_arrow_upward_black_24dp"
-            android:title="Cadastrar salário" />
-        <item
-            android:id="@+id/nav_cadastrarDespesas"
-            android:icon="@drawable/ic_arrow_downward_black_24dp"
-            android:title="Cadastrar despesas" />
-        <item
             android:id="@+id/nav_contasVencer"
             android:icon="@drawable/ic_add_alert_black_24dp"
             android:title="Contas a vencer" />
