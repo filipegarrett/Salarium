@@ -9,4 +9,5 @@
     <color name="corIntroFundo4">#F48FB1</color>
     <color name="corBotoesConfirma">#4CAF50</color>
     <color name="corBotoesCancela">#F44336</color>
+    <color name="corBotaoDesabilitado">#7AB8B1</color>
 </resources>

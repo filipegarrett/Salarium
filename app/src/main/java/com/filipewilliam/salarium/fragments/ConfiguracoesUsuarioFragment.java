@@ -47,28 +47,22 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
+                autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+                FirebaseUser usuario = autenticacao.getCurrentUser();
+                autenticacao.sendPasswordResetEmail(usuario.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
 
-                if(usuario != null){
-                    autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-                    FirebaseUser usuario = autenticacao.getCurrentUser();
-                    autenticacao.sendPasswordResetEmail(usuario.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Ocorreu um erro no envio do e-mail", Toast.LENGTH_SHORT).show();
-                            }
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Ocorreu um erro no envio do e-mail", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }else{
-                    Toast.makeText(getContext(), "Usuário inexistente!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), IntroducaoActivity.class);
-                    startActivity(intent);
-                }
+                    }
+                });
 
             }
+
         });
 
         buttonExcluirUsuario.setOnClickListener(new View.OnClickListener() {
@@ -81,10 +75,30 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
         });
         return view;
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        testarUsuarioExistente();
+    }
+
 
     public void excluirUsuarioDialog() {
         ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
         excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
+        buttonResetarSenha.setBackgroundColor(getResources().getColor(R.color.corBotaoDesabilitado));
+        buttonResetarSenha.setEnabled(false);
+
+    }
+
+    public void testarUsuarioExistente(){
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        FirebaseUser usuario = autenticacao.getCurrentUser();
+
+        if(usuario == null){
+            Intent intent = new Intent(getActivity(), IntroducaoActivity.class);
+            startActivity(intent);
+
+        }
 
     }
 

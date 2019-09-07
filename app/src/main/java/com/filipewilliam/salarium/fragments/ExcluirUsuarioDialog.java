@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.activity.ConfiguracoesActivity;
+import com.filipewilliam.salarium.activity.IntroducaoActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +30,6 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Context context = getContext();
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.layout_excluir_usuario_dialog, null);
