@@ -91,6 +91,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+
                 if(task.isSuccessful()){
                     final FirebaseUser user = autenticacao.getCurrentUser();
                     user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {

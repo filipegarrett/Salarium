@@ -21,6 +21,7 @@ import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -78,6 +79,12 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        verificarUsuarioLogado();
     }
 
     @Override
@@ -151,6 +158,18 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    public void verificarUsuarioLogado(){
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        final FirebaseUser usuario = autenticacao.getCurrentUser();
+
+        if(usuario != null) {
+
+        }else{
+            finishAffinity();
+        }
+
     }
 
 }

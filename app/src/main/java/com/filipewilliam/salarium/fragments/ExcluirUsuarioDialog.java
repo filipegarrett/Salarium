@@ -1,6 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,9 +25,11 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
 
     private EditText editTextEmail;
     private FirebaseAuth autenticacao;
+    private ConfiguracoesUsuarioFragment configuracoesUsuarioFragment;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final Context context = getContext();
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.layout_excluir_usuario_dialog, null);
@@ -45,15 +48,13 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-                        FirebaseUser usuario = autenticacao.getCurrentUser();
-
+                        final FirebaseUser usuario = autenticacao.getCurrentUser();
+                        autenticacao.signOut();
                         usuario.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(dialog.getContext(), "E-mail de redefinição de senha enviado!", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(getActivity(), IntroActivity.class);
-                                    getActivity().startActivity(intent);
+                                    Toast.makeText(dialog.getContext(), "Usuário excluído com sucesso!", Toast.LENGTH_LONG).show();
 
                                 } else {
                                     Toast.makeText(dialog.getContext(), "Ocorreu um erro na exclusão da sua conta", Toast.LENGTH_SHORT).show();

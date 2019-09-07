@@ -1,6 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,11 +12,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.IntroducaoActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,24 +40,34 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
 
         buttonResetarSenha = view.findViewById(R.id.buttonReenviarSenha);
         buttonExcluirUsuario = view.findViewById(R.id.buttonExcluirConta);
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        final FirebaseUser usuario = autenticacao.getCurrentUser();
 
         buttonResetarSenha.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-                FirebaseUser usuario = autenticacao.getCurrentUser();
-                autenticacao.sendPasswordResetEmail(usuario.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
 
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Ocorreu um erro no envio do e-mail", Toast.LENGTH_SHORT).show();
+                if(usuario != null){
+                    autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+                    FirebaseUser usuario = autenticacao.getCurrentUser();
+                    autenticacao.sendPasswordResetEmail(usuario.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getContext(), "E-mail de redefinição de senha enviado!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Ocorreu um erro no envio do e-mail", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }else{
+                    Toast.makeText(getContext(), "Usuário inexistente!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), IntroducaoActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -62,16 +75,14 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                excluirUsuario();
-
+                excluirUsuarioDialog();
 
             }
         });
-
         return view;
     }
 
-    public void excluirUsuario() {
+    public void excluirUsuarioDialog() {
         ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
         excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
 
