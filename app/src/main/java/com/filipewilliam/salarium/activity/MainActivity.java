@@ -21,6 +21,7 @@ import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -81,6 +82,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        verificarUsuarioLogado();
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -137,6 +144,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, MetasActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_configuracoes) {
+            Intent intent = new Intent(this, ConfiguracoesActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_sair) {
             autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -149,6 +158,18 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    public void verificarUsuarioLogado(){
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        final FirebaseUser usuario = autenticacao.getCurrentUser();
+
+        if(usuario != null) {
+
+        }else{
+            finishAffinity();
+        }
+
     }
 
 }

@@ -1,6 +1,5 @@
 package com.filipewilliam.salarium.fragments;
 
-
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -45,16 +44,13 @@ public class RecebiFragment extends Fragment {
     private Button buttonCriarCategoria;
     Button buttonCriarRecebimento;
 
-
     public RecebiFragment() {
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 
         View view = inflater.inflate(R.layout.fragment_recebi, container, false);
 
@@ -63,30 +59,31 @@ public class RecebiFragment extends Fragment {
         editTextDataSelecionada = view.findViewById(R.id.editTextDataSelecionada);
         spinnerCategoria = view.findViewById(R.id.spinnerCategoria);
         checkBoxRepete = view.findViewById(R.id.checkBoxRepete);
-        buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmar);
+        buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarExcluirUsuario);
         buttonCriarCategoria = view.findViewById(R.id.buttonCriarCategoria);
         //referencia de categorias no firebase
        // DatabaseReference referenciaCategorias = referencia.child("categorias");
 
         referencia.child("categorias").addValueEventListener(new ValueEventListener() {
-                                                        @Override
-                                                       public void onDataChange(DataSnapshot dataSnapshot) {
-                                                           List<String> listCategorias = new ArrayList<String>();
-                                                           for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
-                                                               Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
-                                                               listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
-                                                               ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
-                                                               categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                                                               spinnerCategoria.setAdapter(categoriasAdapter);
-                                                           }
-                                                       }
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+            List<String> listCategorias = new ArrayList<String>();
+            for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
+                Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
+                listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
-                                                       @Override
-                                                       public void onCancelled(@NonNull DatabaseError databaseError) {
+                ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
+                categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                spinnerCategoria.setAdapter(categoriasAdapter);
+                }
+        }
 
-                                                       }
-                                                   });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
             //selecionar data
         editTextDataSelecionada.setOnClickListener(new View.OnClickListener() {

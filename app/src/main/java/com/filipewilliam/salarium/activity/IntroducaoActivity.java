@@ -76,7 +76,6 @@ public class IntroducaoActivity extends IntroActivity {
                 abrirMainActivity();
             }
 
-
         }
 
     }

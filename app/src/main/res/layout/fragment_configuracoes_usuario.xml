@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.ConfiguracoesUsuarioFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <Button
+            android:id="@+id/buttonReenviarSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:background="@color/colorPrimary"
+            android:text="Mudar senha"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/buttonExcluirConta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:background="@color/colorPrimary"
+            android:text="Excluir conta"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</FrameLayout>
