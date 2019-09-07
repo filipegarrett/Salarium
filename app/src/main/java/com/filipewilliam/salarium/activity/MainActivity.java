@@ -29,7 +29,6 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //private Button buttonResumo, buttonRecebi, buttonGastei;
     private ResumoFragment resumoFragment;
     private RecebiFragment recebiFragment;
     private GasteiFragment gasteiFragment;
@@ -68,10 +67,6 @@ public class MainActivity extends AppCompatActivity
         final ResumoFragment resumoFragment = new ResumoFragment();
         final RecebiFragment recebiFragment = new RecebiFragment();
         final GasteiFragment gasteiFragment = new GasteiFragment();
-
-        /*FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
-        transaction.commit();*/
 
         FragmentPagerItemAdapter adapterSmartTab = new FragmentPagerItemAdapter(getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add("Resumo", ResumoFragment.class).add("Recebi", RecebiFragment.class).add("Gastei", GasteiFragment.class).create());
@@ -133,7 +128,7 @@ public class MainActivity extends AppCompatActivity
             //maneira de abrir outra activity em vez de fragment
             Intent intent = new Intent(this, MetasActivity.class);
             startActivity(intent);
-            
+
         } else if (id == R.id.nav_configuracoes) {
             Intent intent = new Intent(this, ConfiguracoesActivity.class);
             startActivity(intent);
@@ -142,6 +137,7 @@ public class MainActivity extends AppCompatActivity
             autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             autenticacao.signOut();
             finishAffinity();
+            System.exit(0);
 
         }
 
@@ -159,6 +155,7 @@ public class MainActivity extends AppCompatActivity
 
         }else{
             finishAffinity();
+            System.exit(0);
         }
 
     }
