@@ -1,6 +1,5 @@
 package com.filipewilliam.salarium.fragments;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,8 +39,6 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
 
         buttonResetarSenha = view.findViewById(R.id.buttonReenviarSenha);
         buttonExcluirUsuario = view.findViewById(R.id.buttonExcluirConta);
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        final FirebaseUser usuario = autenticacao.getCurrentUser();
 
         buttonResetarSenha.setOnClickListener(new View.OnClickListener() {
 
