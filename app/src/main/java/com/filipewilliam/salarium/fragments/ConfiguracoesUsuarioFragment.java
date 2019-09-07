@@ -75,30 +75,12 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
         });
         return view;
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        testarUsuarioExistente();
-    }
-
 
     public void excluirUsuarioDialog() {
         ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
         excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
         buttonResetarSenha.setBackgroundColor(getResources().getColor(R.color.corBotaoDesabilitado));
         buttonResetarSenha.setEnabled(false);
-
-    }
-
-    public void testarUsuarioExistente(){
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        FirebaseUser usuario = autenticacao.getCurrentUser();
-
-        if(usuario == null){
-            Intent intent = new Intent(getActivity(), IntroducaoActivity.class);
-            startActivity(intent);
-
-        }
 
     }
 
