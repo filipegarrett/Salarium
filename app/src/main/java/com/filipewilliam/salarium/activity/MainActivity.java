@@ -29,9 +29,6 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ResumoFragment resumoFragment;
-    private RecebiFragment recebiFragment;
-    private GasteiFragment gasteiFragment;
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
@@ -63,10 +60,6 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
         recyclerViewTransacoes = findViewById(R.id.recyclerViewTransacoes);
-
-        final ResumoFragment resumoFragment = new ResumoFragment();
-        final RecebiFragment recebiFragment = new RecebiFragment();
-        final GasteiFragment gasteiFragment = new GasteiFragment();
 
         FragmentPagerItemAdapter adapterSmartTab = new FragmentPagerItemAdapter(getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add("Resumo", ResumoFragment.class).add("Recebi", RecebiFragment.class).add("Gastei", GasteiFragment.class).create());

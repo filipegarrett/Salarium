@@ -1,4 +1,4 @@
-package com.filipewilliam.salarium.watcher;
+package com.filipewilliam.salarium.helpers;
 
 import android.text.Editable;
 import android.text.TextWatcher;
