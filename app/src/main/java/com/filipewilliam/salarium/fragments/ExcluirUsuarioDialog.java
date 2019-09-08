@@ -1,9 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -13,25 +11,23 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.activity.ConfiguracoesActivity;
-import com.filipewilliam.salarium.activity.IntroducaoActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
+import com.filipewilliam.salarium.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 
 public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
 
-    private EditText editTextEmail;
     private FirebaseAuth autenticacao;
-    private ConfiguracoesUsuarioFragment configuracoesUsuarioFragment;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
+        final Usuario usuario = new Usuario();
         final View view = inflater.inflate(R.layout.layout_excluir_usuario_dialog, null);
 
         dialog.setView(view)
@@ -48,9 +44,12 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-                        final FirebaseUser usuario = autenticacao.getCurrentUser();
+                        final FirebaseUser usuarioFirebase = autenticacao.getCurrentUser();
+                        usuario.setIdUsuario(Base64Custom.codificarBase64(usuarioFirebase.getEmail()));
+                        usuario.getIdUsuario();
+                        usuario.removerUsuarioFirebase();
                         autenticacao.signOut();
-                        usuario.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        usuarioFirebase.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {

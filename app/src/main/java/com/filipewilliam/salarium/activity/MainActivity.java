@@ -29,10 +29,6 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //private Button buttonResumo, buttonRecebi, buttonGastei;
-    private ResumoFragment resumoFragment;
-    private RecebiFragment recebiFragment;
-    private GasteiFragment gasteiFragment;
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
@@ -64,14 +60,6 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
         recyclerViewTransacoes = findViewById(R.id.recyclerViewTransacoes);
-
-        final ResumoFragment resumoFragment = new ResumoFragment();
-        final RecebiFragment recebiFragment = new RecebiFragment();
-        final GasteiFragment gasteiFragment = new GasteiFragment();
-
-        /*FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayoutConteudo, resumoFragment);
-        transaction.commit();*/
 
         FragmentPagerItemAdapter adapterSmartTab = new FragmentPagerItemAdapter(getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add("Resumo", ResumoFragment.class).add("Recebi", RecebiFragment.class).add("Gastei", GasteiFragment.class).create());
@@ -127,22 +115,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_resumo) {
 
-        } else if (id == R.id.nav_cadastrarSalario) {
-            /*RecebiFragment recebiFragment = new RecebiFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.viewPager, recebiFragment);
-            transaction.commit();*/
-        } else if (id == R.id.nav_cadastrarDespesas) {
-            /*GasteiFragment gasteiFragment = new GasteiFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frameLayoutConteudo, gasteiFragment);
-            transaction.commit();*/
         } else if (id == R.id.nav_contasVencer) {
 
         } else if (id == R.id.nav_definirMetas) {
             //maneira de abrir outra activity em vez de fragment
             Intent intent = new Intent(this, MetasActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_configuracoes) {
             Intent intent = new Intent(this, ConfiguracoesActivity.class);
             startActivity(intent);
@@ -151,6 +130,7 @@ public class MainActivity extends AppCompatActivity
             autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             autenticacao.signOut();
             finishAffinity();
+            System.exit(0);
 
         }
 
@@ -168,6 +148,7 @@ public class MainActivity extends AppCompatActivity
 
         }else{
             finishAffinity();
+            System.exit(0);
         }
 
     }

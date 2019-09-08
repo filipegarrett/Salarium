@@ -11,8 +11,9 @@ import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
-import com.filipewilliam.salarium.watcher.MaskWatcher;
+import com.filipewilliam.salarium.helpers.MaskWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -99,6 +100,10 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+
+                                String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
+                                usuario.setIdUsuario(idUsuario);
+                                usuario.salvarUsuarioFirebase();
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para " + user.getEmail(), Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Ocorreu uma falha na verificação de seu e-mail", Toast.LENGTH_SHORT).show();
