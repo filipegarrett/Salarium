@@ -13,7 +13,7 @@ import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
-import com.filipewilliam.salarium.helpers.MaskWatcher;
+import com.filipewilliam.salarium.helpers.DatasMaskWatcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -29,7 +29,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
     private Button botaoCadastrarUsuario;
     private FirebaseAuth autenticacao;
     private Usuario usuario;
-    private MaskWatcher maskDataNascimento;
+    private DatasMaskWatcher maskDataNascimento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -122,6 +122,10 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, MetasActivity.class);
             startActivity(intent);
 
+        } else if (id == R.id.nav_simularPoupanca) {
+            Intent intent = new Intent(this, SimuladorActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_configuracoes) {
             Intent intent = new Intent(this, ConfiguracoesActivity.class);
             startActivity(intent);
@@ -130,7 +134,6 @@ public class MainActivity extends AppCompatActivity
             autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             autenticacao.signOut();
             finishAffinity();
-            System.exit(0);
 
         }
 

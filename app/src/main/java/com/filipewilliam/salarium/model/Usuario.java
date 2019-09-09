@@ -6,7 +6,8 @@ import com.google.firebase.database.Exclude;
 
 public class Usuario {
 
-    String idUsuario, nome, dataNascimento, email, senha;
+    private String idUsuario, senha;
+    String nome, dataNascimento, email;
 
     public Usuario() {
     }
