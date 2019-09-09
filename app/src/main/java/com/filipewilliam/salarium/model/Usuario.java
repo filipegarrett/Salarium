@@ -7,7 +7,7 @@ import com.google.firebase.database.Exclude;
 public class Usuario {
 
     private String idUsuario, senha;
-    String nome, dataNascimento, email;
+    String noe, dataNascimento, email;
 
     public Usuario() {
     }
@@ -25,15 +25,19 @@ public class Usuario {
                 .child(this.idUsuario).removeValue();
     }
 
+    public void AlterarUsuario(){
+
+    }
+
     @Exclude
     public String getIdUsuario() { return idUsuario; }
 
     public String getNome() {
-        return nome;
+        return noe;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.noe = nome;
     }
 
     public String getDataNascimento() {
