@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="arrayTiposInvestimentos">
+        <item>Poupança</item>
+        <item>Tesouro Direto</item>
+    </string-array>
+</resources>

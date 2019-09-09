@@ -6,4 +6,104 @@
     android:layout_height="match_parent"
     tools:context=".activity.SimuladorActivity">
 
+    <EditText
+        android:id="@+id/editTextValorSimulacao"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="R$ 00.00"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBarPeriodoSimulacao"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:max="24"
+        app:layout_constraintEnd_toStartOf="@+id/textViewMesesSimulacao"
+        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextValorSimulacao" />
+
+    <Spinner
+        android:id="@+id/spinnerTipoInvestimento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarPeriodoSimulacao" />
+
+    <Button
+        android:id="@+id/buttonCalcularInvestimento"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="16dp"
+        android:text="Simular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
+
+    <Button
+        android:id="@+id/buttonLimparCampos"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="8dp"
+        android:text="Limpar campos"
+        app:layout_constraintEnd_toStartOf="@+id/buttonCalcularInvestimento"
+        app:layout_constraintHorizontal_bias="0.039"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
+
+    <TextView
+        android:id="@+id/textViewMesesSimulacao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="meses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextValorSimulacao" />
+
+    <TextView
+        android:id="@+id/textViewResultadoSimulacao"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonAjuda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_ajuda_branco_24dp" />
+
 </android.support.constraint.ConstraintLayout>

@@ -3,21 +3,17 @@ package com.filipewilliam.salarium.helpers;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-public class MaskWatcher implements TextWatcher {
+public class DatasMaskWatcher implements TextWatcher {
     private boolean isRunning = false;
     private boolean isDeleting = false;
     private final String mask;
 
-    public MaskWatcher(String mask) {
+    public DatasMaskWatcher(String mask) {
         this.mask = mask;
     }
 
-    public static MaskWatcher aplicarMaskDataNascimento() {
-        return new MaskWatcher("##/##/####");
-    }
-
-    public static MaskWatcher aplicarMaskValores() { //não funciona =(
-        return new MaskWatcher("###.###.###,##");
+    public static DatasMaskWatcher aplicarMaskDataNascimento() {
+        return new DatasMaskWatcher("##/##/####");
     }
 
     @Override

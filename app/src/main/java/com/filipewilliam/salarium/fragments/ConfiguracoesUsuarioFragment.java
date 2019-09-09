@@ -3,6 +3,7 @@ package com.filipewilliam.salarium.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class ConfiguracoesUsuarioFragment extends Fragment {
     public void excluirUsuarioDialog() {
         ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
         excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
-        buttonResetarSenha.setBackgroundColor(getResources().getColor(R.color.corBotaoDesabilitado));
+        buttonResetarSenha.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.corBotaoDesabilitado));
         buttonResetarSenha.setEnabled(false);
 
     }

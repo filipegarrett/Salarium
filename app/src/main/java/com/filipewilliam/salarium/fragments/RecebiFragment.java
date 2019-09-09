@@ -210,7 +210,4 @@ public class RecebiFragment extends Fragment {
         dialog.show();
     }
 
-
-
-
 }
