@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity
             autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             autenticacao.signOut();
             finishAffinity();
-            System.exit(0);
 
         }
 

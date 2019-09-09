@@ -8,8 +8,8 @@
 
     <EditText
         android:id="@+id/editTextValorSimulacao"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="379dp"
+        android:layout_height="43dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="16dp"
@@ -17,12 +17,13 @@
         android:hint="R$ 00.00"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBarPeriodoSimulacao"
-        android:layout_width="0dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
@@ -49,7 +50,7 @@
         android:id="@+id/buttonCalcularInvestimento"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="136dp"
+        android:layout_marginTop="184dp"
         android:layout_marginEnd="16dp"
         android:text="Simular"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,22 +60,23 @@
         android:id="@+id/buttonLimparCampos"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="136dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="184dp"
         android:layout_marginEnd="8dp"
         android:text="Limpar campos"
         app:layout_constraintEnd_toStartOf="@+id/buttonCalcularInvestimento"
-        app:layout_constraintHorizontal_bias="0.039"
+        app:layout_constraintHorizontal_bias="0.101"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
 
     <TextView
         android:id="@+id/textViewMesesSimulacao"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="meses"
+        android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextValorSimulacao" />
 
@@ -83,13 +85,13 @@
         android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp"
         android:textAlignment="center"
-        android:textSize="24sp"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
 
@@ -105,5 +107,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_ajuda_branco_24dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="396dp" />
 
 </android.support.constraint.ConstraintLayout>

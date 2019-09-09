@@ -105,7 +105,9 @@ public class SimuladorActivity extends AppCompatActivity {
 
         resultado = valorSimulacao + ((valorSimulacao * taxaPoupanca) * quantidadeMeses);
         System.out.println(resultado);
-        textViewResultado.setText("Ao final você terá: \n" + (NumberFormat.getCurrencyInstance().format(resultado)));
+        double rendimento = resultado - valorSimulacao;
+        textViewResultado.setText("Ao final você terá: \n" + (NumberFormat.getCurrencyInstance().format(resultado)) + "\n Isso equivale a um rendimento de " +
+                (NumberFormat.getCurrencyInstance().format(rendimento)) + " no período");
 
     }
 
