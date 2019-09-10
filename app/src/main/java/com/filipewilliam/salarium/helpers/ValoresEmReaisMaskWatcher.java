@@ -14,7 +14,7 @@ import java.util.Locale;
 public class ValoresEmReaisMaskWatcher implements TextWatcher {
 
     private final WeakReference<EditText> editTextWeakReference;
-    private final Locale locale = Locale.getDefault();
+    private final Locale locale = Locale.US;
 
     public ValoresEmReaisMaskWatcher(EditText editText) {
         this.editTextWeakReference = new WeakReference<>(editText);

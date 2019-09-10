@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".activity.SimuladorActivity">
 
+    <TextView
+        android:id="@+id/textViewResultadoSimulacao"
+        android:layout_width="173dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:textAlignment="textEnd"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
+
     <EditText
         android:id="@+id/editTextValorSimulacao"
         android:layout_width="379dp"
@@ -14,23 +25,24 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:hint="R$ 00.00"
+        android:hint="R$ 0.00"
         android:inputType="numberDecimal"
+        android:maxLength="18"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBarPeriodoSimulacao"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
+        android:layout_width="312dp"
+        android:layout_height="18dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
         android:max="24"
         app:layout_constraintEnd_toStartOf="@+id/textViewMesesSimulacao"
-        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextValorSimulacao" />
 
@@ -52,7 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="184dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/colorPrimary"
         android:text="Simular"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
 
@@ -63,37 +77,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="184dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/corBotoesCancela"
         android:text="Limpar campos"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toStartOf="@+id/buttonCalcularInvestimento"
-        app:layout_constraintHorizontal_bias="0.101"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
 
     <TextView
         android:id="@+id/textViewMesesSimulacao"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="meses"
         android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextValorSimulacao" />
-
-    <TextView
-        android:id="@+id/textViewResultadoSimulacao"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="16dp"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButtonAjuda"
@@ -113,6 +114,55 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="396dp" />
+        app:layout_constraintGuide_percent="0.96107054" />
+
+    <TextView
+        android:id="@+id/textViewResultadoTexto"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTipoInvestimento" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <TextView
+        android:id="@+id/textViewRendimentoTexto"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text=" "
+        app:layout_constraintEnd_toStartOf="@+id/textViewRendimento"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewResultadoTexto" />
+
+    <TextView
+        android:id="@+id/textViewRendimento"
+        android:layout_width="173dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:text=" "
+        android:textAlignment="textEnd"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textViewRendimentoTexto"
+        app:layout_constraintTop_toBottomOf="@+id/textViewResultadoSimulacao" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.filipewilliam.salarium.activity;
 
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
+import android.icu.text.NumberFormat;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
