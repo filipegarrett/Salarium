@@ -40,6 +40,7 @@ public class SimuladorActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //estruturar ajuda/guia a respeito de como investimentos funcionam e são calculados dentro do app
 
             }
         });
