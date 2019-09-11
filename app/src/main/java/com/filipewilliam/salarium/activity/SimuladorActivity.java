@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.helpers.CorretorValores;
@@ -103,33 +104,37 @@ public class SimuladorActivity extends AppCompatActivity {
     }
 
     public void simularPoupanca(){
-        valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
-        System.out.println(valorSimulacao);
-        valorOriginal = valorSimulacao;
-        taxaPoupanca = 0.003434;
-        i = 0;
 
-            for(i = 0; i < quantidadeMeses; i++){
+        if(editTextValorSimulacao.getText().toString().isEmpty()){
+            Toast.makeText(SimuladorActivity.this, "Por favor, insira um valor para a simulação", Toast.LENGTH_SHORT).show();
 
-                valorSimulacao += (valorSimulacao * taxaPoupanca);
-                System.out.println(valorSimulacao);
+        }else{
+            valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
+            valorOriginal = valorSimulacao;
+            taxaPoupanca = 0.003434;
+            i = 0;
 
-            }
+                for(i = 0; i < quantidadeMeses; i++){
 
-        double rendimento = valorSimulacao - valorOriginal;
-        String rendimentoString = String.valueOf(NumberFormat.getCurrencyInstance().format(rendimento));
-        String rendimentoTratado = resultadoEmReais(rendimentoString);
-        String resultadoString = String.valueOf(NumberFormat.getCurrencyInstance().format(valorSimulacao));
-        String resultadoTratado = resultadoEmReais(resultadoString);
+                    valorSimulacao += (valorSimulacao * taxaPoupanca);
+                }
 
-        textViewResultadoTexto.setText("Ao final você terá: ");
-        textViewRendimentoTexto.setText("O rendimento no período é de: ");
-        textViewResultadoSimulacao.setText(resultadoTratado);
-        textViewResultadoRendimento.setText(rendimentoTratado);
-        editTextValorSimulacao.setText("");
-        seekBarQuantidadeMeses.setProgress(0);
-        esconderTeclado();
-        zerarVariaveis();
+            double rendimento = valorSimulacao - valorOriginal;
+            String rendimentoString = String.valueOf(NumberFormat.getCurrencyInstance().format(rendimento));
+            String rendimentoTratado = resultadoEmReais(rendimentoString);
+            String resultadoString = String.valueOf(NumberFormat.getCurrencyInstance().format(valorSimulacao));
+            String resultadoTratado = resultadoEmReais(resultadoString);
+
+            textViewResultadoTexto.setText("Ao final você terá: ");
+            textViewRendimentoTexto.setText("O rendimento no período é de: ");
+            textViewResultadoSimulacao.setText(resultadoTratado);
+            textViewResultadoRendimento.setText(rendimentoTratado);
+            editTextValorSimulacao.setText("");
+            seekBarQuantidadeMeses.setProgress(0);
+            esconderTeclado();
+            zerarVariaveis();
+
+        }
 
     }
 

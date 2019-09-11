@@ -42,6 +42,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="12dp"
+        android:min="1"
         android:max="24"
         app:layout_constraintEnd_toStartOf="@+id/textViewMesesSimulacao"
         app:layout_constraintHorizontal_bias="0.0"
