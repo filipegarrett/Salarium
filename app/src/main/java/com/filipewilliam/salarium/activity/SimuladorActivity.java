@@ -53,6 +53,7 @@ public class SimuladorActivity extends AppCompatActivity {
         buttonLimparCampos = findViewById(R.id.buttonLimparCampos);
         buttonCalcularSimulacao = findViewById(R.id.buttonCalcularInvestimento);
         seekBarQuantidadeMeses = findViewById(R.id.seekBarPeriodoSimulacao);
+        textViewMesesSimulados.setText("1 mês");
         editTextValorSimulacao = findViewById(R.id.editTextValorSimulacao);
         editTextValorSimulacao.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorSimulacao));
 
@@ -66,7 +67,14 @@ public class SimuladorActivity extends AppCompatActivity {
         seekBarQuantidadeMeses.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textViewMesesSimulados.setText(seekBarQuantidadeMeses.getProgress() + " meses");
+
+                if(seekBarQuantidadeMeses.getProgress() == 1){
+                    textViewMesesSimulados.setText(seekBarQuantidadeMeses.getProgress() + " mês");
+
+                }else{
+                    textViewMesesSimulados.setText(seekBarQuantidadeMeses.getProgress() + " meses");
+
+                }
                 quantidadeMeses = seekBarQuantidadeMeses.getProgress();
             }
 
