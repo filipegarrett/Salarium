@@ -1,11 +1,13 @@
 package com.filipewilliam.salarium.activity;
 
+import android.content.Context;
 import android.icu.text.NumberFormat;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.helpers.CorretorValores;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 
 public class SimuladorActivity extends AppCompatActivity {
@@ -23,8 +26,8 @@ public class SimuladorActivity extends AppCompatActivity {
     private Button buttonLimparCampos, buttonCalcularSimulacao;
     private SeekBar seekBarQuantidadeMeses;
     private EditText editTextValorSimulacao;
-    int quantidadeMeses;
-    private double taxaPoupanca, taxaTesouro;
+    int quantidadeMeses, i;
+    private double taxaPoupanca, taxaTesouro, valorSimulacao, valorOriginal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,18 +103,23 @@ public class SimuladorActivity extends AppCompatActivity {
     }
 
     public void simularPoupanca(){
-        System.out.println(editTextValorSimulacao.getText().toString());
-        double valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
+        valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
         System.out.println(valorSimulacao);
-        double resultado = 0;
+        valorOriginal = valorSimulacao;
         taxaPoupanca = 0.003434;
+        i = 0;
 
-        resultado = valorSimulacao + ((valorSimulacao * taxaPoupanca) * quantidadeMeses);
-        System.out.println(resultado);
-        double rendimento = resultado - valorSimulacao;
+            for(i = 0; i < quantidadeMeses; i++){
+
+                valorSimulacao += (valorSimulacao * taxaPoupanca);
+                System.out.println(valorSimulacao);
+
+            }
+
+        double rendimento = valorSimulacao - valorOriginal;
         String rendimentoString = String.valueOf(NumberFormat.getCurrencyInstance().format(rendimento));
         String rendimentoTratado = resultadoEmReais(rendimentoString);
-        String resultadoString = String.valueOf(NumberFormat.getCurrencyInstance().format(resultado));
+        String resultadoString = String.valueOf(NumberFormat.getCurrencyInstance().format(valorSimulacao));
         String resultadoTratado = resultadoEmReais(resultadoString);
 
         textViewResultadoTexto.setText("Ao final você terá: ");
@@ -120,6 +128,8 @@ public class SimuladorActivity extends AppCompatActivity {
         textViewResultadoRendimento.setText(rendimentoTratado);
         editTextValorSimulacao.setText("");
         seekBarQuantidadeMeses.setProgress(0);
+        esconderTeclado();
+        zerarVariaveis();
 
     }
 
@@ -129,6 +139,8 @@ public class SimuladorActivity extends AppCompatActivity {
 
     public void limparCampos(){
         textViewMesesSimulados.setText("meses");
+        textViewResultadoTexto.setText("");
+        textViewRendimentoTexto.setText("");
         textViewResultadoSimulacao.setText("");
         textViewResultadoRendimento.setText("");
         seekBarQuantidadeMeses.setProgress(0);
@@ -149,6 +161,24 @@ public class SimuladorActivity extends AppCompatActivity {
             }
         }
         return valorTratado;
+
+    }
+
+    public void zerarVariaveis(){
+        valorOriginal = 0;
+        valorSimulacao = 0;
+        quantidadeMeses = 0;
+
+    }
+
+    public void esconderTeclado(){ /*garante que o teclado é ocultado, não diga, depois de clicar no botão de calcular, evitando que ele fique ativo na tela sem necessidade
+        e obstruindo outros componentes*/
+
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch(Exception ignored) {
+        }
 
     }
 
