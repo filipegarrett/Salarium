@@ -45,7 +45,7 @@ public class MetasActivity extends AppCompatActivity implements DatePickerDialog
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
 
-        TextView textView = findViewById(R.id.textViewSelecionar);
+        TextView textView = findViewById(R.id.textViewSelecionarDataGasto);
         textView.setText(currentDateString);
     }
 

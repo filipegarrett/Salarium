@@ -12,11 +12,11 @@
 
 
         <TextView
-            android:id="@+id/textViewGanhos"
+            android:id="@+id/textViewGastos"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="60dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:text="Gastos"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewDescricao"
+            android:id="@+id/textViewDescricaoGasto"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginStart="24dp"
@@ -42,7 +42,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/editTextDescricao"
+            android:id="@+id/editTextDescricaoGasto"
             android:layout_width="200dp"
             android:layout_height="0dp"
             android:layout_marginEnd="24dp"
@@ -53,7 +53,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/textViewCategoria"
+            android:id="@+id/textViewCategoriaGasto"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginStart="24dp"
@@ -67,7 +67,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Spinner
-            android:id="@+id/spinnerCategoria"
+            android:id="@+id/spinnerCategoriaGasto"
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_marginEnd="24dp"
@@ -77,7 +77,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/textViewValor"
+            android:id="@+id/textViewValorGasto"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginStart="24dp"
@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/editTextValor"
+            android:id="@+id/editTextValorGasto"
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_marginEnd="24dp"
@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/textViewSelecionar"
+            android:id="@+id/textViewSelecionarDataGasto"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginStart="24dp"
@@ -115,35 +115,18 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline8"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <CheckBox
-            android:id="@+id/checkBoxRepete"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="Repete"
-            app:layout_constraintBottom_toTopOf="@+id/guideline7"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <CheckBox
-            android:id="@+id/checkBoxRecebido"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginBottom="8dp"
-            android:text="Pago"
-            app:layout_constraintBottom_toTopOf="@+id/guideline7"
-            app:layout_constraintStart_toEndOf="@+id/checkBoxRepete" />
-
         <Button
-            android:id="@+id/buttonConfirmarExcluirUsuario"
-            android:layout_width="wrap_content"
+            android:id="@+id/buttonConfirmarGasto"
+            android:layout_width="200dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/colorPrimary"
             android:text="Confirmar"
             app:layout_constraintBottom_toTopOf="@+id/guideline7"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline3"
@@ -181,7 +164,7 @@
             app:layout_constraintGuide_percent="0.65" />
 
         <EditText
-            android:id="@+id/editTextData"
+            android:id="@+id/editTextDataGasto"
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_marginEnd="24dp"

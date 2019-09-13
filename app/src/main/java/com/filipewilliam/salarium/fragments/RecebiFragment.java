@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -34,14 +35,12 @@ import java.util.List;
  */
 public class RecebiFragment extends Fragment {
 
-    private EditText editTextDescricao;
-    private EditText editTextValor;
-    private EditText editTextDataSelecionada;
-    private Spinner spinnerCategoria;
-    private CheckBox checkBoxRepete;
+    private EditText editTextDescricaoRecebimento;
+    private EditText editTextValorRecebimento;
+    private EditText editTextDataSelecionadaRecebimento;
+    private Spinner spinnerCategoriaRecebimento;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
-    //private List<Recebi> recebimentos = new ArrayList<>();
-    private Button buttonCriarCategoria;
+    private FloatingActionButton fabAdicionarCategoriaRecebimento;
     Button buttonCriarRecebimento;
 
     public RecebiFragment() {
@@ -54,15 +53,12 @@ public class RecebiFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_recebi, container, false);
 
-        editTextDescricao = view.findViewById(R.id.editTextDescricao);
-        editTextValor = view.findViewById(R.id.editTextValor);
-        editTextDataSelecionada = view.findViewById(R.id.editTextDataSelecionada);
-        spinnerCategoria = view.findViewById(R.id.spinnerCategoria);
-        checkBoxRepete = view.findViewById(R.id.checkBoxRepete);
-        buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarExcluirUsuario);
-        buttonCriarCategoria = view.findViewById(R.id.buttonCriarCategoria);
-        //referencia de categorias no firebase
-       // DatabaseReference referenciaCategorias = referencia.child("categorias");
+        editTextDescricaoRecebimento = view.findViewById(R.id.editTextDescricaoRecebimento);
+        editTextValorRecebimento = view.findViewById(R.id.editTextValorRecebimento);
+        editTextDataSelecionadaRecebimento = view.findViewById(R.id.editTextDataRecebimento);
+        spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
+        buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
+        fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
         referencia.child("categorias").addValueEventListener(new ValueEventListener() {
 
@@ -75,7 +71,7 @@ public class RecebiFragment extends Fragment {
 
                 ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
                 categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                spinnerCategoria.setAdapter(categoriasAdapter);
+                spinnerCategoriaRecebimento.setAdapter(categoriasAdapter);
                 }
         }
 
@@ -86,7 +82,7 @@ public class RecebiFragment extends Fragment {
         });
 
             //selecionar data
-        editTextDataSelecionada.setOnClickListener(new View.OnClickListener() {
+        editTextDataSelecionadaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar mcurrentDate = Calendar.getInstance();
@@ -98,7 +94,7 @@ public class RecebiFragment extends Fragment {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         month = month + 1;
-                        editTextDataSelecionada.setText(dayOfMonth + "/" + month + "/" + year);
+                        editTextDataSelecionadaRecebimento.setText(dayOfMonth + "/" + month + "/" + year);
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -106,7 +102,7 @@ public class RecebiFragment extends Fragment {
         });
 
         //criar categoria
-        buttonCriarCategoria.setOnClickListener(new View.OnClickListener() {
+        fabAdicionarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 criarCategoria();
@@ -131,15 +127,10 @@ public class RecebiFragment extends Fragment {
         if (validarCamposRecebimentos() == true) {
 
             Recebi recebimento = new Recebi();
-            recebimento.setDescricao(editTextDescricao.getText().toString());
-            recebimento.setValor(Double.parseDouble(String.valueOf(editTextValor.getText())));
-            recebimento.setData(String.valueOf(editTextDataSelecionada.getText()));
-            if (checkBoxRepete.isChecked()) {
-                recebimento.setRepete(true);
-            } else {
-                recebimento.setRepete(false);
-            }
-            recebimento.setDescricaoCategoria( spinnerCategoria.getSelectedItem().toString());
+            recebimento.setDescricao(editTextDescricaoRecebimento.getText().toString());
+            recebimento.setValor(Double.parseDouble(String.valueOf(editTextValorRecebimento.getText())));
+            recebimento.setData(String.valueOf(editTextDataSelecionadaRecebimento.getText()));
+            recebimento.setDescricaoCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
             ;
             //criando novo recebimento utilizando id único
             DatabaseReference referenciaRecebimentos = referencia.child("recebimentos");
@@ -150,9 +141,9 @@ public class RecebiFragment extends Fragment {
 
 
     public boolean validarCamposRecebimentos() {
-        String descricao = editTextDescricao.getText().toString();
-        String valor = editTextValor.getText().toString();
-        String data = editTextDataSelecionada.getText().toString();
+        String descricao = editTextDescricaoRecebimento.getText().toString();
+        String valor = editTextValorRecebimento.getText().toString();
+        String data = editTextDataSelecionadaRecebimento.getText().toString();
 
         if (!descricao.isEmpty()) {
             if (!valor.isEmpty()) {
@@ -179,7 +170,7 @@ public class RecebiFragment extends Fragment {
     public void criarCategoria (){
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setTitle("Criar Categoria");
+        dialog.setTitle("Criar categoria de ganhos");
         dialog.setCancelable(true);
         //necessário estes parâmetros pois somente o edittext não aparecia.
         final EditText categoria = new EditText(getContext());
@@ -203,6 +194,7 @@ public class RecebiFragment extends Fragment {
                 novaCategoria.setDescricaoCategoria(categoria.getText().toString());
                 DatabaseReference referenciaCategorias = referencia.child("categorias");
                 referenciaCategorias.push().setValue(novaCategoria);
+                Toast.makeText(getContext(), "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
             }
         });
 
