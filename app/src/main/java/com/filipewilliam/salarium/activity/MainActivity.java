@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final FirebaseUser usuario = autenticacao.getCurrentUser();
 
-        if(usuario != null) {
+        if(usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
 
         }else{
             finishAffinity();
