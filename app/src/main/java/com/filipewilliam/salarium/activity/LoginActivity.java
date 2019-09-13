@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         reenviarEmail = findViewById(R.id.textViewReenviarEmail);
 
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 String email = editTextEmail.getText().toString();
@@ -67,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         resetarSenha.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 resetarSenha();
@@ -75,22 +77,13 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         reenviarEmail.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 reenviarEmail();
             }
         });
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void validarLogin(){
@@ -153,6 +146,16 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
