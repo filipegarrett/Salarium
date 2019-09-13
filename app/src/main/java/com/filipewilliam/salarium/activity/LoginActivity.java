@@ -1,8 +1,6 @@
 package com.filipewilliam.salarium.activity;
 
 import android.content.Intent;
-import android.icu.text.DecimalFormat;
-import android.icu.text.NumberFormat;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button botaoEntrar, reset;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
-    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,39 +87,35 @@ public class LoginActivity extends AppCompatActivity {
 
     public void validarLogin(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        user = autenticacao.getCurrentUser();
+        autenticacao.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
-        if(user.isEmailVerified()){ //a ideia aqui é comparar se o usuário possui e-mail verificado
-            autenticacao.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                    if(task.isSuccessful()){
+                if(task.isSuccessful()){
+                    if(autenticacao.getCurrentUser().isEmailVerified()){
                         abrirMainActivity();
 
                     }else{
-                        String excecao = "";
-                        try{
-                            throw task.getException();
-                        }catch (FirebaseAuthInvalidCredentialsException e){
-                            excecao = "E-mail ou senha informados inválidos";
-                        }catch (FirebaseAuthInvalidUserException e){
-                            excecao = "Usuário inválido";
-                        }catch (Exception e){
-                            excecao = "Erro ao realizar login: " + e.getMessage();
-                            e.printStackTrace();
-                        }
-
-                        Toast.makeText(LoginActivity.this, excecao, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Por favor, confirma sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
                     }
-                }
-            });
+                }else{
+                    String excecao = "";
+                    try{
+                        throw task.getException();
+                    }catch (FirebaseAuthInvalidCredentialsException e){
+                        excecao = "E-mail ou senha informados inválidos";
+                    }catch (FirebaseAuthInvalidUserException e){
+                        excecao = "Usuário inválido";
+                    }catch (Exception e){
+                        excecao = "Erro ao realizar login: " + e.getMessage();
+                        e.printStackTrace();
+                    }
 
-        }else{
-            Toast.makeText(LoginActivity.this, "Por favor, confirme sua conta no e-mail enviado", Toast.LENGTH_SHORT).show();
-            user.sendEmailVerification();
-        }
+                    Toast.makeText(LoginActivity.this, excecao, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 
