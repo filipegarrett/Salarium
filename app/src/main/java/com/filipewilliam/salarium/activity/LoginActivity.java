@@ -26,7 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
-    private TextView resetarSenha;
+    private TextView resetarSenha, reenviarEmail;
     private Button botaoEntrar, reset;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextSenha = findViewById(R.id.editTextSenha);
         botaoEntrar = findViewById(R.id.buttonEntrar);
         resetarSenha = findViewById(R.id.textViewResetarSenha);
+        reenviarEmail = findViewById(R.id.textViewReenviarEmail);
 
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +71,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 resetarSenha();
 
+            }
+        });
+
+        reenviarEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reenviarEmail();
             }
         });
 
@@ -128,6 +136,23 @@ public class LoginActivity extends AppCompatActivity {
         ResetarSenhaDialog resetarSenhaDialog = new ResetarSenhaDialog();
         resetarSenhaDialog.show(getSupportFragmentManager(), "dialog");
 
+    }
+
+    public void reenviarEmail(){
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        FirebaseUser user = autenticacao.getCurrentUser();
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(LoginActivity.this,"Enviamos um novo e-mail para você!", Toast.LENGTH_LONG).show();
+
+                }else {
+                    Toast.makeText(LoginActivity.this, "Não foi possível enviar um novo e-mail", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }
