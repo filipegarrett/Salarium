@@ -19,8 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Recebi;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +43,7 @@ public class RecebiFragment extends Fragment {
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private FloatingActionButton fabAdicionarCategoriaRecebimento;
     Button buttonCriarRecebimento;
 
@@ -52,7 +56,7 @@ public class RecebiFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_recebi, container, false);
-
+        String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoRecebimento = view.findViewById(R.id.editTextDescricaoRecebimento);
         editTextValorRecebimento = view.findViewById(R.id.editTextValorRecebimento);
         editTextDataSelecionadaRecebimento = view.findViewById(R.id.editTextDataRecebimento);
@@ -60,7 +64,7 @@ public class RecebiFragment extends Fragment {
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
-        referencia.child("categorias").addValueEventListener(new ValueEventListener() {
+        referencia.child("categorias_recebimentos").child(idUsuario).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,7 +109,7 @@ public class RecebiFragment extends Fragment {
         fabAdicionarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                criarCategoria();
+                criarCategoriaRecebimento();
             }
         });
 
@@ -127,14 +131,12 @@ public class RecebiFragment extends Fragment {
         if (validarCamposRecebimentos() == true) {
 
             Recebi recebimento = new Recebi();
+            String dataRecebimento = editTextDataSelecionadaRecebimento.getText().toString();
             recebimento.setDescricao(editTextDescricaoRecebimento.getText().toString());
             recebimento.setValor(Double.parseDouble(String.valueOf(editTextValorRecebimento.getText())));
-            recebimento.setData(String.valueOf(editTextDataSelecionadaRecebimento.getText()));
+            recebimento.setData(dataRecebimento);
             recebimento.setDescricaoCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
-            ;
-            //criando novo recebimento utilizando id único
-            DatabaseReference referenciaRecebimentos = referencia.child("recebimentos");
-            referenciaRecebimentos.push().setValue(recebimento);
+            recebimento.salvarRecebimento(dataRecebimento);
 
         }
     }
@@ -167,7 +169,7 @@ public class RecebiFragment extends Fragment {
     }
 
 
-    public void criarCategoria (){
+    public void criarCategoriaRecebimento (){
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
         dialog.setTitle("Criar categoria de ganhos");
@@ -192,8 +194,7 @@ public class RecebiFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 Categoria novaCategoria = new Categoria();
                 novaCategoria.setDescricaoCategoria(categoria.getText().toString());
-                DatabaseReference referenciaCategorias = referencia.child("categorias");
-                referenciaCategorias.push().setValue(novaCategoria);
+                novaCategoria.salvarCategoriaRecebimento();
                 Toast.makeText(getContext(), "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
             }
         });

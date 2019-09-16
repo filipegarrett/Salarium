@@ -42,13 +42,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         toolbar.setElevation(0); //Remove elevação da titleBar sobre os botões-aba dos fragments. Ou não =/.....
         final FloatingActionButton fab = findViewById(R.id.fabAdicionarCategoria);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         fab.hide();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -67,6 +60,7 @@ public class MainActivity extends AppCompatActivity
 
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
+        //método para ocultar o FAB na fragment de resumo
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {

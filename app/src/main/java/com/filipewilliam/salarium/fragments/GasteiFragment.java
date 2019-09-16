@@ -19,9 +19,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Gasto;
 import com.filipewilliam.salarium.model.Recebi;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +45,7 @@ public class GasteiFragment extends Fragment {
     private EditText editTextDataSelecionadaGasto;
     private Spinner spinnerCategoriaGasto;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private FloatingActionButton fabAdicionarCategoriaGasto;
     Button buttonCriarGasto;
 
@@ -53,7 +57,7 @@ public class GasteiFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gastei, container, false);
-
+        String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoGasto);
         editTextValorGasto = view.findViewById(R.id.editTextValorGasto);
         editTextDataSelecionadaGasto = view.findViewById(R.id.editTextDataGasto);
@@ -61,7 +65,7 @@ public class GasteiFragment extends Fragment {
         buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
         fabAdicionarCategoriaGasto = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
-        referencia.child("categorias_gastos").addValueEventListener(new ValueEventListener() {
+        referencia.child("categorias_gastos").child(idUsuario).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -103,7 +107,7 @@ public class GasteiFragment extends Fragment {
         });
 
         //criar categoria
-        fabAdicionarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
+       fabAdicionarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 criarCategoriaGasto();
@@ -127,13 +131,12 @@ public class GasteiFragment extends Fragment {
         if (validarCamposGastos() == true) {
 
             Gasto gasto = new Gasto();
+            String dataGasto = editTextDataSelecionadaGasto.getText().toString();
             gasto.setDescricao(editTextDescricaoGasto.getText().toString());
             gasto.setValor(Double.parseDouble(String.valueOf(editTextValorGasto.getText())));
-            gasto.setData(String.valueOf(editTextDataSelecionadaGasto.getText()));
+            gasto.setData(dataGasto);
             gasto.setDescricaoCategoria( spinnerCategoriaGasto.getSelectedItem().toString());
-            //criando novo gasto utilizando id único
-            DatabaseReference referenciaRecebimentos = referencia.child("gastos");
-            referenciaRecebimentos.push().setValue(gasto);
+            gasto.salvarGasto(dataGasto);
 
         }
     }
@@ -188,8 +191,7 @@ public class GasteiFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 Categoria novaCategoria = new Categoria();
                 novaCategoria.setDescricaoCategoria(categoria.getText().toString());
-                DatabaseReference referenciaCategorias = referencia.child("categorias_gastos");
-                referenciaCategorias.push().setValue(novaCategoria);
+                novaCategoria.salvarCategoriaGasto();
                 Toast.makeText(getContext(), "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
             }
         });
