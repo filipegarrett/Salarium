@@ -7,7 +7,7 @@
     tools:context=".activity.MetasActivity">
 
     <TextView
-        android:id="@+id/textViewSelecionar"
+        android:id="@+id/textViewSelecionarDataGasto"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_above="@id/buttonCalendario"

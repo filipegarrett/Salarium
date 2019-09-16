@@ -61,8 +61,8 @@ public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.My
             super(itemView);
 
             tipoTransacao = itemView.findViewById(R.id.textViewTipoTransacao);
-            categoriaTransacao = itemView.findViewById(R.id.textViewCategoria);
-            valorTransacao = itemView.findViewById(R.id.textViewValor);
+            categoriaTransacao = itemView.findViewById(R.id.textViewCategoriaGasto);
+            valorTransacao = itemView.findViewById(R.id.textViewValorGasto);
             dataTransacao = itemView.findViewById(R.id.textViewDataTransacao);
             setaTransacao = itemView.findViewById(R.id.imageViewSeta);
         }
