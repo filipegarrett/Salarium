@@ -6,25 +6,22 @@ import com.filipewilliam.salarium.helpers.DateCustom;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.Date;
-
-public class Recebi {
+public class Gasto {
 
     private String descricao;
     private Double valor;
     private String descricaoCategoria;
     private String data;
 
-    public Recebi() {
+    public Gasto() {
     }
 
-    public Recebi(String descricao, Double valor, String descricaoCategoria, String data) {
+    public Gasto(String descricao, Double valor, String descricaoCategoria, String data) {
         this.descricao = descricao;
         this.valor = valor;
         this.descricaoCategoria = descricaoCategoria;
         this.data = data;
     }
-
 
     public String getDescricao() {
         return descricao;
@@ -43,7 +40,6 @@ public class Recebi {
     }
 
     public String getDescricaoCategoria() {
-
         return descricaoCategoria;
     }
 
@@ -59,12 +55,11 @@ public class Recebi {
         this.data = data;
     }
 
-
-    public void salvarRecebimento(String data){
+    public void salvarGasto(String data){
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         String mesAno = DateCustom.formatarData(data);
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        referenciaFirebase.child("recebimentos").child(idUsuario).child(mesAno).push().setValue(this);
+        referenciaFirebase.child("gastos").child(idUsuario).child(mesAno).push().setValue(this);
     }
 }
