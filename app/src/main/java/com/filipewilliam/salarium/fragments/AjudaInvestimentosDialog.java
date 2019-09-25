@@ -16,14 +16,15 @@ public class AjudaInvestimentosDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.layout_excluir_usuario_dialog, null);
+        final View view = inflater.inflate(R.layout.layout_ajuda_investimentos_dialog, null);
+        String textoAjuda = "1- Para a Poupança, usamos a taxa de rendimento definida pelo Banco Central em https://www4.bcb.gov.br/pec/poupanca/poupanca.asp?frame=1" +
+                            "\n\n2- Calculos de CDB Prefixado consideram um rendimento de 7% ao ano e imposto de renda de 15% sobre o rendimento da aplicação" +
+                            "\n\n3- Caso você opte por um investimento de renda fixa, é importante considerar que as taxas e prazos de rendimento variam de instituição para instituição" +
+                            "\n\n4- Outro ponto a ser considerado é que instituições financeiras que oferecem esse investimento também irão cobrar uma taxa de administração mensalmente";
 
         dialog.setView(view)
                 .setTitle("Sobre as simulações")
-                .setMessage("1- Para a Poupança, usamos a taxa de rendimento definida pelo Banco Central em /n" +
-                        "2- Calculos de CDB Préfixado consideram um rendimento de 7% ao ano e imposto de renda de 15% sobre o rendimento da aplicação /n" +
-                        "3- Caso você opte por um investimento de renda fixa, é importante considerar que as taxas e prazos de rendimento variam de instituição para instituição /n" +
-                        "4- Outro ponto a ser considerado é que instituições financeiras que oferecem esse investimento também irão cobrar uma taxa de administração mensalmente")
+                .setMessage(textoAjuda)
                 .setPositiveButton("Entendi!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

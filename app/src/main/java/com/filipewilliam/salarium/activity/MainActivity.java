@@ -132,6 +132,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_resumo) {
 
         } else if (id == R.id.nav_contasVencer) {
+            Intent intent = new Intent(this, ContasVencerActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_definirMetas) {
             //maneira de abrir outra activity em vez de fragment
