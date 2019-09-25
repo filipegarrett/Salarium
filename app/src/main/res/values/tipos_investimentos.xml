@@ -2,6 +2,6 @@
 <resources>
     <string-array name="arrayTiposInvestimentos">
         <item>Poupança</item>
-        <item>Tesouro Direto</item>
+        <item>CDB Prefixado</item>
     </string-array>
 </resources>

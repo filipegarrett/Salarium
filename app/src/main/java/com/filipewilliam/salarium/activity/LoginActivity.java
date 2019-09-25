@@ -134,18 +134,28 @@ public class LoginActivity extends AppCompatActivity {
     public void reenviarEmail(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         FirebaseUser user = autenticacao.getCurrentUser();
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+        System.out.println(user);
 
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this,"Enviamos um novo e-mail para você!", Toast.LENGTH_LONG).show();
+        if(user != null){
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
 
-                }else {
-                    Toast.makeText(LoginActivity.this, "Não foi possível enviar um novo e-mail", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(LoginActivity.this,"Enviamos um novo e-mail para você!", Toast.LENGTH_LONG).show();
+
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Tente novamente mais tarde", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        //System.out.println(task.getException().getMessage());
+                    }
                 }
-            }
-        });
+            });
+
+        }else{
+            Toast.makeText(LoginActivity.this, "Você precisa antes criar uma conta de usuário", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override

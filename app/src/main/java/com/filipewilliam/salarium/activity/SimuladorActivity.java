@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,23 +18,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.helpers.CorretorValores;
+import com.filipewilliam.salarium.helpers.InvestimentosHelper;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SimuladorActivity extends AppCompatActivity {
 
     private Spinner spinnerTiposIvestimentos;
-    private TextView textViewMesesSimulados, textViewResultadoTexto, textViewResultadoSimulacao, textViewRendimentoTexto, textViewResultadoRendimento;
+    private TextView textViewMesesSimulados, textViewResultadoTexto, textViewResultadoSimulacao, textViewRendimentoTexto, textViewResultadoRendimento, textViewPeriodoCDB;
     private Button buttonLimparCampos, buttonCalcularSimulacao;
     private SeekBar seekBarQuantidadeMeses;
-    private EditText editTextValorSimulacao;
+    private EditText editTextValorSimulacao, editTextValorDepositoMensal;
     int quantidadeMeses, i;
-    private double taxaPoupanca, taxaTesouro, valorSimulacao, valorOriginal;
+    private double taxaPoupanca, taxaTesouro, valorSimulacao, valorOriginal, depositoMensal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Simulador de Investimentos");
+        getSupportActionBar().setTitle("Simulador");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simulador);
         FloatingActionButton fab = findViewById(R.id.floatingActionButtonAjuda);
@@ -51,12 +56,15 @@ public class SimuladorActivity extends AppCompatActivity {
         textViewResultadoSimulacao = findViewById(R.id.textViewResultadoSimulacao);
         textViewRendimentoTexto = findViewById(R.id.textViewRendimentoTexto);
         textViewResultadoRendimento = findViewById(R.id.textViewRendimento);
+        textViewPeriodoCDB = findViewById(R.id.textViewPeriodoCDBPrefixado);
         buttonLimparCampos = findViewById(R.id.buttonLimparCampos);
         buttonCalcularSimulacao = findViewById(R.id.buttonCalcularInvestimento);
         seekBarQuantidadeMeses = findViewById(R.id.seekBarPeriodoSimulacao);
         textViewMesesSimulados.setText("1 mês");
         editTextValorSimulacao = findViewById(R.id.editTextValorSimulacao);
         editTextValorSimulacao.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorSimulacao));
+        editTextValorDepositoMensal = findViewById(R.id.editTextValorDepositoMensal);
+        editTextValorDepositoMensal.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorDepositoMensal));
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
                 R.array.arrayTiposInvestimentos, android.R.layout.simple_spinner_item);
@@ -64,6 +72,29 @@ public class SimuladorActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerTiposIvestimentos.setAdapter(adapter);
+        spinnerTiposIvestimentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(spinnerTiposIvestimentos.getSelectedItem().toString().equals("Poupança")){
+                    seekBarQuantidadeMeses.setEnabled(true);
+                    editTextValorDepositoMensal.setEnabled(true);
+                    textViewMesesSimulados.setText(" meses");
+                    textViewPeriodoCDB.setText("");
+
+                }else{
+                    seekBarQuantidadeMeses.setEnabled(false);
+                    editTextValorDepositoMensal.setEnabled(false);
+                    textViewMesesSimulados.setText("");
+                    textViewPeriodoCDB.setText("");
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         seekBarQuantidadeMeses.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -91,11 +122,18 @@ public class SimuladorActivity extends AppCompatActivity {
         });
 
         buttonCalcularSimulacao.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
 
                 if (spinnerTiposIvestimentos.getSelectedItem().toString().equals("Poupança")){
-                    simularPoupanca();
+
+                    if(editTextValorDepositoMensal.getText().toString().isEmpty()){
+                        editTextValorDepositoMensal.setText("0,0");
+                        simularPoupanca();
+                    }else{
+                        simularPoupanca();
+                    }
 
                 }else{
                     simularTesouro();
@@ -120,24 +158,18 @@ public class SimuladorActivity extends AppCompatActivity {
         }else{
             valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
             valorOriginal = valorSimulacao;
+            depositoMensal = Double.valueOf(editTextValorDepositoMensal.getText().toString().replace(",", ""));
             taxaPoupanca = 0.003434;
-            i = 0;
 
-                for(i = 0; i < quantidadeMeses; i++){
-
-                    valorSimulacao += (valorSimulacao * taxaPoupanca);
-                }
-
-            double rendimento = valorSimulacao - valorOriginal;
-            String rendimentoString = String.valueOf(NumberFormat.getCurrencyInstance().format(rendimento));
-            String rendimentoTratado = resultadoEmReais(rendimentoString);
-            String resultadoString = String.valueOf(NumberFormat.getCurrencyInstance().format(valorSimulacao));
-            String resultadoTratado = resultadoEmReais(resultadoString);
+            InvestimentosHelper investimentosHelper = new InvestimentosHelper();
+            double resultadoSimulacao = investimentosHelper.simularPoupanca(valorSimulacao, depositoMensal, taxaPoupanca, quantidadeMeses);
+            String rendimento = investimentosHelper.rendimentoPoupanca(resultadoSimulacao, valorOriginal, depositoMensal, quantidadeMeses);
+            String resultadoTratado = investimentosHelper.tratarValores(resultadoSimulacao);
 
             textViewResultadoTexto.setText("Ao final você terá: ");
-            textViewRendimentoTexto.setText("O rendimento no período é de: ");
+            textViewRendimentoTexto.setText("O rendimento no período é: ");
             textViewResultadoSimulacao.setText(resultadoTratado);
-            textViewResultadoRendimento.setText(rendimentoTratado);
+            textViewResultadoRendimento.setText(rendimento);
             editTextValorSimulacao.setText("");
             seekBarQuantidadeMeses.setProgress(0);
             esconderTeclado();
@@ -148,7 +180,38 @@ public class SimuladorActivity extends AppCompatActivity {
     }
 
     public void simularTesouro(){
-        textViewResultadoSimulacao.setText("AHÁ!");
+
+        if(editTextValorSimulacao.getText().toString().isEmpty()){
+            Toast.makeText(SimuladorActivity.this, "Por favor, insira um valor para a simulação", Toast.LENGTH_SHORT).show();
+
+        }else{
+            valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
+            valorOriginal = valorSimulacao;
+
+            InvestimentosHelper investimentosHelper = new InvestimentosHelper();
+            double resultadoSimulacao = investimentosHelper.simularCDBPrefixado(valorSimulacao);
+            String rendimento = investimentosHelper.rendimentoPoupanca(resultadoSimulacao, valorOriginal, depositoMensal, quantidadeMeses);
+            String resultadoTratado = investimentosHelper.tratarValores(resultadoSimulacao);
+
+            Calendar cal = Calendar.getInstance();
+            Date hoje = cal.getTime();
+            cal.add(Calendar.YEAR, 5);
+            Date futuro = cal.getTime();
+            SimpleDateFormat dataInvestimento = new SimpleDateFormat("dd-MM-yyyy");
+            String data = dataInvestimento.format(futuro).replace("-", "/");
+
+            textViewPeriodoCDB.setText("Simulação até " + data);
+            textViewResultadoTexto.setText("Em " + data + " você terá: ");
+            textViewRendimentoTexto.setText("O rendimento no período é: ");
+            textViewResultadoSimulacao.setText(resultadoTratado);
+            textViewResultadoRendimento.setText(rendimento);
+            editTextValorSimulacao.setText("");
+            seekBarQuantidadeMeses.setProgress(0);
+            esconderTeclado();
+            zerarVariaveis();
+
+        }
+
     }
 
     public void limparCampos(){
@@ -157,24 +220,10 @@ public class SimuladorActivity extends AppCompatActivity {
         textViewRendimentoTexto.setText("");
         textViewResultadoSimulacao.setText("");
         textViewResultadoRendimento.setText("");
+        textViewPeriodoCDB.setText("");
         seekBarQuantidadeMeses.setProgress(0);
         editTextValorSimulacao.setText("");
-
-    }
-
-    public String resultadoEmReais(String valor){
-        String valorTratado = "";
-        String valorOriginal = String.valueOf(valor);
-        int indice = 1;
-
-        for (int i = 0; i < valorOriginal.length(); i++) {
-            valorTratado += valorOriginal.charAt(i);
-
-            if (i == indice) {
-               valorTratado += " ";
-            }
-        }
-        return valorTratado;
+        editTextValorDepositoMensal.setText("");
 
     }
 
@@ -182,6 +231,7 @@ public class SimuladorActivity extends AppCompatActivity {
         valorOriginal = 0;
         valorSimulacao = 0;
         quantidadeMeses = 0;
+        depositoMensal = 0;
 
     }
 
@@ -205,4 +255,5 @@ public class SimuladorActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
