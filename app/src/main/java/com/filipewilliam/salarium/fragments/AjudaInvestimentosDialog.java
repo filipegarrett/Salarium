@@ -24,13 +24,6 @@ public class AjudaInvestimentosDialog extends AppCompatDialogFragment {
                         "2- Calculos de CDB Préfixado consideram um rendimento de 7% ao ano e imposto de renda de 15% sobre o rendimento da aplicação /n" +
                         "3- Caso você opte por um investimento de renda fixa, é importante considerar que as taxas e prazos de rendimento variam de instituição para instituição /n" +
                         "4- Outro ponto a ser considerado é que instituições financeiras que oferecem esse investimento também irão cobrar uma taxa de administração mensalmente")
-                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                })
                 .setPositiveButton("Entendi!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

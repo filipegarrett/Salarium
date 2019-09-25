@@ -7,7 +7,8 @@ public class InvestimentosHelper {
     public InvestimentosHelper() {
     }
 
-    public double simularPoupanca(double valorSimulacao, double valorAporteMensal, double taxaPoupanca, int mesesPoupanca){
+    public double simularPoupanca(double valorSimulacao, double valorAporteMensal, int mesesPoupanca){
+        double taxaPoupanca = 0.003434;
         int i;
 
         valorSimulacao += valorSimulacao * taxaPoupanca;

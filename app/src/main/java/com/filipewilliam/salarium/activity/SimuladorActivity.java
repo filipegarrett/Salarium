@@ -32,8 +32,8 @@ public class SimuladorActivity extends AppCompatActivity {
     private Button buttonLimparCampos, buttonCalcularSimulacao;
     private SeekBar seekBarQuantidadeMeses;
     private EditText editTextValorSimulacao, editTextValorDepositoMensal;
-    int quantidadeMeses, i;
-    private double taxaPoupanca, taxaTesouro, valorSimulacao, valorOriginal, depositoMensal;
+    int quantidadeMeses;
+    private double valorSimulacao, valorOriginal, depositoMensal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,10 +160,9 @@ public class SimuladorActivity extends AppCompatActivity {
             valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
             valorOriginal = valorSimulacao;
             depositoMensal = Double.valueOf(editTextValorDepositoMensal.getText().toString().replace(",", ""));
-            taxaPoupanca = 0.003434;
 
             InvestimentosHelper investimentosHelper = new InvestimentosHelper();
-            double resultadoSimulacao = investimentosHelper.simularPoupanca(valorSimulacao, depositoMensal, taxaPoupanca, quantidadeMeses);
+            double resultadoSimulacao = investimentosHelper.simularPoupanca(valorSimulacao, depositoMensal, quantidadeMeses);
             String rendimento = investimentosHelper.rendimentoPoupanca(resultadoSimulacao, valorOriginal, depositoMensal, quantidadeMeses);
             String resultadoTratado = investimentosHelper.tratarValores(resultadoSimulacao);
 
