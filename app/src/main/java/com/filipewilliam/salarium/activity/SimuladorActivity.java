@@ -1,7 +1,6 @@
 package com.filipewilliam.salarium.activity;
 
 import android.content.Context;
-import android.icu.text.NumberFormat;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.fragments.AjudaInvestimentosDialog;
-import com.filipewilliam.salarium.fragments.ResetarSenhaDialog;
 import com.filipewilliam.salarium.helpers.InvestimentosHelper;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 
