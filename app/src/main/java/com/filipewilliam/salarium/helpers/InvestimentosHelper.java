@@ -4,10 +4,6 @@ import android.icu.text.NumberFormat;
 
 public class InvestimentosHelper {
 
-    private double valorSimulacao, valorAporteMensal;
-    private int mesesPoupanca, mesesCDB;
-    private double taxaPoupanca, taxaCDB, impostoRenda;
-
     public InvestimentosHelper() {
     }
 
@@ -53,8 +49,7 @@ public class InvestimentosHelper {
     }
 
     public Double simularCDBPrefixado(double valorSimulacao){
-        double taxaCDB = 0.7;
-        double impostoRenda = 1.5;
+        double taxaCDB = 0.07;
         int i;
 
         for(i = 0; i < 5; i++){
@@ -63,5 +58,16 @@ public class InvestimentosHelper {
 
         return valorSimulacao;
     }
+
+    public String rendimentoCDBPrefixado(double valorSimulacao, double valorOriginal){
+        double taxaIR = 0.15;
+
+        double valorImposto = (valorSimulacao - valorOriginal) * taxaIR;
+        double rendimento = valorSimulacao - valorOriginal - valorImposto;
+
+        String resultadoCDB = tratarValores(rendimento);
+        return resultadoCDB;
+    }
+
 
 }

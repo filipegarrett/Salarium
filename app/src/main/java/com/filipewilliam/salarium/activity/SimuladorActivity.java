@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.fragments.AjudaInvestimentosDialog;
+import com.filipewilliam.salarium.fragments.ResetarSenhaDialog;
 import com.filipewilliam.salarium.helpers.InvestimentosHelper;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 
@@ -45,7 +47,8 @@ public class SimuladorActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //estruturar ajuda/guia a respeito de como investimentos funcionam e são calculados dentro do app
+                AjudaInvestimentosDialog ajudaInvestimentosDialog = new AjudaInvestimentosDialog();
+                ajudaInvestimentosDialog.show(getSupportFragmentManager(), "dialog");
 
             }
         });
@@ -190,8 +193,9 @@ public class SimuladorActivity extends AppCompatActivity {
 
             InvestimentosHelper investimentosHelper = new InvestimentosHelper();
             double resultadoSimulacao = investimentosHelper.simularCDBPrefixado(valorSimulacao);
-            String rendimento = investimentosHelper.rendimentoPoupanca(resultadoSimulacao, valorOriginal, depositoMensal, quantidadeMeses);
             String resultadoTratado = investimentosHelper.tratarValores(resultadoSimulacao);
+            String rendimento = investimentosHelper.rendimentoCDBPrefixado(resultadoSimulacao, valorOriginal);
+
 
             Calendar cal = Calendar.getInstance();
             Date hoje = cal.getTime();
