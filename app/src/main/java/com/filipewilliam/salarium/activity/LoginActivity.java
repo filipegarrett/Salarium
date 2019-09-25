@@ -21,11 +21,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
-    private TextView resetarSenha;
+    private TextView resetarSenha, reenviarEmail;
     private Button botaoEntrar, reset;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
@@ -40,8 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         editTextSenha = findViewById(R.id.editTextSenha);
         botaoEntrar = findViewById(R.id.buttonEntrar);
         resetarSenha = findViewById(R.id.textViewResetarSenha);
+        reenviarEmail = findViewById(R.id.textViewReenviarEmail);
 
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 String email = editTextEmail.getText().toString();
@@ -65,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         resetarSenha.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 resetarSenha();
@@ -72,27 +76,30 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-    }
+        reenviarEmail.setOnClickListener(new View.OnClickListener() {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+            @Override
+            public void onClick(View view) {
+                reenviarEmail();
+            }
+        });
+
     }
 
     public void validarLogin(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         autenticacao.signInWithEmailAndPassword(usuario.getEmail(), usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if(task.isSuccessful()){
-                    abrirMainActivity();
+                    if(autenticacao.getCurrentUser().isEmailVerified()){
+                        abrirMainActivity();
 
+                    }else{
+                        Toast.makeText(LoginActivity.this, "Por favor, confirma sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
+                    }
                 }else{
                     String excecao = "";
                     try{
@@ -122,6 +129,43 @@ public class LoginActivity extends AppCompatActivity {
         ResetarSenhaDialog resetarSenhaDialog = new ResetarSenhaDialog();
         resetarSenhaDialog.show(getSupportFragmentManager(), "dialog");
 
+    }
+
+    public void reenviarEmail(){
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        FirebaseUser user = autenticacao.getCurrentUser();
+        System.out.println(user);
+
+        if(user != null){
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(LoginActivity.this,"Enviamos um novo e-mail para você!", Toast.LENGTH_LONG).show();
+
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Tente novamente mais tarde", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        //System.out.println(task.getException().getMessage());
+                    }
+                }
+            });
+
+        }else{
+            Toast.makeText(LoginActivity.this, "Você precisa antes criar uma conta de usuário", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

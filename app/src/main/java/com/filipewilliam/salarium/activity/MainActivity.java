@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int i) {
-                    if (i ==0 ){
+                    if (i == 0 ){
                         fab.hide();
                     }
                     else{
@@ -132,6 +132,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_resumo) {
 
         } else if (id == R.id.nav_contasVencer) {
+            Intent intent = new Intent(this, ContasVencerActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_definirMetas) {
             //maneira de abrir outra activity em vez de fragment
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final FirebaseUser usuario = autenticacao.getCurrentUser();
 
-        if(usuario != null) {
+        if(usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
 
         }else{
             finishAffinity();
