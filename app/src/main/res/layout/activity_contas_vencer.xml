@@ -90,27 +90,13 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="Data do vencimento"
-        android:inputType="numberDecimal"
-        android:maxLength="18"
+        android:inputType="date"
+        android:maxLength="10"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerCategoriaContasVencer" />
-
-    <Switch
-        android:id="@+id/switchDespesaRecorrente"
-        android:layout_width="361dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:text="Cadastrar despesa mensalmente? "
-        android:textAlignment="viewStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextValorContasVencer" />
 
     <Switch
         android:id="@+id/switchPermitirNotificacoes"
@@ -123,6 +109,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchDespesaRecorrente" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextValorContasVencer" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewContasVencer"
+        android:layout_width="387dp"
+        android:layout_height="231dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchPermitirNotificacoes" />
 
 </android.support.constraint.ConstraintLayout>

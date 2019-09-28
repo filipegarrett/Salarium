@@ -200,8 +200,4 @@ public class GasteiFragment extends Fragment {
         dialog.show();
     }
 
-
-
-
-
 }
