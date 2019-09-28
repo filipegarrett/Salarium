@@ -115,6 +115,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                     if(!editTextDataVencimentoContasVencer.getText().toString().isEmpty()){
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             cadastrarContasVencer();
+                            Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
 
                         }else{
                             Toast.makeText(ContasVencerActivity.this, "Você precisa definir um valor para a despesa!", Toast.LENGTH_SHORT).show();
@@ -150,7 +151,6 @@ public class ContasVencerActivity extends AppCompatActivity {
         conta.setValor(Double.parseDouble(String.valueOf(editTextValorContasVencer.getText())));
         conta.salvarContasAVencer(dataVencimento);
         esconderTeclado();
-
 
     }
 
