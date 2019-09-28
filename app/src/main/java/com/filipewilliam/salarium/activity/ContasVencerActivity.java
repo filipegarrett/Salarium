@@ -74,7 +74,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                 int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
                 int mMonth = mcurrentDate.get(Calendar.MONTH);
                 int mYear = mcurrentDate.get(Calendar.YEAR);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(), new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ContasVencerActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         month = month + 1;
@@ -156,8 +156,8 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     public void limparCampos(){
 
-        editTextDataVencimentoContasVencer.setHint("Data do vencimento");
-        editTextValorContasVencer.setHint("Valor da despesa");
+        editTextDataVencimentoContasVencer.setText(null);
+        editTextValorContasVencer.setText(null);
 
     }
 

@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.AdapterTransacoes;
+import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.model.Transacao;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 
@@ -24,7 +24,7 @@ public class ResumoFragment extends Fragment {
 
     private List<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
-    private AdapterTransacoes adapterTransacoes;
+    private UltimasTransacoesAdapter ultimasTransacoesAdapter;
     public FragmentPagerItemAdapter adapterView;
 
     public ResumoFragment() {
@@ -43,7 +43,7 @@ public class ResumoFragment extends Fragment {
         //adapterView = new FragmentPagerItemAdapter(getChildFragmentManager(), );
 
         this.criarTransacoes();
-        AdapterTransacoes adapterTransacoes = new AdapterTransacoes(listaTransacoes);
+        UltimasTransacoesAdapter adapterTransacoes = new UltimasTransacoesAdapter(listaTransacoes);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewTransacoes.setLayoutManager(layoutManager);

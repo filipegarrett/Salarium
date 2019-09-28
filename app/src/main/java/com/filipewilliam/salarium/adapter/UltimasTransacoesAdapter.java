@@ -12,11 +12,11 @@ import com.filipewilliam.salarium.model.Transacao;
 
 import java.util.List;
 
-public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.MyViewHolder> {
+public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransacoesAdapter.MyViewHolder> {
 
     private List<Transacao> listaTransacoes;
 
-    public AdapterTransacoes(List<Transacao> lista) {
+    public UltimasTransacoesAdapter(List<Transacao> lista) {
         this.listaTransacoes = lista;
     }
 

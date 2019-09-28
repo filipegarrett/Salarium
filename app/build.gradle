@@ -36,6 +36,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.ogaclejapan.smarttablayout:library:1.7.0@aar'
     implementation 'com.heinrichreimersoftware:material-intro:1.6'
+    implementation 'com.firebaseui:firebase-ui-database:5.1.0'
 
     //Optional: see how to use the utility.
     implementation 'com.ogaclejapan.smarttablayout:utils-v4:1.7.0@aar'
