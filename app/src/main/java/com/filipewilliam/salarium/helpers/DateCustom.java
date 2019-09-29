@@ -1,5 +1,12 @@
 package com.filipewilliam.salarium.helpers;
 
+import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class DateCustom {
 
     public static String formatarData(String data){
@@ -21,6 +28,19 @@ public class DateCustom {
 
         String diaMesAno = dia + mes + ano;
         return diaMesAno;
+    }
+
+    public static String retornaMesAno(){
+        String mesAno = "";
+
+        Calendar calendario = Calendar.getInstance();
+        int ano = calendario.get(Calendar.YEAR);
+        int mes = calendario.get(Calendar.MONTH)+1;
+        String mesString = Integer.toString(mes);
+        String anoString = Integer.toString(ano);
+
+        return mesAno = mesString + anoString;
+
     }
 
 }

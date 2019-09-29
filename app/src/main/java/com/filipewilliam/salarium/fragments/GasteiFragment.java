@@ -135,7 +135,7 @@ public class GasteiFragment extends Fragment {
             gasto.setDescricao(editTextDescricaoGasto.getText().toString());
             gasto.setValor(Double.parseDouble(String.valueOf(editTextValorGasto.getText())));
             gasto.setData(dataGasto);
-            gasto.setDescricaoCategoria( spinnerCategoriaGasto.getSelectedItem().toString());
+            gasto.setDescricaoCategoria(spinnerCategoriaGasto.getSelectedItem().toString());
             gasto.salvarGasto(dataGasto);
 
         }

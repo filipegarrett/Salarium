@@ -8,17 +8,15 @@ import com.google.firebase.database.DatabaseReference;
 
 public class ContasVencer {
 
-    private String categoria;
-    private String tipoDespesa;
-    private Double valor;
-    private String dataVencimento;
+    public String categoria;
+    public Double valor;
+    public String dataVencimento;
 
     public ContasVencer() {
     }
 
-    public ContasVencer(String categoria, String tipoDespesa, Double valor, String dataVencimento) {
+    public ContasVencer(String categoria, Double valor, String dataVencimento) {
         this.categoria = categoria;
-        this.tipoDespesa = tipoDespesa;
         this.valor = valor;
         this.dataVencimento = dataVencimento;
     }
@@ -29,14 +27,6 @@ public class ContasVencer {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
-    }
-
-    public String getTipoDespesa(){
-        return tipoDespesa;
-    }
-
-    public void setTipoDespesa(String tipoDespesa){
-        this.tipoDespesa = tipoDespesa;
     }
 
     public Double getValor() {

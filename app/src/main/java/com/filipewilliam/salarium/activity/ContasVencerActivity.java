@@ -8,10 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,15 +21,14 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.adapter.ContasVencerAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DatasMaskWatcher;
+import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.ContasVencer;
-import com.filipewilliam.salarium.viewholder.ContasVencerViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,8 +50,9 @@ public class ContasVencerActivity extends AppCompatActivity {
     private Switch switchEmitirNotificacaoVencimento;
     private RecyclerView recyclerViewContasVencerCadastradas;
     private DatasMaskWatcher maskWatcher;
-    private FirebaseRecyclerOptions<ContasVencer> options;
-    private FirebaseRecyclerAdapter<ContasVencer, ContasVencerViewHolder> adapter;
+    private ArrayList<ContasVencer> listaContasVencer;
+    private ContasVencerAdapter adapter;
+    private DateCustom dateCustom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +84,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         month = month + 1;
                         editTextDataVencimentoContasVencer.setText(dayOfMonth + "/" + month + "/" + year);
+
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
@@ -147,35 +146,36 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-
-        referencia.child("usuarios").child("contas-a-vencer");
-        options = new FirebaseRecyclerOptions.Builder<ContasVencer>().setQuery(referencia, ContasVencer.class).build();
-
-        adapter = new FirebaseRecyclerAdapter<ContasVencer, ContasVencerViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull ContasVencerViewHolder holder, int position, @NonNull ContasVencer model) {
-
-                holder.textViewTipoDespesa.setText(model.getCategoria());
-                holder.textViewValorDespesa.setText(String.valueOf(model.getValor()));
-
-            }
-
-            @NonNull
-            @Override
-            public ContasVencerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_adapter_ultimas_contas_a_vencer, viewGroup, false);
-
-                return new ContasVencerViewHolder(view);
-            }
-        };
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewContasVencerCadastradas.setLayoutManager(layoutManager);
+        recyclerViewContasVencerCadastradas.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewContasVencerCadastradas.setHasFixedSize(true);
         recyclerViewContasVencerCadastradas.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
-        adapter.startListening();
-        recyclerViewContasVencerCadastradas.setAdapter(adapter);
+        listaContasVencer = new ArrayList<ContasVencer>();
+
+        String mesAno = dateCustom.retornaMesAno();
+        
+        DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
+        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").child(mesAno).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+
+                    ContasVencer conta = dataSnapshot1.getValue(ContasVencer.class);
+                    listaContasVencer.add(conta);
+
+                }
+
+                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer);
+                recyclerViewContasVencerCadastradas.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(ContasVencerActivity.this, "Opsss, algo deu errado =/", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
 
@@ -207,32 +207,6 @@ public class ContasVencerActivity extends AppCompatActivity {
         } catch(Exception ignored) {
         }
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if(adapter != null){
-            adapter.startListening();
-
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        if(adapter != null){
-            adapter.stopListening();
-        }
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(adapter != null){
-            adapter.startListening();
-
-        }
     }
 
     @Override
