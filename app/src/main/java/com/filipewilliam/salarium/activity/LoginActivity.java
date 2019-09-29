@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                         abrirMainActivity();
 
                     }else{
-                        Toast.makeText(LoginActivity.this, "Por favor, confirma sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Por favor, confirme sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
                     }
                 }else{
                     String excecao = "";

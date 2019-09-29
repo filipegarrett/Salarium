@@ -6,17 +6,19 @@ import com.filipewilliam.salarium.helpers.DateCustom;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
-public class ContasAVencer {
+public class ContasVencer {
 
     private String categoria;
+    private String tipoDespesa;
     private Double valor;
     private String dataVencimento;
 
-    public ContasAVencer() {
+    public ContasVencer() {
     }
 
-    public ContasAVencer(String categoria, Double valor, String dataVencimento) {
+    public ContasVencer(String categoria, String tipoDespesa, Double valor, String dataVencimento) {
         this.categoria = categoria;
+        this.tipoDespesa = tipoDespesa;
         this.valor = valor;
         this.dataVencimento = dataVencimento;
     }
@@ -27,6 +29,14 @@ public class ContasAVencer {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getTipoDespesa(){
+        return tipoDespesa;
+    }
+
+    public void setTipoDespesa(String tipoDespesa){
+        this.tipoDespesa = tipoDespesa;
     }
 
     public Double getValor() {
