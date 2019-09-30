@@ -98,7 +98,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        referencia.child("categorias_gastos").child(idUsuario).addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> listCategorias = new ArrayList<String>();
