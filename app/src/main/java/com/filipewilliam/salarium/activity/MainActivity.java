@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity
 
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
+
         //método para ocultar o FAB na fragment de resumo
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -69,13 +70,15 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int i) {
-                    if (i ==0 ){
-                        fab.hide();
+
+                if (i ==0 ){
+                    fab.hide();
                     }
-                    else{
+                    else {
                         fab.show();
                     }
             }
+
 
             @Override
             public void onPageScrollStateChanged(int i) {
