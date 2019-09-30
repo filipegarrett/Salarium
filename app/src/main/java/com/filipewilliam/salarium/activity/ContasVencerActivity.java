@@ -36,8 +36,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ContasVencerActivity extends AppCompatActivity {
@@ -50,9 +53,12 @@ public class ContasVencerActivity extends AppCompatActivity {
     private Switch switchEmitirNotificacaoVencimento;
     private RecyclerView recyclerViewContasVencerCadastradas;
     private DatasMaskWatcher maskWatcher;
-    private ArrayList<ContasVencer> listaContasVencer;
-    private ContasVencerAdapter adapter;
     private DateCustom dateCustom;
+    private ArrayList<ContasVencer> listaContasVencer;
+    private ArrayList<String> keys;
+    private ContasVencerAdapter adapter;
+    private final Date hoje = dateCustom.retornaDataHojeDateFormat();
+    private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +141,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                     Toast.makeText(ContasVencerActivity.this, "Você precisa escolher uma categoria antes!", Toast.LENGTH_SHORT).show();
                 }
 
-
             }
         });
 
@@ -151,21 +156,27 @@ public class ContasVencerActivity extends AppCompatActivity {
         recyclerViewContasVencerCadastradas.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
         listaContasVencer = new ArrayList<ContasVencer>();
 
-        String mesAno = dateCustom.retornaMesAno();
-        
-        DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
-        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").child(mesAno).addValueEventListener(new ValueEventListener() {
+        final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
+        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()){
+                        ContasVencer conta = dataSnapshot2.getValue(ContasVencer.class);
+                        try {
+                            if(data.parse(dataSnapshot2.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0){
+                                listaContasVencer.add(conta);
 
-                    ContasVencer conta = dataSnapshot1.getValue(ContasVencer.class);
-                    listaContasVencer.add(conta);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
 
+                    }
                 }
 
-                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer);
+                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer, keys);
                 recyclerViewContasVencerCadastradas.setAdapter(adapter);
 
             }

@@ -3,6 +3,7 @@ package com.filipewilliam.salarium.helpers;
 import android.util.Log;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,11 +36,32 @@ public class DateCustom {
 
         Calendar calendario = Calendar.getInstance();
         int ano = calendario.get(Calendar.YEAR);
-        int mes = calendario.get(Calendar.MONTH)+1;
+        int mes = calendario.get(Calendar.MONTH) + 1;
         String mesString = Integer.toString(mes);
         String anoString = Integer.toString(ano);
 
         return mesAno = mesString + anoString;
+
+    }
+
+    public static Date retornaDataHojeDateFormat(){
+
+        Calendar calendario = Calendar.getInstance();
+        int ano = calendario.get(Calendar.YEAR);
+        int mes = calendario.get(Calendar.MONTH) + 1;
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+        String mesString = Integer.toString(mes);
+        String anoString = Integer.toString(ano);
+        String diaString = Integer.toString(dia);
+        String dataString = diaString + "/" + mesString + "/" + anoString;
+        Date hoje = null;
+        try {
+            hoje = new SimpleDateFormat("dd/MM/yyyy").parse(dataString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return hoje;
 
     }
 

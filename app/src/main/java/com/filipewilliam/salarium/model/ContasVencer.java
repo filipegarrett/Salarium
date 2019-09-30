@@ -53,8 +53,4 @@ public class ContasVencer {
         referenciaFirebase.child("usuarios").child(idUsuario).child("contas-a-vencer").child(mesAno).push().setValue(this);
     }
 
-    public void deletarContasAVencer(){
-
-    }
-
 }

@@ -44,12 +44,14 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/imageViewExcluirContasVencer"
+            <ImageButton
+                android:id="@+id/imageButtonExcluirDespesa"
                 android:layout_width="43dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:background="@null"
                 app:srcCompat="@drawable/ic_delete_lixeira_vermelho_24dp" />
+
         </LinearLayout>
 
         <LinearLayout

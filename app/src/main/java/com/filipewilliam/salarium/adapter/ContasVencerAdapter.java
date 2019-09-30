@@ -6,11 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.model.ContasVencer;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -18,11 +19,14 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
 
     Context context;
     ArrayList<ContasVencer> contasVencerArrayList;
+    ArrayList<String> keys;
+    ContasVencerViewHolder contasVencerViewHolder;
 
-    public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV) {
+    public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV, ArrayList<String> k) {
 
         context = c;
         contasVencerArrayList = cV;
+        keys = k;
     }
 
     @NonNull
@@ -35,9 +39,16 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     public void onBindViewHolder(@NonNull ContasVencerViewHolder contasVencerViewHolder, int i) {
 
         contasVencerViewHolder.categoria.setText(contasVencerArrayList.get(i).getCategoria());
-        System.out.println(contasVencerViewHolder.categoria);
         contasVencerViewHolder.valor.setText(String.valueOf(contasVencerArrayList.get(i).getValor()));
         contasVencerViewHolder.dataVencimento.setText(contasVencerArrayList.get(i).getDataVencimento());
+        /*final ContasVencerViewHolder viewHolder = contasVencerViewHolder;
+        final int j = i;
+        contasVencerViewHolder.buttonExcluir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.excluirDespesa(j);
+            }
+        });*/
 
     }
 
@@ -49,15 +60,24 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     class ContasVencerViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoria, valor, dataVencimento;
-        ImageView buttonExcluir;
+        ImageButton buttonExcluir;
 
         public ContasVencerViewHolder(@NonNull View itemView) {
             super(itemView);
             categoria = itemView.findViewById(R.id.textViewTipoDespesa);
             valor = itemView.findViewById(R.id.textViewValorDespesaVencer);
             dataVencimento = itemView.findViewById(R.id.textViewDataVencimentoVencer);
-            buttonExcluir = itemView.findViewById(R.id.imageViewExcluirContasVencer);
-        }
-    }
+            buttonExcluir = itemView.findViewById(R.id.imageButtonExcluirDespesa);
 
+        }
+
+        public void excluirDespesa(int i){
+
+            String key = keys.get(i);
+            DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("contas-a-vencer");
+            referencia.child(key).removeValue();
+
+        }
+
+    }
 }
