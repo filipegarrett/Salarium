@@ -153,13 +153,13 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         recyclerViewContasVencerCadastradas.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewContasVencerCadastradas.setHasFixedSize(true);
-        recyclerViewContasVencerCadastradas.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
         listaContasVencer = new ArrayList<ContasVencer>();
 
         final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
         referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaContasVencer.clear();
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()){

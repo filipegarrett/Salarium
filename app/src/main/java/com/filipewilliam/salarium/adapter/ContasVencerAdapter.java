@@ -10,8 +10,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.model.ContasVencer;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -39,16 +37,8 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     public void onBindViewHolder(@NonNull ContasVencerViewHolder contasVencerViewHolder, int i) {
 
         contasVencerViewHolder.categoria.setText(contasVencerArrayList.get(i).getCategoria());
-        contasVencerViewHolder.valor.setText(String.valueOf(contasVencerArrayList.get(i).getValor()));
-        contasVencerViewHolder.dataVencimento.setText(contasVencerArrayList.get(i).getDataVencimento());
-        /*final ContasVencerViewHolder viewHolder = contasVencerViewHolder;
-        final int j = i;
-        contasVencerViewHolder.buttonExcluir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewHolder.excluirDespesa(j);
-            }
-        });*/
+        contasVencerViewHolder.valor.setText(String.valueOf(contasVencerArrayList.get(i).getValor()) + "0");
+        contasVencerViewHolder.dataVencimento.setText("Vence em: " + contasVencerArrayList.get(i).getDataVencimento());
 
     }
 
@@ -67,15 +57,7 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
             categoria = itemView.findViewById(R.id.textViewTipoDespesa);
             valor = itemView.findViewById(R.id.textViewValorDespesaVencer);
             dataVencimento = itemView.findViewById(R.id.textViewDataVencimentoVencer);
-            buttonExcluir = itemView.findViewById(R.id.imageButtonExcluirDespesa);
-
-        }
-
-        public void excluirDespesa(int i){
-
-            String key = keys.get(i);
-            DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("contas-a-vencer");
-            referencia.child(key).removeValue();
+            //buttonExcluir = itemView.findViewById(R.id.imageButtonExcluirDespesa);
 
         }
 
