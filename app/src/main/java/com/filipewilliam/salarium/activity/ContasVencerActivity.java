@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -15,7 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -51,6 +50,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
     private EditText editTextValorContasVencer, editTextDataVencimentoContasVencer;
     private Switch switchEmitirNotificacaoVencimento;
+    private ProgressBar progressBar;
     private RecyclerView recyclerViewContasVencerCadastradas;
     private DatasMaskWatcher maskWatcher;
     private DateCustom dateCustom;
@@ -75,6 +75,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         buttonCadastrarContasVencer = findViewById(R.id.buttonCadastrarContasVencer);
         buttonLimparCamposContasVencer = findViewById(R.id.buttonLimparCamposContasVencer);
         switchEmitirNotificacaoVencimento = findViewById(R.id.switchPermitirNotificacoes);
+        progressBar = findViewById(R.id.progressBarRecyclerAtualiza);
         recyclerViewContasVencerCadastradas = findViewById(R.id.recyclerViewContasVencer);
 
         editTextDataVencimentoContasVencer.setOnClickListener(new View.OnClickListener() {
@@ -166,6 +167,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                         ContasVencer conta = dataSnapshot2.getValue(ContasVencer.class);
                         try {
                             if(data.parse(dataSnapshot2.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0){
+                                progressBar.setVisibility(View.GONE);
                                 listaContasVencer.add(conta);
 
                             }
@@ -196,7 +198,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         String dataVencimento = editTextDataVencimentoContasVencer.getText().toString();
         conta.setCategoria(spinnerCategoriaContas.getSelectedItem().toString());
         conta.setDataVencimento(dataVencimento);
-        conta.setValor(Double.parseDouble(String.valueOf(editTextValorContasVencer.getText())));
+        conta.setValor(Double.parseDouble(editTextValorContasVencer.getText().toString().replace(",","")));
         conta.salvarContasAVencer(dataVencimento);
         esconderTeclado();
 
