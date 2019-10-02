@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ConfiguracoesActivity"></activity>
+        <activity android:name=".activity.ContasVencerActivity"></activity>
+        <activity android:name=".activity.ConfiguracoesActivity" />
         <activity android:name=".activity.SimuladorActivity" />
         <activity android:name=".activity.CadastrarUsuarioActivity" />
         <activity android:name=".activity.LoginActivity" />
