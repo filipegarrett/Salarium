@@ -78,14 +78,12 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     class ContasVencerViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoria, valor, dataVencimento;
-        ImageButton buttonExcluir;
 
         public ContasVencerViewHolder(@NonNull View itemView) {
             super(itemView);
             categoria = itemView.findViewById(R.id.textViewTipoDespesa);
             valor = itemView.findViewById(R.id.textViewValorDespesaVencer);
             dataVencimento = itemView.findViewById(R.id.textViewDataVencimentoVencer);
-            //buttonExcluir = itemView.findViewById(R.id.imageButtonExcluirDespesa);
 
         }
 
