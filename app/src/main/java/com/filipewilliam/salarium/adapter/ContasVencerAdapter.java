@@ -9,22 +9,31 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.ContasVencer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapter.ContasVencerViewHolder>{
 
-    Context context;
+    private Context context;
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     ArrayList<ContasVencer> contasVencerArrayList;
     ArrayList<String> keys;
+    String keyMes;
     ContasVencerViewHolder contasVencerViewHolder;
 
-    public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV, ArrayList<String> k) {
+    public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV, ArrayList<String> k, String kM) {
 
         context = c;
         contasVencerArrayList = cV;
         keys = k;
+        keyMes = kM;
     }
 
     @NonNull
@@ -40,6 +49,23 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
         contasVencerViewHolder.valor.setText("R$ " + String.valueOf(contasVencerArrayList.get(i).getValor()) + "0");
         contasVencerViewHolder.dataVencimento.setText("Vence em: " + contasVencerArrayList.get(i).getDataVencimento());
 
+    }
+
+    public void excluirItem(int posicao){
+        String key = keys.get(posicao);
+        System.out.println(keys);
+        System.out.println(key);
+        System.out.println(keyMes);
+        DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("usuarios").child(idUsuario).child("contas-a-vencer").child(keyMes);
+        referencia.child(key).setValue(null);
+        contasVencerArrayList.remove(posicao);
+        notifyDataSetChanged();
+        notifyItemRemoved(posicao);
+
+    }
+
+    public Context gerarContext(){
+        return this.context;
     }
 
     @Override

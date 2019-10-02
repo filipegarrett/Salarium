@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +26,7 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DatasMaskWatcher;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.ContasVencer;
@@ -55,7 +57,8 @@ public class ContasVencerActivity extends AppCompatActivity {
     private DatasMaskWatcher maskWatcher;
     private DateCustom dateCustom;
     private ArrayList<ContasVencer> listaContasVencer;
-    private ArrayList<String> keys;
+    private ArrayList<String> keys = new ArrayList<>();
+    private String keysMes;
     private ContasVencerAdapter adapter;
     private final Date hoje = dateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
@@ -129,6 +132,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             cadastrarContasVencer();
                             Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
+                            limparCampos();
 
                         }else{
                             Toast.makeText(ContasVencerActivity.this, "Você precisa definir um valor para a despesa!", Toast.LENGTH_SHORT).show();
@@ -168,6 +172,8 @@ public class ContasVencerActivity extends AppCompatActivity {
                         try {
                             if(data.parse(dataSnapshot2.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0){
                                 progressBar.setVisibility(View.GONE);
+                                keys.add(dataSnapshot2.getKey());
+                                keysMes = dataSnapshot1.getKey();
                                 listaContasVencer.add(conta);
 
                             }
@@ -178,8 +184,10 @@ public class ContasVencerActivity extends AppCompatActivity {
                     }
                 }
 
-                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer, keys);
+                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer, keys, keysMes);
                 recyclerViewContasVencerCadastradas.setAdapter(adapter);
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallback(adapter));
+                itemTouchHelper.attachToRecyclerView(recyclerViewContasVencerCadastradas);
 
             }
 
@@ -189,6 +197,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 
@@ -211,9 +220,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    public void esconderTeclado(){ /*garante que o teclado é ocultado, não diga, depois de clicar no botão de calcular, evitando que ele fique ativo na tela sem necessidade
-        e obstruindo outros componentes*/
-
+    public void esconderTeclado(){
         try {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);

@@ -12,4 +12,6 @@
     <color name="corBotaoDesabilitado">#7AB8B1</color>
     <color name="corFundoCardViewDespesa">#FFB8B9</color>
     <color name="corFundoCardViewRecebido">#B8FFC1</color>
+    <color name="corFundoCardViewSwipe">#FC1414</color>
+
 </resources>

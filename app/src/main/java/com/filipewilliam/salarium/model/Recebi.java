@@ -5,6 +5,7 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
 
@@ -64,7 +65,7 @@ public class Recebi {
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         String mesAno = DateCustom.formatarData(data);
-        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        referenciaFirebase.child("recebimentos").child(idUsuario).child(mesAno).push().setValue(this);
+        FirebaseDatabase referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
+        referenciaFirebase.getReference().child("recebimentos").child(idUsuario).child(mesAno).push().setValue(this);
     }
 }

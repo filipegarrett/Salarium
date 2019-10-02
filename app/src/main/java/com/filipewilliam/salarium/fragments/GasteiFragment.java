@@ -65,7 +65,7 @@ public class GasteiFragment extends Fragment {
         buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
         fabAdicionarCategoriaGasto = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
-        referencia.child("categorias_gastos").child(idUsuario).addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
