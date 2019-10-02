@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
@@ -53,6 +54,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private EditText editTextValorContasVencer, editTextDataVencimentoContasVencer;
     private Switch switchEmitirNotificacaoVencimento;
     private ProgressBar progressBar;
+    private TextView textViewSemContaCadastrada;
     private RecyclerView recyclerViewContasVencerCadastradas;
     private DatasMaskWatcher maskWatcher;
     private DateCustom dateCustom;
@@ -79,6 +81,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         buttonLimparCamposContasVencer = findViewById(R.id.buttonLimparCamposContasVencer);
         switchEmitirNotificacaoVencimento = findViewById(R.id.switchPermitirNotificacoes);
         progressBar = findViewById(R.id.progressBarRecyclerAtualiza);
+        textViewSemContaCadastrada = findViewById(R.id.textViewAvisoSemContaVencerCadastrada);
         recyclerViewContasVencerCadastradas = findViewById(R.id.recyclerViewContasVencer);
 
         editTextDataVencimentoContasVencer.setOnClickListener(new View.OnClickListener() {
@@ -169,14 +172,26 @@ public class ContasVencerActivity extends AppCompatActivity {
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()){
                         ContasVencer conta = dataSnapshot2.getValue(ContasVencer.class);
+                        System.out.println(dataSnapshot2.child("dataVencimento").getChildrenCount());
+                        System.out.println(dataSnapshot2);
                         try {
                             if(data.parse(dataSnapshot2.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0){
-                                progressBar.setVisibility(View.GONE);
-                                keys.add(dataSnapshot2.getKey());
-                                keysMes = dataSnapshot1.getKey();
-                                listaContasVencer.add(conta);
+                                System.out.println(dataSnapshot2.child("dataVencimento").getChildrenCount());
+                                System.out.println(dataSnapshot2);
 
+                                if(dataSnapshot2.exists()){
+                                    progressBar.setVisibility(View.GONE);
+                                    keys.add(dataSnapshot2.getKey());
+                                    keysMes = dataSnapshot1.getKey();
+                                    listaContasVencer.add(conta);
+
+                                }else{
+                                    progressBar.setVisibility(View.GONE);
+                                    textViewSemContaCadastrada.setText("Você não tem nenhuma despesa para pagar =)");
+
+                                }
                             }
+
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }

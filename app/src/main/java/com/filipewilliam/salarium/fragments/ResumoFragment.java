@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.AdapterTransacoes;
+import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
@@ -41,7 +41,7 @@ public class ResumoFragment extends Fragment {
     private List<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
     private DateCustom dateCustom;
-    private AdapterTransacoes adapterTransacoes;
+    private UltimasTransacoesAdapter adapterTransacoes;
     public FragmentPagerItemAdapter adapterView;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -93,7 +93,7 @@ public class ResumoFragment extends Fragment {
 
                     }
 
-                    AdapterTransacoes adapterTransacoes = new AdapterTransacoes(listaTransacoes);
+                    UltimasTransacoesAdapter adapterTransacoes = new UltimasTransacoesAdapter(listaTransacoes);
                     recyclerViewTransacoes.setAdapter(adapterTransacoes);
 
             }

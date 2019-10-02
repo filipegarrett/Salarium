@@ -3,6 +3,7 @@ package com.filipewilliam.salarium.model;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.InvestimentosHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
