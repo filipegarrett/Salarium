@@ -58,11 +58,13 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         if(!email.isEmpty()){
                             if(!senha.isEmpty()){
 
+                                Double gastoTotal = 0.0;
                                 usuario = new Usuario();
                                 usuario.setNome(nome);
                                 usuario.setDataNascimento(dataNascimento);
                                 usuario.setEmail(email);
                                 usuario.setSenha(senha);
+                                usuario.setGastoTotal(gastoTotal);
                                 cadastrarUsuario();
 
                             }else{

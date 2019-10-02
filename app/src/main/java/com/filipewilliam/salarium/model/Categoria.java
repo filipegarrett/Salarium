@@ -24,7 +24,7 @@ public class Categoria {
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        referenciaFirebase.child("categorias_recebimentos").child(idUsuario).push().setValue(this);
+        referenciaFirebase.child("usuarios").child(idUsuario).child("categorias_recebimentos").push().setValue(this);
     }
 
     public void salvarCategoriaGasto(){

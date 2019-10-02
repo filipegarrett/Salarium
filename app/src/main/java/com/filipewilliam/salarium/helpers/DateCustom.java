@@ -1,8 +1,5 @@
 package com.filipewilliam.salarium.helpers;
 
-import android.util.Log;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,7 +33,7 @@ public class DateCustom {
 
         Calendar calendario = Calendar.getInstance();
         int ano = calendario.get(Calendar.YEAR);
-        int mes = calendario.get(Calendar.MONTH) + 1;
+        int mes = calendario.get(Calendar.MONTH)+1;
         String mesString = Integer.toString(mes);
         String anoString = Integer.toString(ano);
 

@@ -24,7 +24,6 @@ public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransa
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemListaTransacoes = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_adapter_ultimas_transacoes, viewGroup, false);
-
         return new MyViewHolder(itemListaTransacoes);
     }
 
@@ -32,17 +31,14 @@ public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransa
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
         Transacao transacao = listaTransacoes.get(i);
-        myViewHolder.tipoTransacao.setText(transacao.getTipoTransacao());
-        myViewHolder.valorTransacao.setText(transacao.getValorTransacao());
-        myViewHolder.categoriaTransacao.setText(transacao.getCategoriaTransacao());
-        myViewHolder.dataTransacao.setText(transacao.getDataTransacao());
-
-        if (myViewHolder.tipoTransacao.equals("Gastei")){
+        myViewHolder.tipoTransacao.setText(transacao.getTipo());
+        myViewHolder.valorTransacao.setText(String.valueOf(transacao.getValor()));
+        myViewHolder.categoriaTransacao.setText(transacao.getCategoria());
+        myViewHolder.dataTransacao.setText(transacao.getData());
+        myViewHolder.setaTransacao.setImageResource(R.drawable.ic_arrow_upward_verde_24dp);
+        if (myViewHolder.tipoTransacao.equals("Gasto")){
             myViewHolder.setaTransacao.setImageResource(R.drawable.ic_arrow_downward_vermelho_24dp);
-        } else {
-            myViewHolder.setaTransacao.setImageResource(R.drawable.ic_arrow_upward_verde_24dp);
         }
-
     }
 
     @Override
@@ -50,6 +46,7 @@ public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransa
         return listaTransacoes.size();
     }
 
+    //Classe viewholder
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView tipoTransacao;
         TextView categoriaTransacao;
@@ -61,8 +58,8 @@ public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransa
             super(itemView);
 
             tipoTransacao = itemView.findViewById(R.id.textViewTipoTransacao);
-            categoriaTransacao = itemView.findViewById(R.id.textViewCategoriaGasto);
-            valorTransacao = itemView.findViewById(R.id.textViewValorGasto);
+            categoriaTransacao = itemView.findViewById(R.id.textViewCategoriaTransacao);
+            valorTransacao = itemView.findViewById(R.id.textViewValorTransacao);
             dataTransacao = itemView.findViewById(R.id.textViewDataTransacao);
             setaTransacao = itemView.findViewById(R.id.imageViewSeta);
         }

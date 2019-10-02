@@ -7,7 +7,24 @@ import com.google.firebase.database.Exclude;
 public class Usuario {
 
     private String idUsuario, senha;
-    String nome, dataNascimento, email;
+    private String nome, dataNascimento, email;
+    private Double gastoTotal = 0.0, recebimentoTotal = 0.0;
+
+    public Double getRecebimentoTotal() {
+        return recebimentoTotal;
+    }
+
+    public void setRecebimentoTotal(Double recebimentoTotal) {
+        this.recebimentoTotal = recebimentoTotal;
+    }
+
+    public Double getGastoTotal() {
+        return gastoTotal;
+    }
+
+    public void setGastoTotal(Double gastoTotal) {
+        this.gastoTotal = gastoTotal;
+    }
 
     public Usuario() {
     }

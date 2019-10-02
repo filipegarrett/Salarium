@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,7 +21,8 @@ import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
-import com.filipewilliam.salarium.model.Recebi;
+import com.filipewilliam.salarium.model.Transacao;
+import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,14 +38,15 @@ import java.util.List;
  */
 public class RecebiFragment extends Fragment {
 
+    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private EditText editTextDescricaoRecebimento;
     private EditText editTextValorRecebimento;
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
-    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
-    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private FloatingActionButton fabAdicionarCategoriaRecebimento;
-    Button buttonCriarRecebimento;
+    private Button buttonCriarRecebimento;
+    private Double recebimentoTotal;
 
     public RecebiFragment() {
 
@@ -63,8 +64,9 @@ public class RecebiFragment extends Fragment {
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
+        recuperarRecebimentoTotal();
 
-        referencia.child("categorias_recebimentos").child(idUsuario).addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -130,19 +132,25 @@ public class RecebiFragment extends Fragment {
 
         if (validarCamposRecebimentos() == true) {
 
-            Recebi recebimento = new Recebi();
+            Transacao transacao = new Transacao();
+            Double recebimentoPreenchido = Double.parseDouble(editTextValorRecebimento.getText().toString());
             String dataRecebimento = editTextDataSelecionadaRecebimento.getText().toString();
-            recebimento.setDescricao(editTextDescricaoRecebimento.getText().toString());
-            recebimento.setValor(Double.parseDouble(String.valueOf(editTextValorRecebimento.getText())));
-            recebimento.setData(dataRecebimento);
-            recebimento.setDescricaoCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
-            recebimento.salvarRecebimento(dataRecebimento);
+            transacao.setDescricao(editTextDescricaoRecebimento.getText().toString());
+            transacao.setValor(recebimentoPreenchido);
+            transacao.setData(dataRecebimento);
+            transacao.setCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
+            transacao.setTipo("Recebimento");
+            Double recebimentoAtualizado = recebimentoPreenchido + recebimentoTotal;
+            atualizarRecebimento(recebimentoAtualizado);
+            transacao.salvarTransacao(dataRecebimento);
+            Toast.makeText(getContext(), "Foi cadastrado um novo recebimento!", Toast.LENGTH_SHORT).show();
 
         }
     }
 
 
     public boolean validarCamposRecebimentos() {
+
         String descricao = editTextDescricaoRecebimento.getText().toString();
         String valor = editTextValorRecebimento.getText().toString();
         String data = editTextDataSelecionadaRecebimento.getText().toString();
@@ -201,6 +209,34 @@ public class RecebiFragment extends Fragment {
 
         dialog.create();
         dialog.show();
+    }
+
+    public void recuperarRecebimentoTotal (){
+
+        String emailUsuario = autenticacao.getCurrentUser().getEmail();
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+        DatabaseReference usuarioRef = referencia.child("usuarios").child( idUsuario );
+
+        usuarioRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                recebimentoTotal = usuario.getRecebimentoTotal();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void atualizarRecebimento (Double recebimento){
+
+        String emailUsuario = autenticacao.getCurrentUser().getEmail();
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+        referencia.child("usuarios").child(idUsuario).child("recebimentoTotal").setValue(recebimento);
     }
 
 }

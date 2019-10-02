@@ -17,20 +17,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
-import com.filipewilliam.salarium.model.Gasto;
-import com.filipewilliam.salarium.model.Recebi;
+import com.filipewilliam.salarium.model.Transacao;
+import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -44,10 +42,11 @@ public class GasteiFragment extends Fragment {
     private EditText editTextValorGasto;
     private EditText editTextDataSelecionadaGasto;
     private Spinner spinnerCategoriaGasto;
+    private Button buttonCriarGasto;
+    private FloatingActionButton fabAdicionarCategoriaGasto;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private FloatingActionButton fabAdicionarCategoriaGasto;
-    Button buttonCriarGasto;
+    private Double gastoTotal;
 
     public GasteiFragment() {
 
@@ -56,14 +55,15 @@ public class GasteiFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gastei, container, false);
+        View view = inflater.inflate(R.layout.fragment_recebi, container, false);
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-        editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoGasto);
-        editTextValorGasto = view.findViewById(R.id.editTextValorGasto);
-        editTextDataSelecionadaGasto = view.findViewById(R.id.editTextDataGasto);
-        spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaGasto);
-        buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
+        editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoRecebimento);
+        editTextValorGasto = view.findViewById(R.id.editTextValorRecebimento);
+        editTextDataSelecionadaGasto = view.findViewById(R.id.editTextDataRecebimento);
+        spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaRecebimento);
+        buttonCriarGasto = view.findViewById(R.id.buttonConfirmarRecebimento);
         fabAdicionarCategoriaGasto = getActivity().findViewById(R.id.fabAdicionarCategoria);
+        recuperarGastoTotal();
 
         referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
@@ -107,7 +107,7 @@ public class GasteiFragment extends Fragment {
         });
 
         //criar categoria
-       fabAdicionarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
+        fabAdicionarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 criarCategoriaGasto();
@@ -123,25 +123,33 @@ public class GasteiFragment extends Fragment {
         });
 
         return view;
-    }
 
+
+    }
 
     public void criarGasto() {
 
         if (validarCamposGastos() == true) {
 
-            Gasto gasto = new Gasto();
+            Transacao transacao = new Transacao();
+            Double gastoPreenchido = Double.parseDouble(editTextValorGasto.getText().toString());
             String dataGasto = editTextDataSelecionadaGasto.getText().toString();
-            gasto.setDescricao(editTextDescricaoGasto.getText().toString());
-            gasto.setValor(Double.parseDouble(String.valueOf(editTextValorGasto.getText())));
-            gasto.setData(dataGasto);
-            gasto.setDescricaoCategoria(spinnerCategoriaGasto.getSelectedItem().toString());
-            gasto.salvarGasto(dataGasto);
+            transacao.setDescricao(editTextDescricaoGasto.getText().toString());
+            transacao.setValor(gastoPreenchido);
+            transacao.setData(dataGasto);
+            transacao.setCategoria(spinnerCategoriaGasto.getSelectedItem().toString());
+            transacao.setTipo("Gasto");
+            Double gastoAtualizado = gastoPreenchido + gastoTotal;
+            atualizarGasto(gastoAtualizado);
+            transacao.salvarTransacao(dataGasto);
+            Toast.makeText(getContext(), "Foi cadastrado um novo gasto!", Toast.LENGTH_SHORT).show();
 
         }
     }
 
+
     public boolean validarCamposGastos() {
+
         String descricao = editTextDescricaoGasto.getText().toString();
         String valor = editTextValorGasto.getText().toString();
         String data = editTextDataSelecionadaGasto.getText().toString();
@@ -164,9 +172,11 @@ public class GasteiFragment extends Fragment {
         }
 
         return true;
+
     }
 
-    public void criarCategoriaGasto (){
+
+    public void criarCategoriaGasto() {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
         dialog.setTitle("Criar categoria de gastos");
@@ -198,6 +208,34 @@ public class GasteiFragment extends Fragment {
 
         dialog.create();
         dialog.show();
+    }
+
+    public void recuperarGastoTotal() {
+
+        String emailUsuario = autenticacao.getCurrentUser().getEmail();
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+        DatabaseReference usuarioRef = referencia.child("usuarios").child(idUsuario);
+
+        usuarioRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                gastoTotal = usuario.getGastoTotal();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void atualizarGasto(Double gasto) {
+
+        String emailUsuario = autenticacao.getCurrentUser().getEmail();
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+        referencia.child("usuarios").child(idUsuario).child("gastoTotal").setValue(gasto);
     }
 
 }
