@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,9 +61,9 @@ public class ContasVencerActivity extends AppCompatActivity {
     private DateCustom dateCustom;
     private ArrayList<ContasVencer> listaContasVencer;
     private ArrayList<String> keys = new ArrayList<>();
-    private String keysMes;
     private ContasVencerAdapter adapter;
     private final Date hoje = dateCustom.retornaDataHojeDateFormat();
+    private final int mesAtual = Integer.valueOf(dateCustom.retornaMesAno());
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
@@ -135,6 +136,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             cadastrarContasVencer();
                             Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
+                            System.out.println(dateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString()));
                             limparCampos();
 
                         }else{
@@ -164,42 +166,31 @@ public class ContasVencerActivity extends AppCompatActivity {
         listaContasVencer = new ArrayList<ContasVencer>();
 
         final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
-        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").addValueEventListener(new ValueEventListener() {
+        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                keys.clear();
                 listaContasVencer.clear();
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()){
-                        ContasVencer conta = dataSnapshot2.getValue(ContasVencer.class);
-                        System.out.println(dataSnapshot2.child("dataVencimento").getChildrenCount());
-                        System.out.println(dataSnapshot2);
-                        try {
-                            if(data.parse(dataSnapshot2.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0){
-                                System.out.println(dataSnapshot2.child("dataVencimento").getChildrenCount());
-                                System.out.println(dataSnapshot2);
+                    ContasVencer conta = dataSnapshot1.getValue(ContasVencer.class);
 
-                                if(dataSnapshot2.exists()){
-                                    progressBar.setVisibility(View.GONE);
-                                    keys.add(dataSnapshot2.getKey());
-                                    keysMes = dataSnapshot1.getKey();
-                                    listaContasVencer.add(conta);
+                    try {
+                        if (data.parse(dataSnapshot1.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0) {
+                            progressBar.setVisibility(View.GONE);
+                            keys.add(dataSnapshot1.getKey());
+                            listaContasVencer.add(conta);
 
-                                }else{
-                                    progressBar.setVisibility(View.GONE);
-                                    textViewSemContaCadastrada.setText("Você não tem nenhuma despesa para pagar =)");
-
-                                }
-                            }
-
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         }
 
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
+
                 }
 
-                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer, keys, keysMes);
+                adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer, keys);
+                adapter.notifyDataSetChanged();
                 recyclerViewContasVencerCadastradas.setAdapter(adapter);
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallback(adapter));
                 itemTouchHelper.attachToRecyclerView(recyclerViewContasVencerCadastradas);
@@ -213,7 +204,6 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void cadastrarContasVencer(){
@@ -222,8 +212,9 @@ public class ContasVencerActivity extends AppCompatActivity {
         String dataVencimento = editTextDataVencimentoContasVencer.getText().toString();
         conta.setCategoria(spinnerCategoriaContas.getSelectedItem().toString());
         conta.setDataVencimento(dataVencimento);
+        conta.setTimestampVencimento(dateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString()));
         conta.setValor(Double.parseDouble(editTextValorContasVencer.getText().toString().replace(",","")));
-        conta.salvarContasAVencer(dataVencimento);
+        conta.salvarContasAVencer();
         esconderTeclado();
 
     }

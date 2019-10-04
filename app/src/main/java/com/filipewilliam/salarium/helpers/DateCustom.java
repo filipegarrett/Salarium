@@ -62,4 +62,20 @@ public class DateCustom {
 
     }
 
+    public static Long stringParaTimestamp(String data){
+        try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = formatter.parse(data);
+            long saidaData = date.getTime()/1000L;
+            String dataString = Long.toString(saidaData);
+            long timestampD = Long.parseLong(dataString) * 1000;
+            return timestampD;
+
+        } catch (ParseException e) {
+            System.out.println("Exception :" + e);
+            return null;
+        }
+    }
+
 }

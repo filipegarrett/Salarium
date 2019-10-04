@@ -1,43 +1,47 @@
 package com.filipewilliam.salarium.adapter;
 
 import android.content.Context;
-import android.icu.text.NumberFormat;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.ContasVencerActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.InvestimentosHelper;
 import com.filipewilliam.salarium.model.ContasVencer;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapter.ContasVencerViewHolder>{
 
     private Context context;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private InvestimentosHelper tratarValores;
-    protected List<ContasVencer> items = new ArrayList<>();
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     ArrayList<ContasVencer> contasVencerArrayList;
     ArrayList<String> keys;
-    String keyMes;
     ContasVencerViewHolder contasVencerViewHolder;
 
-    public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV, ArrayList<String> k, String kM) {
+    public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV, ArrayList<String> k) {
 
         context = c;
         contasVencerArrayList = cV;
         keys = k;
-        keyMes = kM;
     }
 
     @NonNull
@@ -47,24 +51,32 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContasVencerViewHolder contasVencerViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ContasVencerViewHolder contasVencerViewHolder, final int i) {
 
         contasVencerViewHolder.categoria.setText(contasVencerArrayList.get(i).getCategoria());
         contasVencerViewHolder.valor.setText(tratarValores.tratarValores(contasVencerArrayList.get(i).getValor()));
         contasVencerViewHolder.dataVencimento.setText("Vence em: " + contasVencerArrayList.get(i).getDataVencimento());
 
+        contasVencerViewHolder.buttonExcluir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                excluirItem(i);
+
+            }
+
+        });
     }
 
     public void excluirItem(int posicao){
         String key = keys.get(posicao);
         System.out.println(keys);
         System.out.println(key);
-        System.out.println(keyMes);
-        DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("usuarios").child(idUsuario).child("contas-a-vencer").child(keyMes);
-        referencia.child(key).removeValue();
+        DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("usuarios").child(idUsuario).child("contas-a-vencer");
         contasVencerArrayList.remove(posicao);
-        notifyDataSetChanged();
+        referencia.child(key).removeValue(mRemoveListener);
         notifyItemRemoved(posicao);
+        notifyItemRangeChanged(posicao, contasVencerArrayList.size());
+        notifyDataSetChanged();
 
     }
 
@@ -77,15 +89,31 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
         return contasVencerArrayList.size();
     }
 
+    private DatabaseReference.CompletionListener mRemoveListener =
+            new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError error, DatabaseReference ref) {
+                    if (error == null) {
+                        Log.d(TAG, "Removed: " + ref);
+                        // or you can use:
+                        System.out.println("Removed: " + ref);
+                    } else {
+                        Log.e(TAG, "Remove of " + ref + " failed: " + error.getMessage());
+                    }
+                }
+            };
+
     class ContasVencerViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoria, valor, dataVencimento;
+        ImageButton buttonExcluir;
 
         public ContasVencerViewHolder(@NonNull View itemView) {
             super(itemView);
             categoria = itemView.findViewById(R.id.textViewTipoDespesa);
             valor = itemView.findViewById(R.id.textViewValorDespesaVencer);
             dataVencimento = itemView.findViewById(R.id.textViewDataVencimentoVencer);
+            buttonExcluir = itemView.findViewById(R.id.imageButtonExcluirContaVencer);
 
         }
 
