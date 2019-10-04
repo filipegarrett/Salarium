@@ -79,7 +79,7 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
         return contasVencerArrayList.size();
     }
 
-    private DatabaseReference.CompletionListener mRemoveListener =
+    private DatabaseReference.CompletionListener mRemoveListener = //útil para acompanhar e verificar se determinada entrada foi efetivamente removida do banco
             new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError error, DatabaseReference ref) {
