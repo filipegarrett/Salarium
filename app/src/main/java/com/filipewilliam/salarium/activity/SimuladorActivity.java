@@ -223,8 +223,8 @@ public class SimuladorActivity extends AppCompatActivity {
         textViewResultadoRendimento.setText("");
         textViewPeriodoCDB.setText("");
         seekBarQuantidadeMeses.setProgress(0);
-        editTextValorSimulacao.setText("");
-        editTextValorDepositoMensal.setText("");
+        editTextValorSimulacao.setText(null);
+        editTextValorDepositoMensal.setText(null);
 
     }
 

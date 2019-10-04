@@ -29,7 +29,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
     private Button botaoCadastrarUsuario;
     private FirebaseAuth autenticacao;
     private Usuario usuario;
-    DatasMaskWatcher maskDataNascimento;
+    private DatasMaskWatcher maskDataNascimento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

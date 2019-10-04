@@ -1,6 +1,10 @@
 package com.filipewilliam.salarium.helpers;
 
+import android.icu.text.DecimalFormat;
 import android.icu.text.NumberFormat;
+import android.icu.util.Currency;
+
+import java.util.Locale;
 
 public class InvestimentosHelper {
 
@@ -32,7 +36,7 @@ public class InvestimentosHelper {
         return rendimentoResultado;
     }
 
-    public String tratarValores(Double valor){
+    /*public String tratarValores(Double valor){
         String valorOriginal = String.valueOf(NumberFormat.getCurrencyInstance().format(valor));
 
         String valorTratado = "";
@@ -47,6 +51,19 @@ public class InvestimentosHelper {
         }
 
         return valorTratado;
+    }*/
+
+    public static String tratarValores(double d){
+
+        DecimalFormat fmt = (DecimalFormat) NumberFormat.getInstance();
+        Locale locale = Locale.getDefault();
+        String symbol = Currency.getInstance(locale).getSymbol(locale);
+        fmt.setGroupingUsed(true);
+        fmt.setPositivePrefix(symbol + " ");
+        fmt.setNegativePrefix("-" + symbol + " ");
+        fmt.setMinimumFractionDigits(2);
+        fmt.setMaximumFractionDigits(2);
+        return fmt.format(d);
     }
 
     public Double simularCDBPrefixado(double valorSimulacao){
