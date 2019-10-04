@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ContasVencerActivity extends AppCompatActivity {
 
@@ -72,7 +73,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Próximas despesas");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas_vencer);
-        String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
 
         spinnerCategoriaContas = findViewById(R.id.spinnerCategoriaContasVencer);
         editTextValorContasVencer = findViewById(R.id.editTextValorContasVencer);
@@ -101,7 +102,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
                     }
                 }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.getDatePicker();//.setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
@@ -136,7 +137,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             cadastrarContasVencer();
                             Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
-                            System.out.println(dateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString()));
                             limparCampos();
 
                         }else{
@@ -172,21 +172,28 @@ public class ContasVencerActivity extends AppCompatActivity {
                 keys.clear();
                 listaContasVencer.clear();
 
-                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    ContasVencer conta = dataSnapshot1.getValue(ContasVencer.class);
+                if(dataSnapshot.getChildrenCount() > 0){
+                    limparBanco();
+                    textViewSemContaCadastrada.setText("");
 
-                    try {
-                        if (data.parse(dataSnapshot1.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0) {
-                            progressBar.setVisibility(View.GONE);
-                            keys.add(dataSnapshot1.getKey());
-                            listaContasVencer.add(conta);
+                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                        ContasVencer conta = dataSnapshot1.getValue(ContasVencer.class);
 
+                        try {
+                            if (data.parse(dataSnapshot1.child("dataVencimento").getValue().toString()).compareTo(hoje) >= 0) {
+                                progressBar.setVisibility(View.GONE);
+                                keys.add(dataSnapshot1.getKey());
+                                listaContasVencer.add(conta);
+                            }
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
                     }
 
+                }else{
+                    progressBar.setVisibility(View.GONE);
+                    textViewSemContaCadastrada.setText("Você não tem nenhuma despesa para pagar =)");
                 }
 
                 adapter = new ContasVencerAdapter(ContasVencerActivity.this, listaContasVencer, keys);
@@ -224,6 +231,30 @@ public class ContasVencerActivity extends AppCompatActivity {
         editTextDataVencimentoContasVencer.setText(null);
         editTextValorContasVencer.setText(null);
 
+    }
+
+    public void limparBanco(){
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
+        referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+
+                    long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+                    if(Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte){
+                        dataSnapshot1.getRef().removeValue();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void esconderTeclado(){

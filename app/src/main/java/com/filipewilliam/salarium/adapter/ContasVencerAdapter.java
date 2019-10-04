@@ -57,14 +57,6 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
         contasVencerViewHolder.valor.setText(tratarValores.tratarValores(contasVencerArrayList.get(i).getValor()));
         contasVencerViewHolder.dataVencimento.setText("Vence em: " + contasVencerArrayList.get(i).getDataVencimento());
 
-        contasVencerViewHolder.buttonExcluir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                excluirItem(i);
-
-            }
-
-        });
     }
 
     public void excluirItem(int posicao){
@@ -106,14 +98,12 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     class ContasVencerViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoria, valor, dataVencimento;
-        ImageButton buttonExcluir;
 
         public ContasVencerViewHolder(@NonNull View itemView) {
             super(itemView);
             categoria = itemView.findViewById(R.id.textViewTipoDespesa);
             valor = itemView.findViewById(R.id.textViewValorDespesaVencer);
             dataVencimento = itemView.findViewById(R.id.textViewDataVencimentoVencer);
-            buttonExcluir = itemView.findViewById(R.id.imageButtonExcluirContaVencer);
 
         }
 
