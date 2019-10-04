@@ -61,8 +61,6 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
 
     public void excluirItem(int posicao){
         String key = keys.get(posicao);
-        System.out.println(keys);
-        System.out.println(key);
         DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("usuarios").child(idUsuario).child("contas-a-vencer");
         contasVencerArrayList.remove(posicao);
         referencia.child(key).removeValue(mRemoveListener);
