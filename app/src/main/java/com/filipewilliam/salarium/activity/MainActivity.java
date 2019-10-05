@@ -80,12 +80,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int i) {
 
-                if (i ==0 ){
+                if (i == 0) {
                     fab.hide();
-                    }
-                    else {
-                        fab.show();
-                    }
+                } else {
+                    fab.show();
+                }
             }
 
 
@@ -144,6 +143,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_resumo) {
 
         } else if (id == R.id.nav_contasVencer) {
+            Intent intent = new Intent(this, ContasVencerActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_definirMetas) {
             //maneira de abrir outra activity em vez de fragment
@@ -171,21 +172,26 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void verificarUsuarioLogado(){
+    public void verificarUsuarioLogado() {
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final FirebaseUser usuario = autenticacao.getCurrentUser();
 
-        if(usuario != null) {
+        if (usuario != null) {
             String nome = usuario.getDisplayName();
             textViewNomeUsuarioLogado.setText(nome);
             textViewEmailUsuarioLogado.setText(usuario.getEmail());
             //método para verificar o nome do usuário assim que logar, mas está com bug do auth do firebase (procurar solução)
             // Toast.makeText(MainActivity.this, "usuário atual " + autenticacao.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
-        }else{
-            finishAffinity();
-            System.exit(0);
+
+            if (usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
+
+
+            } else {
+                finishAffinity();
+                System.exit(0);
+            }
+
         }
 
     }
-
 }
