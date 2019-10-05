@@ -54,19 +54,6 @@ public class Usuario {
             }
         });
 
-
-        /*if(firebase.child("usuarios").child(this.idUsuario).child("token").toString().isEmpty()){
-            Map<String, Object> campoToken = new HashMap<String, Object>();
-            campoToken.put("token", token);
-            firebase.child("usuarios").child(this.idUsuario).updateChildren(campoToken);
-
-        }
-
-        firebase.child("usuarios")
-                .child(this.idUsuario)
-                .child("token")
-                .setValue(this.token);*/
-
     }
 
     public void removerUsuarioFirebase(){
