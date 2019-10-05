@@ -42,27 +42,27 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
         View itemView = viewHolder.itemView;
-        int backgroundCornerOffset = 20; //so background is behind the rounded corners of itemView
+        int backgroundCornerOffset = 20; //define o backgroung em vermelho por trás do card
 
         int iconMargin = (itemView.getHeight() - iconeLixeira.getIntrinsicHeight()) / 2;
         int iconTop = itemView.getTop() + (itemView.getHeight() - iconeLixeira.getIntrinsicHeight()) / 2;
         int iconBottom = iconTop + iconeLixeira.getIntrinsicHeight();
 
-        if (dX > 0) { // Swiping to the right
+        if (dX > 0) { // comportamento de deslizar para a direita (tentei desativar para só permitir o deslize à esquerda, mas deu um monte de problema)
             int iconLeft = itemView.getLeft() + iconMargin;
             int iconRight = itemView.getLeft() + iconMargin + iconeLixeira.getIntrinsicWidth();
             iconeLixeira.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 
             fundoExlcuir.setBounds(itemView.getLeft(), itemView.getTop(),
                     itemView.getLeft() + ((int) dX) + backgroundCornerOffset, itemView.getBottom());
-        } else if (dX < 0) { // Swiping to the left
+        } else if (dX < 0) { // define o deslizar à esquerda
             int iconLeft = itemView.getRight() - iconMargin - iconeLixeira.getIntrinsicWidth();
             int iconRight = itemView.getRight() - iconMargin;
             iconeLixeira.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 
             fundoExlcuir.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
                     itemView.getTop(), itemView.getRight(), itemView.getBottom());
-        } else { // view is unSwiped
+        } else { // se a view não está sendo deslizada, nada acontece nas coordenadas
             fundoExlcuir.setBounds(0, 0, 0, 0);
         }
 

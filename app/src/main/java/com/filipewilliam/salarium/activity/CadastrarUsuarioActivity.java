@@ -3,6 +3,7 @@ package com.filipewilliam.salarium.activity;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,9 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
 import com.filipewilliam.salarium.helpers.DatasMaskWatcher;
+import com.filipewilliam.salarium.service.MyFirebaseMessagingService;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class CadastrarUsuarioActivity extends AppCompatActivity {
 
@@ -52,6 +57,8 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                 String dataNascimento = editTextDataNascimento.getText().toString();
                 String email = editTextEmail.getText().toString();
                 String senha = editTextSenha.getText().toString();
+                String token = recuperarToken();
+                System.out.println(token);
 
                 if(!nome.isEmpty()){
                     if(!dataNascimento.isEmpty()){
@@ -65,6 +72,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                                 usuario.setEmail(email);
                                 usuario.setSenha(senha);
                                 usuario.setGastoTotal(gastoTotal);
+                                usuario.setToken(token);
                                 cadastrarUsuario();
 
                             }else{
@@ -136,6 +144,13 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
         });
 
     }
+    public String recuperarToken(){
+
+        final String usuarioToken = MyFirebaseMessagingService.retornaToken(getApplicationContext());
+        return usuarioToken;
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
