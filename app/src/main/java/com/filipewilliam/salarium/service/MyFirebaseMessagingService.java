@@ -13,7 +13,6 @@ import android.util.Log;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.activity.ContasVencerActivity;
-import com.filipewilliam.salarium.model.ContasVencer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -30,9 +29,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String corpo = notificacao.getNotification().getBody();
 
             enviarNotificacao(titulo, corpo);
-
-            //Log.i("Notificacao", "recebida titulo: " + titulo + " corpo: " + corpo );
-
         }
 
     }
@@ -72,16 +68,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String s) {
         super.onNewToken(s);
         getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
-
-        //Salvar token
-
-
-        //Nexus
-        //dc5KcrCc74A:APA91bHN8IbdHzevNu3sOu5kc3deJkmpAWX2hhs3silz9N4JnrlcoF0IH3rbBDokyBTTkVgis4Y-_vOj_BnbuGN3BN-B8GBgJQiI2X5g9kb0bWMJmdRalKsVo4SvDgp9aESg-tUonj6o
-
-        //Pixel
-        //cJ2e1VfOW68:APA91bE9qnKNIjdwZ9PENiOdbQeERQDYZzu3EZ6NC9Ctt2WE2HDeHIrBaPi5OWZkA9OgkJslVmEDm7D3Pny-cK26A0iZBREH24CEcis31Jo4YszPJVqdjFfzb23j-Fhy_R6o4rL1-RbW
-
         Log.i("onNewToken", "onNewToken: " + s );
     }
 
