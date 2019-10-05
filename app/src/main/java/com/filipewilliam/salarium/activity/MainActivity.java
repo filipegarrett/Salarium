@@ -15,6 +15,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
@@ -33,6 +36,9 @@ public class MainActivity extends AppCompatActivity
     private SmartTabLayout smartTabLayout;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
     private FirebaseAuth autenticacao;
+    private TextView textViewEmailUsuarioLogado;
+    private TextView textViewNomeUsuarioLogado;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,9 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        textViewNomeUsuarioLogado = header.findViewById(R.id.textViewNomeUsuario);
+        textViewEmailUsuarioLogado = header.findViewById(R.id.textViewEmailUsuario);
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
@@ -167,7 +176,11 @@ public class MainActivity extends AppCompatActivity
         final FirebaseUser usuario = autenticacao.getCurrentUser();
 
         if(usuario != null) {
-
+            String nome = usuario.getDisplayName();
+            textViewNomeUsuarioLogado.setText(nome);
+            textViewEmailUsuarioLogado.setText(usuario.getEmail());
+            //método para verificar o nome do usuário assim que logar, mas está com bug do auth do firebase (procurar solução)
+            // Toast.makeText(MainActivity.this, "usuário atual " + autenticacao.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
         }else{
             finishAffinity();
             System.exit(0);

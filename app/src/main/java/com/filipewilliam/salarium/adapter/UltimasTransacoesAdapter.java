@@ -12,11 +12,11 @@ import com.filipewilliam.salarium.model.Transacao;
 
 import java.util.List;
 
-public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.MyViewHolder> {
+public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransacoesAdapter.MyViewHolder> {
 
     private List<Transacao> listaTransacoes;
 
-    public AdapterTransacoes(List<Transacao> lista) {
+    public UltimasTransacoesAdapter(List<Transacao> lista) {
         this.listaTransacoes = lista;
     }
 
@@ -57,7 +57,7 @@ public class AdapterTransacoes extends RecyclerView.Adapter<AdapterTransacoes.My
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tipoTransacao = itemView.findViewById(R.id.textViewTipoTransacao);
+            tipoTransacao = itemView.findViewById(R.id.textViewEmailUsuario);
             categoriaTransacao = itemView.findViewById(R.id.textViewCategoriaTransacao);
             valorTransacao = itemView.findViewById(R.id.textViewValorTransacao);
             dataTransacao = itemView.findViewById(R.id.textViewDataTransacao);

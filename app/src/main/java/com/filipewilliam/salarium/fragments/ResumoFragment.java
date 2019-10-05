@@ -7,14 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.AdapterTransacoes;
+import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
@@ -31,8 +30,6 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.filipewilliam.salarium.helpers.DateCustom.retornaMesAno;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -41,7 +38,7 @@ public class ResumoFragment extends Fragment {
     private List<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
     private DateCustom dateCustom;
-    private AdapterTransacoes adapterTransacoes;
+    private UltimasTransacoesAdapter ultimasTransacoesAdapter;
     public FragmentPagerItemAdapter adapterView;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -93,8 +90,8 @@ public class ResumoFragment extends Fragment {
 
                     }
 
-                    AdapterTransacoes adapterTransacoes = new AdapterTransacoes(listaTransacoes);
-                    recyclerViewTransacoes.setAdapter(adapterTransacoes);
+                    UltimasTransacoesAdapter ultimasTransacoesAdapter = new UltimasTransacoesAdapter(listaTransacoes);
+                    recyclerViewTransacoes.setAdapter(ultimasTransacoesAdapter);
 
             }
 
