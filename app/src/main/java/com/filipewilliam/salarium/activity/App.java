@@ -1,0 +1,35 @@
+package com.filipewilliam.salarium.activity;
+
+import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+
+public class App extends Application {
+
+    public static final String CHANNEL_1_ID = "contas a vencer";
+    public static final String CHANNEL_2_ID = "placeholder";
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        criarCanaisNotificacoes();
+    }
+
+    private void criarCanaisNotificacoes(){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel1 = new NotificationChannel(
+                    CHANNEL_1_ID, "contas à vencer", NotificationManager.IMPORTANCE_HIGH
+            );
+            channel1.enableVibration(true);
+            channel1.enableLights(true);
+            channel1.setDescription("Contas à vencer");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel1);
+
+        }
+    }
+}

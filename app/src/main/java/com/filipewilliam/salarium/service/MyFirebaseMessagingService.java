@@ -74,5 +74,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
     }
 
-
 }
