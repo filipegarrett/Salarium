@@ -76,10 +76,16 @@ public class RelatoriosFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaTransacoes.clear();
                 List<String> listTransacoesMeses = new ArrayList<String>();
-                for (DataSnapshot mesAnoSnapshot : dataSnapshot.getChildren()) {
-                    Transacao transacao = mesAnoSnapshot.getValue(Transacao.class);
-                    listTransacoesMeses.add(dateCustom.formatarMesAno(mesAnoSnapshot.getKey()));
-                    listaTransacoes.add(transacao);
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+
+                    for(DataSnapshot dataSnapshot2: dataSnapshot1.getChildren()){
+                        Transacao transacao1 = dataSnapshot2.getValue(Transacao.class);
+                        System.out.println(transacao1);
+                        System.out.println(dataSnapshot2.getValue());
+                        listaTransacoes.add(transacao1);
+
+                    }
 
                     ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
                     transacoesAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
@@ -96,6 +102,7 @@ public class RelatoriosFragment extends Fragment {
             }
 
         });
+
         spinnerMesAno.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -134,6 +141,8 @@ public class RelatoriosFragment extends Fragment {
 
             }
         });
+
+
 
         return view;
 

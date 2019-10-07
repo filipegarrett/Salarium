@@ -21,7 +21,6 @@ public class Transacao {
 
     //métodos get e set
 
-
     public String getTipo() {
         return tipo;
     }

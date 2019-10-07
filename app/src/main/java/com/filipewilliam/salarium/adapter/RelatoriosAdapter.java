@@ -27,28 +27,36 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
     @NonNull
     @Override
     public RelatoriosAdapter.RelatoriosViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new RelatoriosViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_adapter_ultimas_contas_a_vencer, viewGroup, false));
+        View itemListaRelatorio = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_adapter_relatorios, viewGroup, false);
+        return new RelatoriosViewHolder(itemListaRelatorio);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RelatoriosAdapter.RelatoriosViewHolder relatoriosViewHolder, int i) {
+        Transacao transacao = transacoesArrayList.get(i);
+        System.out.println(transacoesArrayList);
+        relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
+        relatoriosViewHolder.categoria.setText(transacao.getCategoria());
+        relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
+        relatoriosViewHolder.data.setText(transacao.getData());
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return transacoesArrayList.size();
     }
 
     class RelatoriosViewHolder extends RecyclerView.ViewHolder{
 
-        TextView categoria, valor, dataVencimento;
+        TextView tipo, categoria, valor, data;
 
         public RelatoriosViewHolder(@NonNull View itemView) {
             super(itemView);
-            categoria = itemView.findViewById(R.id.textViewTipoDespesa);
-            valor = itemView.findViewById(R.id.textViewValorDespesaVencer);
-            dataVencimento = itemView.findViewById(R.id.textViewDataVencimentoVencer);
+            tipo = itemView.findViewById(R.id.textViewTipoRelatorio);
+            categoria = itemView.findViewById(R.id.textViewCategoriaRelatorio);
+            valor = itemView.findViewById(R.id.textViewValorRelatorio);
+            data = itemView.findViewById(R.id.textViewDataRelatorio);
 
         }
 
