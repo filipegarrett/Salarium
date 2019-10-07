@@ -84,7 +84,7 @@
 
     <EditText
         android:id="@+id/editTextDataVencimentoContaVencer"
-        android:layout_width="379dp"
+        android:layout_width="0dp"
         android:layout_height="43dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
