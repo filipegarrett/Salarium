@@ -7,34 +7,6 @@
     tools:context=".activity.MetasActivity">
 
     <TextView
-        android:id="@+id/textViewSelecionarDataGasto"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/buttonCalendario"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline17"
-        app:layout_constraintTop_toBottomOf="@+id/editTextValorMaximo" />
-
-    <Button
-        android:id="@+id/buttonCalendario"
-        android:layout_width="160dp"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="Selecionar Data"
-        app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewValorMeta" />
-
-    <TextView
         android:id="@+id/textViewMetas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,83 +20,69 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewValorMeta"
-        android:layout_width="160dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:text="Valor Máximo de Gastos:"
-        app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMetas" />
-
-    <EditText
-        android:id="@+id/editTextValorMaximo"
-        android:layout_width="160dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline17"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMetas" />
-
     <Button
         android:id="@+id/buttonCriarMeta"
         android:layout_width="160dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:text="Criar Meta"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextValorMeta" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
+    <EditText
+        android:id="@+id/editTextDataMeta"
         android:layout_width="160dp"
-        android:layout_height="36dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="Período"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/buttonCriarMeta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextValorMeta" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewMetasCriadas"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextValorMeta"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:hint="Valor Máximo de Gastos"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline18">
+        app:layout_constraintTop_toBottomOf="@+id/textViewMetas" />
 
-        <RadioButton
-            android:id="@+id/radioButtonGastos"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Gastos" />
-
-        <RadioButton
-            android:id="@+id/radioButtonGanhos"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Ganhos" />
-    </RadioGroup>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline17"
+    <TextView
+        android:id="@+id/textViewMetasCriadas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:text="Metas criadas"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMetasCriadas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDataMeta" />
 
 
 </android.support.constraint.ConstraintLayout>

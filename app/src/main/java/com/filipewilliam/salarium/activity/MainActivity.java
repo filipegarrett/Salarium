@@ -2,10 +2,12 @@ package com.filipewilliam.salarium.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,8 +25,15 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
+import com.filipewilliam.salarium.helpers.Base64Custom;
+import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -38,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth autenticacao;
     private TextView textViewEmailUsuarioLogado;
     private TextView textViewNomeUsuarioLogado;
+    private String nomeUsuario;
 
 
     @Override
@@ -175,13 +185,31 @@ public class MainActivity extends AppCompatActivity
     public void verificarUsuarioLogado() {
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final FirebaseUser usuario = autenticacao.getCurrentUser();
+        String emailUsuario = autenticacao.getCurrentUser().getEmail();
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+        DatabaseReference referenciaUsuarios = FirebaseDatabase.getInstance().getReference();
+        referenciaUsuarios.child("usuarios").child(idUsuario).child("nome");
 
         if (usuario != null) {
-            String nome = usuario.getDisplayName();
-            textViewNomeUsuarioLogado.setText(nome);
+            referenciaUsuarios.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        Usuario usuario =userSnapshot.getValue(Usuario.class);
+                        nomeUsuario = usuario.getNome();
+                       // Log.i("Firebase", usuario.getNome());
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            textViewNomeUsuarioLogado.setText(nomeUsuario);
             textViewEmailUsuarioLogado.setText(usuario.getEmail());
-            //método para verificar o nome do usuário assim que logar, mas está com bug do auth do firebase (procurar solução)
-            // Toast.makeText(MainActivity.this, "usuário atual " + autenticacao.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+            textViewNomeUsuarioLogado.setText(nomeUsuario);
 
             if (usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
 
