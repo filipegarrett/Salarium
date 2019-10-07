@@ -4,6 +4,9 @@ package com.filipewilliam.salarium.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +16,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
+import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.InvestimentosHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +44,8 @@ public class RelatoriosFragment extends Fragment {
     private TextView textViewDespesasRelatorio;
     private TextView textViewSaldoRelatorio;
     private TextView textViewRecebidoRelatorio;
-
+    private InvestimentosHelper tratarValores;
+    private RecyclerView recyclerViewRelatorio;
 
 
 
@@ -59,18 +66,28 @@ public class RelatoriosFragment extends Fragment {
         textViewSaldoRelatorio = view.findViewById(R.id.textViewSaldoRelatorio);
         textViewRecebidoRelatorio = view.findViewById(R.id.textViewPositivoRelatorio);
         spinnerMesAno = view.findViewById(R.id.spinnerMesAnoRelatorio);
+        recyclerViewRelatorio = view.findViewById(R.id.recyclerViewHistoricoRelatorio);
+        recyclerViewRelatorio.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewRelatorio.setHasFixedSize(true);
 
+        final ArrayList<Transacao> listaTransacoes = new ArrayList<>();
         referencia.child("usuarios").child(idUsuario).child("transacao").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaTransacoes.clear();
                 List<String> listTransacoesMeses = new ArrayList<String>();
                 for (DataSnapshot mesAnoSnapshot : dataSnapshot.getChildren()) {
+                    Transacao transacao = mesAnoSnapshot.getValue(Transacao.class);
                     listTransacoesMeses.add(dateCustom.formatarMesAno(mesAnoSnapshot.getKey()));
+                    listaTransacoes.add(transacao);
 
                     ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
                     transacoesAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerMesAno.setAdapter(transacoesAdapter);
                 }
+                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(listaTransacoes);
+                recyclerViewRelatorio.setAdapter(adapterTransacoes);
+
             }
 
             @Override
@@ -127,11 +144,18 @@ public class RelatoriosFragment extends Fragment {
         Double saldoMes = saldoPositivo - saldoNegativo;
 
         System.out.println(historico.getValor());
-        textViewRecebidoRelatorio.setText(saldoPositivo.toString());
-        textViewDespesasRelatorio.setText(saldoNegativo.toString());
-        textViewSaldoRelatorio.setText(saldoMes.toString());
+        textViewRecebidoRelatorio.setText(tratarValores.tratarValores(saldoPositivo));
+        textViewDespesasRelatorio.setText(tratarValores.tratarValores(saldoNegativo));
 
+        if(saldoMes < 0){
+            textViewSaldoRelatorio.setText(tratarValores.tratarValores(saldoMes));
+            textViewSaldoRelatorio.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
 
+        }else{
+            textViewSaldoRelatorio.setText(tratarValores.tratarValores(saldoMes));
+            textViewSaldoRelatorio.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
+
+        }
 
     }
 

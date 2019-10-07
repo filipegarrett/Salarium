@@ -291,7 +291,6 @@ public class ContasVencerActivity extends AppCompatActivity {
         if(opcao){
 
             long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
-            System.out.println(tempoNotificacao);
 
             Intent intent = new Intent(this, ContasVencerActivity.class);
             PendingIntent notificationIntent = PendingIntent.getActivity(this, 0, intent, 0);
