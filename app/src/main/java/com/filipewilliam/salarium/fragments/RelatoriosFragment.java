@@ -47,9 +47,6 @@ public class RelatoriosFragment extends Fragment {
     private InvestimentosHelper tratarValores;
     private RecyclerView recyclerViewRelatorio;
 
-
-
-
     public RelatoriosFragment() {
         // Required empty public constructor
     }
@@ -91,7 +88,7 @@ public class RelatoriosFragment extends Fragment {
                     transacoesAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerMesAno.setAdapter(transacoesAdapter);
                 }
-                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(listaTransacoes);
+                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(getActivity(), listaTransacoes);
                 recyclerViewRelatorio.setAdapter(adapterTransacoes);
 
             }
@@ -141,8 +138,6 @@ public class RelatoriosFragment extends Fragment {
 
             }
         });
-
-
 
         return view;
 
