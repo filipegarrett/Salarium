@@ -1,8 +1,14 @@
 package com.filipewilliam.salarium.activity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,7 +44,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +51,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.filipewilliam.salarium.activity.App.CHANNEL_1_ID;
 
 public class ContasVencerActivity extends AppCompatActivity {
 
@@ -63,6 +70,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private ArrayList<ContasVencer> listaContasVencer;
     private ArrayList<String> keys = new ArrayList<>();
     private ContasVencerAdapter adapter;
+    private NotificationManagerCompat notificationManagerCompat;
     private final Date hoje = dateCustom.retornaDataHojeDateFormat();
     private final int mesAtual = Integer.valueOf(dateCustom.retornaMesAno());
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
@@ -135,9 +143,19 @@ public class ContasVencerActivity extends AppCompatActivity {
                 if(!spinnerCategoriaContas.getSelectedItem().toString().isEmpty()){
                     if(!editTextDataVencimentoContasVencer.getText().toString().isEmpty()){
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
-                            cadastrarContasVencer();
-                            Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
-                            limparCampos();
+                            if(switchEmitirNotificacaoVencimento.isChecked()){
+                                long timeStampVencimento = dateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
+                                criarNotificacao(true, timeStampVencimento);
+                                cadastrarContasVencer();
+                                Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
+                                limparCampos();
+
+                            }else{
+                                cadastrarContasVencer();
+                                Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
+                                limparCampos();
+
+                            }
 
                         }else{
                             Toast.makeText(ContasVencerActivity.this, "Você precisa definir um valor para a despesa!", Toast.LENGTH_SHORT).show();
@@ -154,7 +172,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        buttonLimparCamposContasVencer.setOnClickListener(new View.OnClickListener() {
+        buttonLimparCamposContasVencer.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 limparCampos();
@@ -211,6 +229,8 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
+        notificationManagerCompat = NotificationManagerCompat.from(this);
+
     }
 
     public void cadastrarContasVencer(){
@@ -262,6 +282,34 @@ public class ContasVencerActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         } catch(Exception ignored) {
+        }
+
+    }
+
+    public void criarNotificacao(Boolean opcao, Long timeStamp){
+
+        if(opcao){
+
+            long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+
+            Intent intent = new Intent(this, ContasVencerActivity.class);
+            PendingIntent notificationIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast ( this, 0 , intent , PendingIntent. FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE ) ;
+            assert alarmManager != null;
+            alarmManager.set(AlarmManager. ELAPSED_REALTIME_WAKEUP, tempoNotificacao, pendingIntent) ;
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID).setSmallIcon(R.drawable.ic_codigo_de_barras_boleto_branco)
+                    .setContentTitle("Você tem contas que vencem amanhã!")
+                    .setContentText("Pague em dia para evitar juros e não esqueça de cadastrar os pagamentos no app!")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setVibrate(new long[] {2000})
+                    .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                    .setContentIntent(notificationIntent)
+                    .setAutoCancel(true)
+                    .build();
+
+            notificationManagerCompat.notify(1, notification);
         }
 
     }

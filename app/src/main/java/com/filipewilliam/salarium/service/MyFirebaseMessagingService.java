@@ -22,7 +22,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage notificacao) {
         super.onMessageReceived(notificacao);
 
-
         if( notificacao.getNotification() != null ){
 
             String titulo = notificacao.getNotification().getTitle();
@@ -35,9 +34,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void enviarNotificacao(String titulo, String corpo){
 
-        //Configuraçõe para notificação
+        //Configurações para notificação
         String canal = getString(R.string.default_notification_channel_id);
-        Uri uriSom = RingtoneManager.getDefaultUri( RingtoneManager.TYPE_NOTIFICATION );
+        Uri uriSom = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION );
         Intent intent = new Intent(this, ContasVencerActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
@@ -53,7 +52,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Recupera notificationManager
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        //Verifica versão do Android a partir do Oreo para configurar canal de notificação
+        //Verifica versão do Android a partir do Oreo para configurar canal de notificação, algo que não é obrigatório em versões antigas. Sem esse tratamento, o app não funciona em Androids mais atuais
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ){
             NotificationChannel channel = new NotificationChannel(canal, "canal", NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel( channel );
@@ -68,12 +67,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String s) {
         super.onNewToken(s);
         getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
-        Log.i("onNewToken", "onNewToken: " + s );
+        Log.i("onNewToken", "onNewToken: " + s ); //só para conferir se o token está sendo gerado a cada nova instalação em caso de necessidade de algum processo de debug
     }
 
     public static String retornaToken(Context context) {
         return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
     }
-
 
 }

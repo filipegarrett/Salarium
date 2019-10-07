@@ -13,21 +13,24 @@
 
         <Button
             android:id="@+id/buttonReenviarSenha"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/corBotoesConfirma"
             android:text="Mudar senha"
             android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/buttonExcluirConta"
+            style="@android:style/Widget.Material.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
             android:background="@color/corBotoesCancela"
             android:text="Excluir conta"
             android:textColor="@android:color/white" />
+
     </LinearLayout>
 
 </FrameLayout>
