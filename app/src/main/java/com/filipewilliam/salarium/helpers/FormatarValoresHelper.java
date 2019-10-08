@@ -4,11 +4,14 @@ import android.icu.text.DecimalFormat;
 import android.icu.text.NumberFormat;
 import android.icu.util.Currency;
 
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+
 import java.util.Locale;
 
-public class InvestimentosHelper {
+public class FormatarValoresHelper extends ValueFormatter {
 
-    public InvestimentosHelper() {
+    public FormatarValoresHelper() {
     }
 
     public double simularPoupanca(double valorSimulacao, double valorAporteMensal, int mesesPoupanca){
@@ -85,6 +88,21 @@ public class InvestimentosHelper {
 
         String resultadoCDB = tratarValores(rendimento);
         return resultadoCDB;
+    }
+
+    @Override
+    public String getPieLabel(float value, PieEntry pieEntry) {
+
+        DecimalFormat fmt = (DecimalFormat) NumberFormat.getInstance();
+        Locale locale = Locale.getDefault();
+        String symbol = Currency.getInstance(locale).getSymbol(locale);
+        fmt.setGroupingUsed(true);
+        fmt.setPositivePrefix(symbol + " ");
+        fmt.setNegativePrefix("-" + symbol + " ");
+        fmt.setMinimumFractionDigits(2);
+        fmt.setMaximumFractionDigits(2);
+        return fmt.format(value);
+
     }
 
 

@@ -22,7 +22,7 @@ public class DateCustom {
     public static String formatarMesAno(String data) {
         String mesAno = "";
 
-        if(data.startsWith("1")){
+        if(data.length() == 6){
             StringBuilder sb = new StringBuilder(data);
             String dataBarra = String.valueOf(sb.insert(2, "/"));
 
@@ -37,6 +37,7 @@ public class DateCustom {
             }
 
             mesAno = mesPadrao.format(date);
+            mesAno = mesAno.substring(0, 1).toUpperCase() + mesAno.substring(1);
 
         }else{
             StringBuilder sb = new StringBuilder(data);
@@ -53,6 +54,8 @@ public class DateCustom {
             }
 
             mesAno = mesPadrao.format(date);
+            mesAno = mesAno.substring(0, 1).toUpperCase() + mesAno.substring(1);
+
         }
 
         return mesAno;

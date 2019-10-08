@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.helpers.InvestimentosHelper;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.RelatoriosViewHolder> {
 
     private Context context;
-    private InvestimentosHelper tratarValores;
+    private FormatarValoresHelper tratarValores;
     ArrayList<Transacao> transacoesArrayList;
 
     public RelatoriosAdapter(Context c, ArrayList<Transacao> tArrayList) {

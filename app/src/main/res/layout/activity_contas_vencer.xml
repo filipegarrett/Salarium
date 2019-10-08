@@ -88,7 +88,7 @@
         android:id="@+id/progressBarRecyclerAtualiza"
         style="?android:attr/progressBarStyle"
         android:layout_width="80dp"
-        android:layout_height="61dp"
+        android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerViewContasVencer"
         app:layout_constraintEnd_toEndOf="@+id/recyclerViewContasVencer"
         app:layout_constraintStart_toStartOf="@+id/recyclerViewContasVencer"
