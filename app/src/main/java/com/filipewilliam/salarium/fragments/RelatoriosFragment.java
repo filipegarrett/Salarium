@@ -21,7 +21,7 @@ import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
-import com.filipewilliam.salarium.helpers.InvestimentosHelper;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -46,9 +46,10 @@ public class RelatoriosFragment extends Fragment {
     private TextView textViewSaldoRelatorio;
     private TextView textViewRecebidoRelatorio;
     private TextView textViewNadaAReportar;
-    private InvestimentosHelper tratarValores;
+    private FormatarValoresHelper tratarValores;
     private RecyclerView recyclerViewRelatorio;
     private ProgressBar progressBarRelatorios;
+    private ValueEventListener eventListener;
 
     public RelatoriosFragment() {
         // Required empty public constructor
@@ -72,7 +73,7 @@ public class RelatoriosFragment extends Fragment {
         recyclerViewRelatorio.setHasFixedSize(true);
 
         final ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-        referencia.child("usuarios").child(idUsuario).child("transacao").orderByKey().addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("transacao").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -170,5 +171,38 @@ public class RelatoriosFragment extends Fragment {
 
     }
 
+    /*@Override
+    public void onStop() {
+        super.onStop();
+        if(referencia != null){
+            referencia.removeEventListener(eventListener);
+            eventListener = null;
+            referencia = null;
+
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(referencia != null){
+            referencia.removeEventListener(eventListener);
+            eventListener = null;
+            referencia = null;
+
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(referencia != null){
+            referencia.removeEventListener(eventListener);
+            eventListener = null;
+            referencia = null;
+
+        }
+    }*/
 
 }

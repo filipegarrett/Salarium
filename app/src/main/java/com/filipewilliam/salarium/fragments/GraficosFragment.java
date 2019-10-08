@@ -4,6 +4,7 @@ package com.filipewilliam.salarium.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +12,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
-import com.filipewilliam.salarium.model.Transacao;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +41,7 @@ public class GraficosFragment extends Fragment {
 
     private PieChart pieChart;
     private Spinner spinnerGraficos;
+    private FloatingActionButton floatingActionButtonScreenshot;
     private DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private DateCustom dateCustom;
@@ -62,11 +62,11 @@ public class GraficosFragment extends Fragment {
 
         pieChart = view.findViewById(R.id.pieChartRelatorio);
         spinnerGraficos = view.findViewById(R.id.spinnerGraficos);
+        floatingActionButtonScreenshot = view.findViewById(R.id.floatingActionButtonScreenShot);
+
 
         final ArrayList<PieEntry> listaDados = new ArrayList<PieEntry>();
-        final int i = 0;
-        final String mesAno = "";
-        referencia.child("usuarios").child(idUsuario).child("transacao").orderByKey().addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("transacao").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -74,6 +74,7 @@ public class GraficosFragment extends Fragment {
                     List<String> listTransacoesMeses = new ArrayList<String>();
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                        Collections.reverse(listTransacoesMeses);
 
                         ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
                         transacoesAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
@@ -115,18 +116,19 @@ public class GraficosFragment extends Fragment {
                         PieDataSet dataSet = new PieDataSet(listaDados, "");
                         PieData dados = new PieData(dataSet);
 
-                        dados.setValueFormatter(new PercentFormatter());
+                        dados.setValueFormatter(new FormatarValoresHelper());
                         pieChart.setData(dados);
                         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-                        dados.setValueTextSize(13f);
+                        dados.setValueTextSize(10f);
                         dados.setValueTextColor(Color.WHITE);
-                        Description descricao = new Description();
-                        descricao.setText("Seus gastos:");
-                        pieChart.setDescription(descricao);
-                        pieChart.animateX(3000);
+                        //Description descricao = new Description();
+                        //descricao.setText("Seus gastos:");
+                        //pieChart.setDescription(descricao);
+                        pieChart.getDescription().setEnabled(false);
+                        pieChart.getLegend().setEnabled(false);
+                        pieChart.animateY(3000);
                         pieChart.setCenterText(spinnerGraficos.getSelectedItem().toString());
                         pieChart.getCenterText();
-
 
                     }
 
@@ -140,6 +142,16 @@ public class GraficosFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        floatingActionButtonScreenshot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nomeArquivo = spinnerGraficos.getSelectedItem().toString().replace(" ", "_").toLowerCase() + "_salarium.jpg";
+                pieChart.saveToGallery(nomeArquivo, 100);
+
+                Toast.makeText(getActivity(), "Imagem salva com sucesso na sua galeria!", Toast.LENGTH_SHORT).show();
             }
         });
 

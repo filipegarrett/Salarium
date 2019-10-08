@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.fragments.AjudaInvestimentosDialog;
-import com.filipewilliam.salarium.helpers.InvestimentosHelper;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 
 import java.text.SimpleDateFormat;
@@ -161,10 +161,10 @@ public class SimuladorActivity extends AppCompatActivity {
             valorOriginal = valorSimulacao;
             depositoMensal = Double.valueOf(editTextValorDepositoMensal.getText().toString().replace(",", ""));
 
-            InvestimentosHelper investimentosHelper = new InvestimentosHelper();
-            double resultadoSimulacao = investimentosHelper.simularPoupanca(valorSimulacao, depositoMensal, quantidadeMeses);
-            String rendimento = investimentosHelper.rendimentoPoupanca(resultadoSimulacao, valorOriginal, depositoMensal, quantidadeMeses);
-            String resultadoTratado = investimentosHelper.tratarValores(resultadoSimulacao);
+            FormatarValoresHelper formatarValoresHelper = new FormatarValoresHelper();
+            double resultadoSimulacao = formatarValoresHelper.simularPoupanca(valorSimulacao, depositoMensal, quantidadeMeses);
+            String rendimento = formatarValoresHelper.rendimentoPoupanca(resultadoSimulacao, valorOriginal, depositoMensal, quantidadeMeses);
+            String resultadoTratado = formatarValoresHelper.tratarValores(resultadoSimulacao);
 
             textViewResultadoTexto.setText("Ao final você terá: ");
             textViewRendimentoTexto.setText("O rendimento no período é: ");
@@ -188,10 +188,10 @@ public class SimuladorActivity extends AppCompatActivity {
             valorSimulacao = Double.valueOf(editTextValorSimulacao.getText().toString().replace(",", ""));
             valorOriginal = valorSimulacao;
 
-            InvestimentosHelper investimentosHelper = new InvestimentosHelper();
-            double resultadoSimulacao = investimentosHelper.simularCDBPrefixado(valorSimulacao);
-            String resultadoTratado = investimentosHelper.tratarValores(resultadoSimulacao);
-            String rendimento = investimentosHelper.rendimentoCDBPrefixado(resultadoSimulacao, valorOriginal);
+            FormatarValoresHelper formatarValoresHelper = new FormatarValoresHelper();
+            double resultadoSimulacao = formatarValoresHelper.simularCDBPrefixado(valorSimulacao);
+            String resultadoTratado = formatarValoresHelper.tratarValores(resultadoSimulacao);
+            String rendimento = formatarValoresHelper.rendimentoCDBPrefixado(resultadoSimulacao, valorOriginal);
 
 
             Calendar cal = Calendar.getInstance();
