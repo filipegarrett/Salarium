@@ -12,12 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
-import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,13 +45,14 @@ public class RelatoriosFragment extends Fragment {
     private TextView textViewDespesasRelatorio;
     private TextView textViewSaldoRelatorio;
     private TextView textViewRecebidoRelatorio;
+    private TextView textViewNadaAReportar;
     private InvestimentosHelper tratarValores;
     private RecyclerView recyclerViewRelatorio;
+    private ProgressBar progressBarRelatorios;
 
     public RelatoriosFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +64,8 @@ public class RelatoriosFragment extends Fragment {
         textViewDespesasRelatorio = view.findViewById(R.id.textViewNegativoRelatorio);
         textViewSaldoRelatorio = view.findViewById(R.id.textViewSaldoRelatorio);
         textViewRecebidoRelatorio = view.findViewById(R.id.textViewPositivoRelatorio);
+        textViewNadaAReportar = view.findViewById(R.id.textViewAvisoNadaARelatar);
+        progressBarRelatorios = view.findViewById(R.id.progressBarRelatorios);
         spinnerMesAno = view.findViewById(R.id.spinnerMesAnoRelatorio);
         recyclerViewRelatorio = view.findViewById(R.id.recyclerViewHistoricoRelatorio);
         recyclerViewRelatorio.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -71,25 +75,24 @@ public class RelatoriosFragment extends Fragment {
         referencia.child("usuarios").child(idUsuario).child("transacao").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaTransacoes.clear();
-                List<String> listTransacoesMeses = new ArrayList<String>();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
 
-                    for(DataSnapshot dataSnapshot2: dataSnapshot1.getChildren()){
-                        Transacao transacao1 = dataSnapshot2.getValue(Transacao.class);
-                        System.out.println(transacao1);
-                        System.out.println(dataSnapshot2.getValue());
-                        listaTransacoes.add(transacao1);
+                if(dataSnapshot.getChildrenCount() > 0){
+                    progressBarRelatorios.setVisibility(View.GONE);
+                    List<String> listTransacoesMeses = new ArrayList<String>();
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                        Collections.reverse(listTransacoesMeses); //Não é muito elegante, mas o Firebase não conhece o conceito de ordenar dados de forma decrescente...
+
+                        ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
+                        transacoesAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                        spinnerMesAno.setAdapter(transacoesAdapter);
 
                     }
+                }else{
+                    progressBarRelatorios.setVisibility(View.GONE);
+                    textViewNadaAReportar.setText("Você ainda não tem dados cadastrados!");
 
-                    ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
-                    transacoesAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                    spinnerMesAno.setAdapter(transacoesAdapter);
                 }
-                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(getActivity(), listaTransacoes);
-                recyclerViewRelatorio.setAdapter(adapterTransacoes);
 
             }
 
@@ -105,13 +108,15 @@ public class RelatoriosFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String item = dateCustom.formataMesAnoFirebase((String) adapterView.getItemAtPosition(i));
 
-                referencia.child("usuarios").child(idUsuario).child("transacao").child(item).addListenerForSingleValueEvent(new ValueEventListener() {
+                referencia.child("usuarios").child(idUsuario).child("transacao").child(item).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        listaTransacoes.clear();
                         double totalDespesaMes = 0;
                         double totalRecebidoMes = 0;
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                             Transacao transacao = dataSnapshot1.getValue(Transacao.class);
+                            listaTransacoes.add(transacao);
 
                             if(dataSnapshot1.child("tipo").getValue().toString().equals("Gasto")){
                                 totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
@@ -123,6 +128,8 @@ public class RelatoriosFragment extends Fragment {
 
                             atualizaDados(transacao, totalRecebidoMes, totalDespesaMes);
                         }
+                        RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(getActivity(), listaTransacoes);
+                        recyclerViewRelatorio.setAdapter(adapterTransacoes);
 
                     }
 
