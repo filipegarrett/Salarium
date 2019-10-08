@@ -72,7 +72,7 @@ public class RelatoriosFragment extends Fragment {
         recyclerViewRelatorio.setHasFixedSize(true);
 
         final ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-        referencia.child("usuarios").child(idUsuario).child("transacao").addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("transacao").orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
