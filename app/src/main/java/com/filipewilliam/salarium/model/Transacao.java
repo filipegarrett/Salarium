@@ -61,7 +61,6 @@ public class Transacao {
         this.data = data;
     }
 
-
     //salva no firebase
     public void salvarTransacao(String data){
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();

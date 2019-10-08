@@ -1,54 +1,73 @@
 package com.filipewilliam.salarium.activity;
 
-import android.app.DatePickerDialog;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.fragments.DatePickerFragment;
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
+import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.model.Transacao;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class MetasActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class MetasActivity extends AppCompatActivity {
+
+    private Spinner spinnerMetas;
+    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private DateCustom dateCustom;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //ativa a seta do menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setTitle("Metas:");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metas);
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
 
-        Button button = findViewById(R.id.buttonCalendario);
-        button.setOnClickListener(new View.OnClickListener() {
+        spinnerMetas = findViewById(R.id.spinnerMesMetas);
+
+        referencia.child("usuarios").child(idUsuario).child("meta").orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getSupportFragmentManager(), "date picker");
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.getChildrenCount() > 0){
+                    List<String> listMetasMeses = new ArrayList<String>();
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        listMetasMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                        Collections.reverse(listMetasMeses); //Não é muito elegante, mas o Firebase não conhece o conceito de ordenar dados de forma decrescente...
+
+                        ArrayAdapter<String> metasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listMetasMeses);
+                        metasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                        spinnerMetas.setAdapter(metasAdapter);
+
+                    }
+                }
+
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
         });
+
     }
-
-    //recuperar data selecionada
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
-
-        TextView textView = findViewById(R.id.textViewSelecionarDataGasto);
-        textView.setText(currentDateString);
-    }
-
 
     //método para voltar através da seta do menu
     @Override

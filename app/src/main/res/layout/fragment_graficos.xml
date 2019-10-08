@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/spinnerGraficos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -33,6 +33,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner"></com.github.mikephil.charting.charts.PieChart>
+            app:layout_constraintTop_toBottomOf="@+id/spinnerGraficos"></com.github.mikephil.charting.charts.PieChart>
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>
