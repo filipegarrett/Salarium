@@ -37,10 +37,10 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
     public void onBindViewHolder(@NonNull RelatoriosAdapter.RelatoriosViewHolder relatoriosViewHolder, int i) {
         Transacao transacao = transacoesArrayList.get(i);
 
-        if(transacao.getTipo().contains("Gasto")){
+        if(transacao.getTipo().contains("Gastei")){
             relatoriosViewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.corFundoCardViewDespesa));
             relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
-            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + " :");
+            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + ":");
             relatoriosViewHolder.descricao.setText(transacao.getDescricao());
             relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
             relatoriosViewHolder.data.setText(transacao.getData());
@@ -48,7 +48,7 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
         }else{
             relatoriosViewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.corFundoCardViewRecebido));
             relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
-            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + " :");
+            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + ":");
             relatoriosViewHolder.descricao.setText(transacao.getDescricao());
             relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
             relatoriosViewHolder.data.setText(transacao.getData());

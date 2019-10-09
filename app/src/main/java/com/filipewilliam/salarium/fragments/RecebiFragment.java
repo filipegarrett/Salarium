@@ -134,7 +134,6 @@ public class RecebiFragment extends Fragment {
 
         return view;
 
-
     }
 
     public void criarRecebimento() {
@@ -148,7 +147,7 @@ public class RecebiFragment extends Fragment {
             transacao.setValor(recebimentoPreenchido);
             transacao.setData(dataRecebimento);
             transacao.setCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
-            transacao.setTipo("Recebimento");
+            transacao.setTipo("Recebi");
             Double recebimentoAtualizado = recebimentoPreenchido + recebimentoTotal;
             atualizarRecebimento(recebimentoAtualizado);
             transacao.salvarTransacao(dataRecebimento);
@@ -194,8 +193,7 @@ public class RecebiFragment extends Fragment {
         //necessário estes parâmetros pois somente o edittext não aparecia.
         final EditText categoria = new EditText(getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         categoria.setLayoutParams(lp);
         dialog.setView(categoria);
 

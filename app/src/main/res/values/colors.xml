@@ -13,5 +13,6 @@
     <color name="corFundoCardViewDespesa">#D1495B</color>
     <color name="corFundoCardViewRecebido">#06D6A0</color>
     <color name="corFundoCardViewSwipe">#FC1414</color>
+    <color name="corPreto">#FC1414</color>
 
 </resources>
