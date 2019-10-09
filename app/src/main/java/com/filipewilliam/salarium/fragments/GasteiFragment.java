@@ -138,11 +138,11 @@ public class GasteiFragment extends Fragment {
             transacao.setValor(gastoPreenchido);
             transacao.setData(dataGasto);
             transacao.setCategoria(spinnerCategoriaGasto.getSelectedItem().toString());
-            transacao.setTipo("Gasto");
+            transacao.setTipo("Gastei");
             Double gastoAtualizado = gastoPreenchido + gastoTotal;
             atualizarGasto(gastoAtualizado);
             transacao.salvarTransacao(dataGasto);
-            Toast.makeText(getContext(), "Foi cadastrado um novo gasto!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Valor cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -158,16 +158,16 @@ public class GasteiFragment extends Fragment {
             if (!valor.isEmpty()) {
                 if (!data.isEmpty()) {
                 } else {
-                    Toast.makeText(getContext(), "Data não foi preenchida", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Você precisa escolher uma data", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 
             } else {
-                Toast.makeText(getContext(), "Valor não foi preenchido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Você precisa precisa definir um valor", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
-            Toast.makeText(getContext(), "Descrição não foi preenchida", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Você precisa descrever o gasto", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -179,7 +179,7 @@ public class GasteiFragment extends Fragment {
     public void criarCategoriaGasto() {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setTitle("Criar categoria de gastos");
+        dialog.setTitle("Criar nova categoria");
         dialog.setCancelable(true);
         //necessário estes parâmetros pois somente o edittext não aparecia.
         final EditText categoria = new EditText(getContext());

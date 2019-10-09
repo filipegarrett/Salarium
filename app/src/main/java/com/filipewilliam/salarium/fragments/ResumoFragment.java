@@ -30,8 +30,6 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.filipewilliam.salarium.helpers.DateCustom.retornaMesAno;
-
 /**
  * A simple {@link Fragment} subclass.
  */

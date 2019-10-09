@@ -79,7 +79,7 @@ public class RecebiFragment extends Fragment {
                 ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
                 categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                 spinnerCategoriaRecebimento.setAdapter(categoriasAdapter);
-                }
+            }
         }
 
             @Override
@@ -113,7 +113,6 @@ public class RecebiFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 criarCategoriaRecebimento();
-
             }
         });
 
@@ -134,7 +133,6 @@ public class RecebiFragment extends Fragment {
 
         return view;
 
-
     }
 
     public void criarRecebimento() {
@@ -148,15 +146,14 @@ public class RecebiFragment extends Fragment {
             transacao.setValor(recebimentoPreenchido);
             transacao.setData(dataRecebimento);
             transacao.setCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
-            transacao.setTipo("Recebimento");
+            transacao.setTipo("Recebi");
             Double recebimentoAtualizado = recebimentoPreenchido + recebimentoTotal;
             atualizarRecebimento(recebimentoAtualizado);
             transacao.salvarTransacao(dataRecebimento);
-            Toast.makeText(getContext(), "Foi cadastrado um novo recebimento!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Valor cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
 
         }
     }
-
 
     public boolean validarCamposRecebimentos() {
 
@@ -168,16 +165,16 @@ public class RecebiFragment extends Fragment {
             if (!valor.isEmpty()) {
                 if (!data.isEmpty()) {
                 } else {
-                    Toast.makeText(getContext(), "Data não foi preenchida", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Você precisa escolher uma data", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 
             } else {
-                Toast.makeText(getContext(), "Valor não foi preenchido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Você precisa precisa definir um valor", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
-            Toast.makeText(getContext(), "Descrição não foi preenchida", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Você precisa descrever o gasto", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -185,17 +182,15 @@ public class RecebiFragment extends Fragment {
 
     }
 
-
     public void criarCategoriaRecebimento (){
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setTitle("Criar categoria de ganhos");
+        dialog.setTitle("Criar nova categoria");
         dialog.setCancelable(true);
         //necessário estes parâmetros pois somente o edittext não aparecia.
         final EditText categoria = new EditText(getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         categoria.setLayoutParams(lp);
         dialog.setView(categoria);
 

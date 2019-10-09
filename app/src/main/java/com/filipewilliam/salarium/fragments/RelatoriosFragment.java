@@ -119,7 +119,7 @@ public class RelatoriosFragment extends Fragment {
                             Transacao transacao = dataSnapshot1.getValue(Transacao.class);
                             listaTransacoes.add(transacao);
 
-                            if(dataSnapshot1.child("tipo").getValue().toString().equals("Gasto")){
+                            if(dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")){
                                 totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
 
                             }else{
@@ -170,39 +170,5 @@ public class RelatoriosFragment extends Fragment {
         }
 
     }
-
-    /*@Override
-    public void onStop() {
-        super.onStop();
-        if(referencia != null){
-            referencia.removeEventListener(eventListener);
-            eventListener = null;
-            referencia = null;
-
-        }
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(referencia != null){
-            referencia.removeEventListener(eventListener);
-            eventListener = null;
-            referencia = null;
-
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(referencia != null){
-            referencia.removeEventListener(eventListener);
-            eventListener = null;
-            referencia = null;
-
-        }
-    }*/
 
 }

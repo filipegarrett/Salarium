@@ -2,6 +2,7 @@ package com.filipewilliam.salarium.fragments;
 
 
 import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
@@ -32,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +44,7 @@ public class GraficosFragment extends Fragment {
 
     private PieChart pieChart;
     private Spinner spinnerGraficos;
+    private TextView textViewAviso;
     private FloatingActionButton floatingActionButtonScreenshot;
     private DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -52,7 +56,6 @@ public class GraficosFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class GraficosFragment extends Fragment {
 
         pieChart = view.findViewById(R.id.pieChartRelatorio);
         spinnerGraficos = view.findViewById(R.id.spinnerGraficos);
+        textViewAviso = view.findViewById(R.id.textViewAvisoGraficos);
         floatingActionButtonScreenshot = view.findViewById(R.id.floatingActionButtonScreenShot);
 
 
@@ -71,6 +75,7 @@ public class GraficosFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getChildrenCount() > 0){
+                    textViewAviso.setVisibility(View.GONE);
                     List<String> listTransacoesMeses = new ArrayList<String>();
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
@@ -82,6 +87,12 @@ public class GraficosFragment extends Fragment {
 
                     }
 
+                }else {
+                    spinnerGraficos.setVisibility(View.GONE);
+                    textViewAviso.setText("Você ainda não tem um histórico de despesas!");
+                    pieChart.setNoDataText("");
+                    pieChart.setNoDataTextColor(android.support.design.R.color.secondary_text_default_material_dark);
+                    pieChart.invalidate();
                 }
 
             }
@@ -104,7 +115,7 @@ public class GraficosFragment extends Fragment {
                         listaDados.clear();
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
 
-                            if(dataSnapshot1.child("tipo").getValue().toString().equals("Gasto")){
+                            if(dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")){
                                 categoriaGasto = String.valueOf(dataSnapshot1.child("categoria").getValue());
                                 valorGasto = Float.parseFloat(String.valueOf(dataSnapshot1.child("valor").getValue()));
                                 listaDados.add(new PieEntry(valorGasto, categoriaGasto));
@@ -121,13 +132,13 @@ public class GraficosFragment extends Fragment {
                         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
                         dados.setValueTextSize(10f);
                         dados.setValueTextColor(Color.WHITE);
-                        //Description descricao = new Description();
-                        //descricao.setText("Seus gastos:");
-                        //pieChart.setDescription(descricao);
+                        /*Description descricao = new Description();
+                        descricao.setText("Seus gastos:");
+                        pieChart.setDescription(descricao);*/
                         pieChart.getDescription().setEnabled(false);
                         pieChart.getLegend().setEnabled(false);
                         pieChart.animateY(3000);
-                        pieChart.setCenterText(spinnerGraficos.getSelectedItem().toString());
+                        pieChart.setCenterText("Seus gastos em " + spinnerGraficos.getSelectedItem().toString().toLowerCase());
                         pieChart.getCenterText();
 
                     }
@@ -148,13 +159,15 @@ public class GraficosFragment extends Fragment {
         floatingActionButtonScreenshot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nomeArquivo = spinnerGraficos.getSelectedItem().toString().replace(" ", "_").toLowerCase() + "_salarium.jpg";
+                SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
+                String dataHora = sdf.format(new Date());
+
+                String nomeArquivo = spinnerGraficos.getSelectedItem().toString().replace(" ", "_").toLowerCase() + dataHora + "_salarium.jpg";
                 pieChart.saveToGallery(nomeArquivo, 100);
 
                 Toast.makeText(getActivity(), "Imagem salva com sucesso na sua galeria!", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         return view;
     }
