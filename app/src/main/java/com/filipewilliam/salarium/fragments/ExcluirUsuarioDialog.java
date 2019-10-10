@@ -1,6 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
         editTextEmail = view.findViewById(R.id.editTextEmailExcluirUsuario);
         editTextSenha = view.findViewById(R.id.editTextSenhaExcluirUsuario);
         String mensagem = "Excluir a sua conta resultará na eliminação completa dos seus dados do Salarium." +
-                "\nPrimeiro você precisa confirmar seu e-mail e senha:";
+                "\n\nPara exlcuir sua conta você precisa confirmar seu e-mail e senha:";
 
         dialog.setView(view)
                 .setTitle("Deseja mesmo excluir a sua conta?")
@@ -54,6 +55,7 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        final Context context = getContext();
                         AuthCredential authCredential = EmailAuthProvider.getCredential(editTextEmail.getText().toString(), editTextSenha.getText().toString());
                         final FirebaseUser usuarioFirebase = FirebaseAuth.getInstance().getCurrentUser();
                         if (usuarioFirebase != null){
