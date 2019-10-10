@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser user = autenticacao.getCurrentUser();
         if(user != null){
             nomeUsuario = user.getDisplayName();
-            System.out.println(nomeUsuario);
         }
 
         autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
@@ -75,14 +74,9 @@ public class MainActivity extends AppCompatActivity
                 if(usuario != null){
                     textViewNomeUsuario.setText(usuario.getDisplayName());
                     textViewEmailUsuario.setText(usuario.getEmail());
-                    System.out.println(usuario.getDisplayName());
                 }
             }
         });
-
-
-        System.out.println(nomeUsuario);
-        //textViewNomeUsuario.setText(nomeUsuario);
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
