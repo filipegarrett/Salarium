@@ -58,7 +58,6 @@ public class ResumoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         recuperarTransacoes();
-        recuperarTotais();
         //inflando layout de resumo
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
@@ -104,29 +103,4 @@ public class ResumoFragment extends Fragment {
     }
 
     //recupera os totais de gastos e recebimentos e mostra saldo atual
-    public void recuperarTotais (){
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        DatabaseReference usuarioRef = referencia.child("usuarios").child(idUsuario);
-
-        usuarioRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                gastoTotal = usuario.getGastoTotal();
-                recebimentoTotal = usuario.getRecebimentoTotal();
-                saldoTotal = recebimentoTotal - gastoTotal;
-                textViewTotalGasto.setText(gastoTotal.toString());
-                textViewTotalRecebido.setText(recebimentoTotal.toString());
-                textViewValorSaldo.setText(saldoTotal.toString());
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 }

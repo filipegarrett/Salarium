@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -65,13 +66,11 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         if(!email.isEmpty()){
                             if(!senha.isEmpty()){
 
-                                Double gastoTotal = 0.0;
                                 usuario = new Usuario();
                                 usuario.setNome(nome);
                                 usuario.setDataNascimento(dataNascimento);
                                 usuario.setEmail(email);
                                 usuario.setSenha(senha);
-                                usuario.setGastoTotal(gastoTotal);
                                 usuario.setToken(token);
                                 cadastrarUsuario();
 
@@ -105,6 +104,20 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
                 if(task.isSuccessful()){
                     final FirebaseUser user = autenticacao.getCurrentUser();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(editTextNome.getText().toString())
+                            .build();
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        //'Log.d(TAG, "User profile updated.");
+                                    }
+                                }
+                            });
+
                     user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
 
                         @Override

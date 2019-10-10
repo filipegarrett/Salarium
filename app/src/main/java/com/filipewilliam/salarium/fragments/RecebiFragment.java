@@ -65,7 +65,6 @@ public class RecebiFragment extends Fragment {
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
         buttonCategoriaTESTE = view.findViewById(R.id.buttonCategoriaTESTE); //BOTÃO CRIADO SÓ PARA PODER TESTAR RELATÓRIOS!!!!!!!!!!!!!!!!!!
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
-        recuperarRecebimentoTotal();
 
         referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
 
@@ -213,27 +212,6 @@ public class RecebiFragment extends Fragment {
 
         dialog.create();
         dialog.show();
-    }
-
-    public void recuperarRecebimentoTotal (){
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        DatabaseReference usuarioRef = referencia.child("usuarios").child( idUsuario );
-
-        usuarioRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                recebimentoTotal = usuario.getRecebimentoTotal();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void atualizarRecebimento (Double recebimento){

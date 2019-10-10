@@ -63,7 +63,6 @@ public class GasteiFragment extends Fragment {
         spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarGasto = view.findViewById(R.id.buttonConfirmarRecebimento);
         fabAdicionarCategoriaGasto = getActivity().findViewById(R.id.fabAdicionarCategoria);
-        recuperarGastoTotal();
 
         referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
@@ -208,27 +207,6 @@ public class GasteiFragment extends Fragment {
 
         dialog.create();
         dialog.show();
-    }
-
-    public void recuperarGastoTotal() {
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        DatabaseReference usuarioRef = referencia.child("usuarios").child(idUsuario);
-
-        usuarioRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                gastoTotal = usuario.getGastoTotal();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void atualizarGasto(Double gasto) {
