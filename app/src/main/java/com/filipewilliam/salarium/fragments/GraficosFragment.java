@@ -1,12 +1,17 @@
 package com.filipewilliam.salarium.fragments;
 
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.RelatoriosActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
@@ -51,6 +57,7 @@ public class GraficosFragment extends Fragment {
     private DateCustom dateCustom;
     private String categoriaGasto;
     private Float valorGasto;
+    private Context context = getContext();
 
     public GraficosFragment() {
         // Required empty public constructor
@@ -159,17 +166,51 @@ public class GraficosFragment extends Fragment {
         floatingActionButtonScreenshot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
-                String dataHora = sdf.format(new Date());
 
-                String nomeArquivo = spinnerGraficos.getSelectedItem().toString().replace(" ", "_").toLowerCase() + dataHora + "_salarium.jpg";
-                pieChart.saveToGallery(nomeArquivo, 100);
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
+                    String dataHora = sdf.format(new Date());
 
-                Toast.makeText(getActivity(), "Imagem salva com sucesso na sua galeria!", Toast.LENGTH_SHORT).show();
+                    String nomeArquivo = spinnerGraficos.getSelectedItem().toString().replace(" ", "_").toLowerCase() + dataHora + "_salarium.jpg";
+                    pieChart.saveToGallery(nomeArquivo, 100);
+
+                    Toast.makeText(getActivity(), "Imagem salva com sucesso na sua galeria!", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                }
             }
-        });
 
+        });
         return view;
     }
 
 }
+
+    /*final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+
+    private void requestPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat
+                    .requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }*/

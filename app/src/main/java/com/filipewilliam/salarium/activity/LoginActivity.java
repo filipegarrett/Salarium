@@ -1,11 +1,13 @@
 package com.filipewilliam.salarium.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -29,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
+
     TextView resetarSenha, reenviarEmail;
     private ProgressBar progressBarLogin;
     private Button botaoEntrar, reset;
@@ -52,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                esconderTeclado();
                 String email = editTextEmail.getText().toString();
                 String senha = editTextSenha.getText().toString();
 
@@ -173,6 +177,15 @@ public class LoginActivity extends AppCompatActivity {
         final String usuarioToken = MyFirebaseMessagingService.retornaToken(getApplicationContext());
         final String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
         usuario.salvarToken(usuarioToken, idUsuario);
+
+    }
+
+    public void esconderTeclado(){
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch(Exception ignored) {
+        }
 
     }
 
