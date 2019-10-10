@@ -35,7 +35,6 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
     private Button botaoCadastrarUsuario;
     private FirebaseAuth autenticacao;
     private Usuario usuario;
-    private DatasMaskWatcher maskDataNascimento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
         editTextNome = findViewById(R.id.editTextNome);
         editTextDataNascimento = findViewById(R.id.editTextDadaNascimento);
-        editTextDataNascimento.addTextChangedListener(maskDataNascimento.aplicarMaskDataNascimento());
+        editTextDataNascimento.addTextChangedListener(DatasMaskWatcher.aplicarMaskDataNascimento());
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
         botaoCadastrarUsuario = findViewById(R.id.buttonEntrar);

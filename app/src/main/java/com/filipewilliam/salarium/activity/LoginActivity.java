@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +29,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
-    private TextView resetarSenha, reenviarEmail;
+    TextView resetarSenha, reenviarEmail;
+    private ProgressBar progressBarLogin;
     private Button botaoEntrar, reset;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
@@ -44,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         botaoEntrar = findViewById(R.id.buttonEntrar);
         resetarSenha = findViewById(R.id.textViewResetarSenha);
         reenviarEmail = findViewById(R.id.textViewReenviarEmail);
+        progressBarLogin = findViewById(R.id.progressBarLogin);
 
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
 
@@ -54,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!email.isEmpty()){
                     if(!senha.isEmpty()){
+                        botaoEntrar.setVisibility(View.INVISIBLE);
+                        progressBarLogin.setVisibility(View.VISIBLE);
                         usuario = new Usuario();
                         usuario.setEmail(email);
                         usuario.setSenha(senha);
@@ -101,9 +106,13 @@ public class LoginActivity extends AppCompatActivity {
                         abrirMainActivity();
 
                     }else{
+                        botaoEntrar.setVisibility(View.VISIBLE);
+                        progressBarLogin.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "Por favor, confirme sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
                     }
                 }else{
+                    botaoEntrar.setVisibility(View.VISIBLE);
+                    progressBarLogin.setVisibility(View.GONE);
                     String excecao = "";
                     try{
                         throw task.getException();

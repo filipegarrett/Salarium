@@ -101,10 +101,10 @@ public class Usuario {
 
     }
 
-    public void removerUsuarioFirebase(){
+    public void removerUsuarioFirebase(String id){
         DatabaseReference firebase = ConfiguracaoFirebase.getFirebaseDatabase();
         firebase.child("usuarios")
-                .child(this.idUsuario).removeValue();
+                .child(id).removeValue();
     }
 
 }
