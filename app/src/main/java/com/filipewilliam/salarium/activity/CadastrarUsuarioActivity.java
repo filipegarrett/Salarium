@@ -106,10 +106,10 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                     final FirebaseUser user = autenticacao.getCurrentUser();
 
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(editTextNome.getText().toString()).build();
+                            .setDisplayName(editTextNome.getText().toString())
+                            .build();
 
-                    user.updateProfile(profileUpdates)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
