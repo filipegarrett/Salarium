@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
-    private TextView resetarSenha, reenviarEmail;
+    TextView resetarSenha, reenviarEmail;
     private ProgressBar progressBarLogin;
     private Button botaoEntrar, reset;
     private Usuario usuario;

@@ -146,8 +146,6 @@ public class RecebiFragment extends Fragment {
             transacao.setData(dataRecebimento);
             transacao.setCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
             transacao.setTipo("Recebi");
-            Double recebimentoAtualizado = recebimentoPreenchido + recebimentoTotal;
-            atualizarRecebimento(recebimentoAtualizado);
             transacao.salvarTransacao(dataRecebimento);
             Toast.makeText(getContext(), "Valor cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
 

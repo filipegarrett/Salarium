@@ -138,8 +138,6 @@ public class GasteiFragment extends Fragment {
             transacao.setData(dataGasto);
             transacao.setCategoria(spinnerCategoriaGasto.getSelectedItem().toString());
             transacao.setTipo("Gastei");
-            Double gastoAtualizado = gastoPreenchido + gastoTotal;
-            atualizarGasto(gastoAtualizado);
             transacao.salvarTransacao(dataGasto);
             Toast.makeText(getContext(), "Valor cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
 
@@ -209,11 +207,5 @@ public class GasteiFragment extends Fragment {
         dialog.show();
     }
 
-    public void atualizarGasto(Double gasto) {
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        referencia.child("usuarios").child(idUsuario).child("gastoTotal").setValue(gasto);
-    }
 
 }
