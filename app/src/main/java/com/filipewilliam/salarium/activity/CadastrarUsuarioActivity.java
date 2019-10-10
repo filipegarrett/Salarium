@@ -1,13 +1,16 @@
 package com.filipewilliam.salarium.activity;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
@@ -33,6 +36,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
     private EditText editTextNome, editTextDataNascimento, editTextEmail, editTextSenha;
     private Button botaoCadastrarUsuario;
+    private ProgressBar progressBarCadastrarUsuario;
     private FirebaseAuth autenticacao;
     private Usuario usuario;
 
@@ -47,12 +51,14 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
         editTextDataNascimento.addTextChangedListener(DatasMaskWatcher.aplicarMaskDataNascimento());
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
+        progressBarCadastrarUsuario = findViewById(R.id.progressBarCadastrarUsuario);
         botaoCadastrarUsuario = findViewById(R.id.buttonEntrar);
 
         botaoCadastrarUsuario.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+                esconderTeclado();
                 String nome = editTextNome.getText().toString();
                 String dataNascimento = editTextDataNascimento.getText().toString();
                 String email = editTextEmail.getText().toString();
@@ -64,6 +70,8 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                     if(!dataNascimento.isEmpty()){
                         if(!email.isEmpty()){
                             if(!senha.isEmpty()){
+                                botaoCadastrarUsuario.setVisibility(View.GONE);
+                                progressBarCadastrarUsuario.setVisibility(View.VISIBLE);
 
                                 usuario = new Usuario();
                                 usuario.setNome(nome);
@@ -122,12 +130,16 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+                                progressBarCadastrarUsuario.setVisibility(View.GONE);
+                                botaoCadastrarUsuario.setVisibility(View.VISIBLE);
 
                                 String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
                                 usuario.setIdUsuario(idUsuario);
                                 usuario.salvarUsuarioFirebase();
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para " + user.getEmail(), Toast.LENGTH_SHORT).show();
                             }else{
+                                progressBarCadastrarUsuario.setVisibility(View.GONE);
+                                botaoCadastrarUsuario.setVisibility(View.VISIBLE);
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Ocorreu uma falha na verificação de seu e-mail", Toast.LENGTH_SHORT).show();
 
                             }
@@ -160,6 +172,15 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
         final String usuarioToken = MyFirebaseMessagingService.retornaToken(getApplicationContext());
         return usuarioToken;
+
+    }
+
+    public void esconderTeclado(){
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch(Exception ignored) {
+        }
 
     }
 
