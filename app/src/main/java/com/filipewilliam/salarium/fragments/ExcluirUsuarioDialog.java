@@ -48,12 +48,13 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
                         usuario.setIdUsuario(Base64Custom.codificarBase64(usuarioFirebase.getEmail()));
                         usuario.getIdUsuario();
                         usuario.removerUsuarioFirebase();
-                        autenticacao.signOut();
+                        //autenticacao.signOut();
                         usuarioFirebase.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(dialog.getContext(), "Usuário excluído com sucesso!", Toast.LENGTH_LONG).show();
+                                    autenticacao.signOut();
 
                                 } else {
                                     Toast.makeText(dialog.getContext(), "Ocorreu um erro na exclusão da sua conta", Toast.LENGTH_SHORT).show();

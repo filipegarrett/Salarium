@@ -2,6 +2,7 @@ package com.filipewilliam.salarium.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
@@ -25,6 +26,7 @@ import com.filipewilliam.salarium.fragments.ResumoFragment;
 import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity
 
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
+    private TextView textViewNomeUsuario, textViewEmailUsuario;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private Usuario usuario;
@@ -54,6 +57,32 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        textViewNomeUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewNomeUsuarioHeader);
+        textViewEmailUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewEmailUsuarioHeader);
+
+        String nomeUsuario = "";
+        FirebaseUser user = autenticacao.getCurrentUser();
+        if(user != null){
+            nomeUsuario = user.getDisplayName();
+            System.out.println(nomeUsuario);
+        }
+
+        autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser usuario = firebaseAuth.getCurrentUser();
+                if(usuario != null){
+                    textViewNomeUsuario.setText(usuario.getDisplayName());
+                    textViewEmailUsuario.setText(usuario.getEmail());
+                    System.out.println(usuario.getDisplayName());
+                }
+            }
+        });
+
+
+        System.out.println(nomeUsuario);
+        //textViewNomeUsuario.setText(nomeUsuario);
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
