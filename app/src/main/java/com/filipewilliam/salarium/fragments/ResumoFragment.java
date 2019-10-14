@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
 import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class ResumoFragment extends Fragment {
 
-    private List<Transacao> listaTransacoes = new ArrayList<>();
+    private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
     private DateCustom dateCustom;
     private UltimasTransacoesAdapter adapterTransacoes;
@@ -67,7 +68,6 @@ public class ResumoFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewTransacoes.setLayoutManager(layoutManager);
         recyclerViewTransacoes.setHasFixedSize(true);
-        recyclerViewTransacoes.addItemDecoration(new DividerItemDecoration(this.getContext(), ((LinearLayoutManager) layoutManager).getOrientation()));
 
         return view;
 
@@ -88,7 +88,7 @@ public class ResumoFragment extends Fragment {
                     listaTransacoes.add(transacao);
                 }
 
-                UltimasTransacoesAdapter adapterTransacoes = new UltimasTransacoesAdapter(listaTransacoes);
+                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(getActivity(), listaTransacoes);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
 
             }

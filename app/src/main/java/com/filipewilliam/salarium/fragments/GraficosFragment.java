@@ -28,6 +28,7 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -54,7 +55,6 @@ public class GraficosFragment extends Fragment {
     private FloatingActionButton floatingActionButtonScreenshot;
     private DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DateCustom dateCustom;
     private String categoriaGasto;
     private Float valorGasto;
     private Context context = getContext();
@@ -85,7 +85,7 @@ public class GraficosFragment extends Fragment {
                     textViewAviso.setVisibility(View.GONE);
                     List<String> listTransacoesMeses = new ArrayList<String>();
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                        listTransacoesMeses.add(DateCustom.formatarMesAno(dataSnapshot1.getKey()));
                         Collections.reverse(listTransacoesMeses);
 
                         ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
@@ -114,7 +114,7 @@ public class GraficosFragment extends Fragment {
         spinnerGraficos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String item = dateCustom.formataMesAnoFirebase((String) adapterView.getItemAtPosition(i));
+                String item = DateCustom.formataMesAnoFirebase((String) adapterView.getItemAtPosition(i));
 
                 referencia.child("usuarios").child(idUsuario).child("transacao").child(item).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -131,21 +131,31 @@ public class GraficosFragment extends Fragment {
 
                         }
 
-                        PieDataSet dataSet = new PieDataSet(listaDados, "");
+                        PieDataSet dataSet = new PieDataSet(listaDados, ""); //dataSet é o objeto que condensa os dados (valores e categoria) que usamos no gráfico
                         PieData dados = new PieData(dataSet);
 
-                        dados.setValueFormatter(new FormatarValoresHelper());
-                        pieChart.setData(dados);
-                        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-                        dados.setValueTextSize(10f);
-                        dados.setValueTextColor(Color.WHITE);
+                        dados.setValueFormatter(new FormatarValoresHelper()); //manda o valor bruto - 45.0 - para a classe de apoio que trata o valor e o devolve no formato correto: R$ 45.00, por exemplo
+                        pieChart.setData(dados); //define que nosso gráfico pieChart usará o dataSet dados
+                        dataSet.setColors(ColorTemplate.MATERIAL_COLORS); //configura as cores das fatias
+                        dataSet.setSliceSpace(2f); //define uma linha branca entre as fatias com espessura de 2.0
+                        dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);//define que a categoria do gasto será inscrita dentro das fatias
+                        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);//define que os valores serão escritos fora
+                        dataSet.setValueLinePart1OffsetPercentage(80.f);//offset da linha que aponta para o valor
+                        dataSet.setValueLinePart1Length(0.4f);//comprimeto da primeira perna da linha
+                        dataSet.setValueLinePart2Length(0.1f);//comprimento da segunda perna da linha
+
+                        dados.setValueTextSize(12f); //instrui o tamanho da fonte dos textos
+                        dados.setValueTextColor(Color.BLACK);//define a cor usada nos valores
                         /*Description descricao = new Description();
                         descricao.setText("Seus gastos:");
                         pieChart.setDescription(descricao);*/
                         pieChart.getDescription().setEnabled(false);
                         pieChart.getLegend().setEnabled(false);
-                        pieChart.animateY(3000);
-                        pieChart.setCenterText("Seus gastos em " + spinnerGraficos.getSelectedItem().toString().toLowerCase());
+                        pieChart.setExtraOffsets(5, 2, 5, 2);//offset do gráfico dentro do elemento pieChart do layout
+
+                        pieChart.setDragDecelerationFrictionCoef(0.95f);//define uma inércia para o gesto de girar o gráfico
+                        pieChart.animateY(2000);//tempo da animação de carregamento do gráfico
+                        pieChart.setCenterText("Seus gastos em " + spinnerGraficos.getSelectedItem().toString().toLowerCase());//constroi o texto no miolo do gráfico
                         pieChart.getCenterText();
 
                     }
@@ -186,31 +196,3 @@ public class GraficosFragment extends Fragment {
     }
 
 }
-
-    /*final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-
-    private void requestPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat
-                    .requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_PERMISSIONS:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission Granted
-                    Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    // Permission Denied
-                    Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT)
-                            .show();
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }*/

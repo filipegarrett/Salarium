@@ -34,7 +34,7 @@ public class MetasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Metas:");
+        getSupportActionBar().setTitle("Metas");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metas);
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
