@@ -127,7 +127,6 @@ public class DateCustom {
 
         return mesAnoFirebase = mesAnoF.format(date);
 
-
     }
 
 }

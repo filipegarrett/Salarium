@@ -131,32 +131,44 @@ public class GraficosFragment extends Fragment {
 
                         }
 
-                        PieDataSet dataSet = new PieDataSet(listaDados, ""); //dataSet é o objeto que condensa os dados (valores e categoria) que usamos no gráfico
-                        PieData dados = new PieData(dataSet);
+                        if(!listaDados.isEmpty()){
+                            PieDataSet dataSet = new PieDataSet(listaDados, ""); //dataSet é o objeto que condensa os dados (valores e categoria) que usamos no gráfico
+                            PieData dados = new PieData(dataSet);
 
-                        dados.setValueFormatter(new FormatarValoresHelper()); //manda o valor bruto - 45.0 - para a classe de apoio que trata o valor e o devolve no formato correto: R$ 45.00, por exemplo
-                        pieChart.setData(dados); //define que nosso gráfico pieChart usará o dataSet dados
-                        dataSet.setColors(ColorTemplate.MATERIAL_COLORS); //configura as cores das fatias
-                        dataSet.setSliceSpace(2f); //define uma linha branca entre as fatias com espessura de 2.0
-                        dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);//define que a categoria do gasto será inscrita dentro das fatias
-                        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);//define que os valores serão escritos fora
-                        dataSet.setValueLinePart1OffsetPercentage(80.f);//offset da linha que aponta para o valor
-                        dataSet.setValueLinePart1Length(0.4f);//comprimeto da primeira perna da linha
-                        dataSet.setValueLinePart2Length(0.1f);//comprimento da segunda perna da linha
+                            dados.setValueFormatter(new FormatarValoresHelper()); //manda o valor bruto - 45.0 - para a classe de apoio que trata o valor e o devolve no formato correto: R$ 45.00, por exemplo
+                            pieChart.setData(dados); //define que nosso gráfico pieChart usará o dataSet dados
+                            dataSet.setColors(ColorTemplate.MATERIAL_COLORS); //configura as cores das fatias
+                            dataSet.setSliceSpace(2f); //define uma linha branca entre as fatias com espessura de 2.0
+                            dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);//define que a categoria do gasto será inscrita dentro das fatias
+                            dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);//define que os valores serão escritos fora
+                            dataSet.setValueLinePart1OffsetPercentage(80.f);//offset da linha que aponta para o valor
+                            dataSet.setValueLinePart1Length(0.4f);//comprimeto da primeira perna da linha
+                            dataSet.setValueLinePart2Length(0.1f);//comprimento da segunda perna da linha
 
-                        dados.setValueTextSize(12f); //instrui o tamanho da fonte dos textos
-                        dados.setValueTextColor(Color.BLACK);//define a cor usada nos valores
-                        /*Description descricao = new Description();
-                        descricao.setText("Seus gastos:");
-                        pieChart.setDescription(descricao);*/
-                        pieChart.getDescription().setEnabled(false);
-                        pieChart.getLegend().setEnabled(false);
-                        pieChart.setExtraOffsets(5, 2, 5, 2);//offset do gráfico dentro do elemento pieChart do layout
+                            dados.setValueTextSize(12f); //instrui o tamanho da fonte dos textos
+                            dados.setValueTextColor(Color.BLACK);//define a cor usada nos valores
+                            /*Description descricao = new Description();
+                            descricao.setText("Seus gastos:");
+                            pieChart.setDescription(descricao);*/
+                            pieChart.getDescription().setEnabled(false);
+                            pieChart.getLegend().setEnabled(false);
+                            pieChart.setExtraOffsets(5, 2, 5, 2);//offset do gráfico dentro do elemento pieChart do layout
 
-                        pieChart.setDragDecelerationFrictionCoef(0.95f);//define uma inércia para o gesto de girar o gráfico
-                        pieChart.animateY(2000);//tempo da animação de carregamento do gráfico
-                        pieChart.setCenterText("Seus gastos em " + spinnerGraficos.getSelectedItem().toString().toLowerCase());//constroi o texto no miolo do gráfico
-                        pieChart.getCenterText();
+                            pieChart.setDragDecelerationFrictionCoef(0.95f);//define uma inércia para o gesto de girar o gráfico
+                            pieChart.animateY(2000);//tempo da animação de carregamento do gráfico
+                            pieChart.setCenterText("Seus gastos em " + spinnerGraficos.getSelectedItem().toString().toLowerCase());//constroi o texto no miolo do gráfico
+                            pieChart.getCenterText();
+
+                        }else{
+                            System.out.println(listaDados.isEmpty());
+                            System.out.println(listaDados.size());
+                            spinnerGraficos.setVisibility(View.GONE);
+                            textViewAviso.setVisibility(View.VISIBLE);
+                            textViewAviso.setText("Você ainda não tem um histórico de despesas!");
+                            pieChart.setNoDataText("");
+                            pieChart.setNoDataTextColor(android.support.design.R.color.secondary_text_default_material_dark);
+                            pieChart.invalidate();
+                        }
 
                     }
 

@@ -32,7 +32,7 @@
                 android:text="TIPO"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
                 android:text="R$ ?.???,??"
                 android:textAlignment="textEnd"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

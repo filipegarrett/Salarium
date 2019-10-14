@@ -27,7 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
 
-    private FirebaseAuth autenticacao;
     private EditText editTextEmail;
     private EditText editTextSenha;
 
@@ -55,7 +54,6 @@ public class ExcluirUsuarioDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        final Context context = getContext();
                         AuthCredential authCredential = EmailAuthProvider.getCredential(editTextEmail.getText().toString(), editTextSenha.getText().toString());
                         final FirebaseUser usuarioFirebase = FirebaseAuth.getInstance().getCurrentUser();
                         if (usuarioFirebase != null){
