@@ -21,6 +21,7 @@
             android:ems="10"
             android:hint="Descrição do gasto"
             android:inputType="textPersonName"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,6 +61,7 @@
             android:ems="10"
             android:hint="R$ 0.00"
             android:inputType="number"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextDescricaoGasto" />
@@ -91,6 +93,7 @@
             android:focusable="false"
             android:hint="Data"
             android:inputType="date"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextValorGasto" />

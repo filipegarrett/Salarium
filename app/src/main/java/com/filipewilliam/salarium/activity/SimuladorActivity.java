@@ -27,7 +27,6 @@ import java.util.Date;
 
 public class SimuladorActivity extends AppCompatActivity {
 
-    private Spinner spinnerTiposIvestimentos;
     private TextView textViewMesesSimulados, textViewResultadoTexto, textViewResultadoSimulacao, textViewRendimentoTexto, textViewResultadoRendimento, textViewPeriodoCDB;
     private Button buttonLimparCampos, buttonCalcularSimulacao;
     private SeekBar seekBarQuantidadeMeses;
@@ -51,7 +50,6 @@ public class SimuladorActivity extends AppCompatActivity {
             }
         });
 
-        spinnerTiposIvestimentos = findViewById(R.id.spinnerTipoInvestimento);
         textViewMesesSimulados = findViewById(R.id.textViewMesesSimulacao);
         textViewResultadoTexto = findViewById(R.id.textViewResultadoTexto);
         textViewResultadoSimulacao = findViewById(R.id.textViewResultadoSimulacao);
@@ -66,36 +64,6 @@ public class SimuladorActivity extends AppCompatActivity {
         editTextValorSimulacao.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorSimulacao));
         editTextValorDepositoMensal = findViewById(R.id.editTextValorDepositoMensal);
         editTextValorDepositoMensal.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorDepositoMensal));
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
-                R.array.arrayTiposInvestimentos, android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinnerTiposIvestimentos.setAdapter(adapter);
-        spinnerTiposIvestimentos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(spinnerTiposIvestimentos.getSelectedItem().toString().equals("Poupança")){
-                    seekBarQuantidadeMeses.setEnabled(true);
-                    editTextValorDepositoMensal.setEnabled(true);
-                    textViewMesesSimulados.setText(" meses");
-                    textViewPeriodoCDB.setText("");
-
-                }else{
-                    seekBarQuantidadeMeses.setEnabled(false);
-                    editTextValorDepositoMensal.setEnabled(false);
-                    textViewMesesSimulados.setText("");
-                    textViewPeriodoCDB.setText("");
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         seekBarQuantidadeMeses.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -127,17 +95,11 @@ public class SimuladorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (spinnerTiposIvestimentos.getSelectedItem().toString().equals("Poupança")){
-
-                    if(editTextValorDepositoMensal.getText().toString().isEmpty()){
-                        editTextValorDepositoMensal.setText("0,0");
-                        simularPoupanca();
-                    }else{
-                        simularPoupanca();
-                    }
-
+                if(editTextValorDepositoMensal.getText().toString().isEmpty()){
+                    editTextValorDepositoMensal.setText("0,0");
+                    simularPoupanca();
                 }else{
-                    simularTesouro();
+                    simularPoupanca();
                 }
 
             }
@@ -171,6 +133,7 @@ public class SimuladorActivity extends AppCompatActivity {
             textViewResultadoSimulacao.setText(resultadoTratado);
             textViewResultadoRendimento.setText(rendimento);
             editTextValorSimulacao.setText("");
+            editTextValorDepositoMensal.setText("");
             seekBarQuantidadeMeses.setProgress(0);
             esconderTeclado();
             zerarVariaveis();
