@@ -18,9 +18,9 @@ public class AjudaInvestimentosDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.layout_ajuda_investimentos_dialog, null);
         String textoAjuda = "1- Para a Poupança, usamos a taxa de rendimento definida pelo Banco Central em https://www4.bcb.gov.br/pec/poupanca/poupanca.asp?frame=1" +
-                            "\n\n2- Calculos de CDB Prefixado consideram um rendimento de 7% ao ano e imposto de renda de 15% sobre o rendimento da aplicação" +
-                            "\n\n3- Caso você opte por um investimento de renda fixa, é importante considerar que as taxas e prazos de rendimento variam de instituição para instituição" +
-                            "\n\n4- Outro ponto a ser considerado é que instituições financeiras que oferecem esse investimento também irão cobrar uma taxa de administração mensalmente";
+                            "\n\n2- A Poupança é um bom investimento para você começar a criar um hábito de economizar e se acostumar a como o mercado financeiro funciona" +
+                            "\n\n3- Embora ofereça uma taxa de rendimento relativamente baixa, a Poupança é interessante porque permite resgate do capital a qualquer momento" +
+                            "\n\n4- Outra vantagem desse tipo de investimento é a ausência de custos como imposto de renda";
 
         dialog.setView(view)
                 .setTitle("Sobre as simulações")

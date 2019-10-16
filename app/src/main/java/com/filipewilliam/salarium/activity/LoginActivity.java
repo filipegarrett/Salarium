@@ -83,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 resetarSenha();
-
             }
         });
 
@@ -161,7 +160,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }else {
                         Toast.makeText(LoginActivity.this, "Tente novamente mais tarde", Toast.LENGTH_LONG).show();
-
                     }
                 }
             });

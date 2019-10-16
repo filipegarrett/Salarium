@@ -176,7 +176,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        buttonLimparCamposContasVencer.setOnClickListener( new View.OnClickListener() {
+        buttonLimparCamposContasVencer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 limparCampos();
@@ -269,7 +269,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                     long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
                     if(Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte){
                         dataSnapshot1.getRef().removeValue();
-
                     }
                 }
             }
