@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Notificações e rede">
+
+        <SwitchPreference
+            app:key="notificações"
+            app:title="Notificações"
+            android:summary="Desative todas as notificações do Salarium"
+            android:defaultValue="false"/>
+
+        <SwitchPreference
+            app:key="rede"
+            app:title="Redes"
+            android:summary="O Salarium passará a usar apenas redes Wi-Fi"
+            android:defaultValue="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Geral">
+
+        <Preference
+            app:key="resetarSenha"
+            app:title="Mudar senha"/>
+
+        <Preference
+            app:key="excluirUsuario"
+            app:title="Excluir sua conta"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Contato">
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -16,11 +16,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="Descrição do gasto"
             android:inputType="textPersonName"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,6 +61,7 @@
             android:ems="10"
             android:hint="R$ 0.00"
             android:inputType="number"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextDescricaoGasto" />
@@ -73,6 +75,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/corBotoesConfirma"
+            android:background="@drawable/botao_arredondado"
             android:text="Confirmar"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,6 +94,7 @@
             android:focusable="false"
             android:hint="Data"
             android:inputType="date"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextValorGasto" />

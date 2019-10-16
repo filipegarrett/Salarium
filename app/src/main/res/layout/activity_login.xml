@@ -77,6 +77,7 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/colorPrimary"
+        android:background="@drawable/botao_arredondado"
         android:text="Entrar"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"

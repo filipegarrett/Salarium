@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -107,7 +108,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
                     }
                 }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker();//.setMinDate(System.currentTimeMillis());
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
@@ -141,6 +142,12 @@ public class ContasVencerActivity extends AppCompatActivity {
                     if(!editTextDataVencimentoContasVencer.getText().toString().isEmpty()){
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             if(switchEmitirNotificacaoVencimento.isChecked()){
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("notificacoes", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean("valorSwitch", switchEmitirNotificacaoVencimento.isChecked());
+                                editor.apply();
+
                                 long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
                                 criarNotificacao(true, timeStampVencimento);
                                 cadastrarContasVencer();
@@ -169,7 +176,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        buttonLimparCamposContasVencer.setOnClickListener( new View.OnClickListener() {
+        buttonLimparCamposContasVencer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 limparCampos();
@@ -262,7 +269,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                     long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
                     if(Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte){
                         dataSnapshot1.getRef().removeValue();
-
                     }
                 }
             }
