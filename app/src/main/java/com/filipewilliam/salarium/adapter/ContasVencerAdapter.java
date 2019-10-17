@@ -47,7 +47,6 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ContasVencerViewHolder contasVencerViewHolder, final int i) {
-
         contasVencerViewHolder.categoria.setText(contasVencerArrayList.get(i).getCategoria());
         contasVencerViewHolder.valor.setText(tratarValores.tratarValores(contasVencerArrayList.get(i).getValor()));
         contasVencerViewHolder.dataVencimento.setText("Vence em: " + contasVencerArrayList.get(i).getDataVencimento());

@@ -29,6 +29,7 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -165,6 +166,10 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, SimuladorActivity.class);
             startActivity(intent);
 
+        } else if (id == R.id.nav_gerarRelatorios) {
+            Intent intent = new Intent(this, RelatoriosActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_configuracoes) {
             Intent intent = new Intent(this, ConfiguracoesActivity.class);
             startActivity(intent);
@@ -188,28 +193,27 @@ public class MainActivity extends AppCompatActivity
         String emailUsuario = autenticacao.getCurrentUser().getEmail();
         String idUsuario = Base64Custom.codificarBase64(emailUsuario);
         DatabaseReference referenciaUsuarios = FirebaseDatabase.getInstance().getReference();
-        referenciaUsuarios.child("usuarios").child(idUsuario).child("nome");
+        referenciaUsuarios.child("usuarios").child(idUsuario);
 
         if (usuario != null) {
             referenciaUsuarios.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        Usuario usuario =userSnapshot.getValue(Usuario.class);
-                        nomeUsuario = usuario.getNome();
-                       // Log.i("Firebase", usuario.getNome());
+                   // String nome = dataSnapshot.child("nome").getValue(Usuario.class).toString();
+                    textViewEmailUsuarioLogado.setText(usuario.getEmail());
+                    //textViewNomeUsuarioLogado.setText(nome);
+
                     }
 
-                }
+
+
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
-            textViewNomeUsuarioLogado.setText(nomeUsuario);
-            textViewEmailUsuarioLogado.setText(usuario.getEmail());
-            textViewNomeUsuarioLogado.setText(nomeUsuario);
+
 
             if (usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
 

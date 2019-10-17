@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,15 +85,14 @@ public class ResumoFragment extends Fragment {
         referenciaTransacoes.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    listaTransacoes.clear();
-                    for (DataSnapshot dados: dataSnapshot.getChildren()){
-                        Transacao transacao = dados.getValue(Transacao.class);
-                        listaTransacoes.add(transacao);
+                listaTransacoes.clear();
+                for (DataSnapshot dados: dataSnapshot.getChildren()){
+                    Transacao transacao = dados.getValue(Transacao.class);
+                    listaTransacoes.add(transacao);
+                }
 
-                    }
-
-                    UltimasTransacoesAdapter adapterTransacoes = new UltimasTransacoesAdapter(listaTransacoes);
-                    recyclerViewTransacoes.setAdapter(adapterTransacoes);
+                UltimasTransacoesAdapter adapterTransacoes = new UltimasTransacoesAdapter(listaTransacoes);
+                recyclerViewTransacoes.setAdapter(adapterTransacoes);
 
             }
 
@@ -112,7 +110,7 @@ public class ResumoFragment extends Fragment {
 
         String emailUsuario = autenticacao.getCurrentUser().getEmail();
         String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        DatabaseReference usuarioRef = referencia.child("usuarios").child( idUsuario );
+        DatabaseReference usuarioRef = referencia.child("usuarios").child(idUsuario);
 
         usuarioRef.addValueEventListener(new ValueEventListener() {
             @Override

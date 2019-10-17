@@ -138,7 +138,7 @@ public class GasteiFragment extends Fragment {
             transacao.setValor(gastoPreenchido);
             transacao.setData(dataGasto);
             transacao.setCategoria(spinnerCategoriaGasto.getSelectedItem().toString());
-            transacao.setTipo("Gasto");
+            transacao.setTipo("Gastei");
             Double gastoAtualizado = gastoPreenchido + gastoTotal;
             atualizarGasto(gastoAtualizado);
             transacao.salvarTransacao(dataGasto);

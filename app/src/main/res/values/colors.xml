@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00796B</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#1976D2</color>
+    <color name="colorPrimary">#085E41</color>
+    <color name="colorPrimaryDark">#042F21</color>
+    <color name="colorAccent">#E54B4B</color>
     <color name="corIntroFundo1">#81D4FA</color>
     <color name="corIntroFundo2">#FFCC80</color>
     <color name="corIntroFundo3">#A5D6A7</color>
     <color name="corIntroFundo4">#F48FB1</color>
-    <color name="corBotoesConfirma">#4CAF50</color>
-    <color name="corBotoesCancela">#F44336</color>
-    <color name="corBotaoDesabilitado">#7AB8B1</color>
-    <color name="corFundoCardViewDespesa">#FFB8B9</color>
-    <color name="corFundoCardViewRecebido">#B8FFC1</color>
+    <color name="corBotoesConfirma">#149911</color>
+    <color name="corBotoesCancela">#FB3640</color>
+    <color name="corBotaoDesabilitado">#94D092</color>
+    <color name="corFundoCardViewDespesa">#D1495B</color>
+    <color name="corFundoCardViewRecebido">#06D6A0</color>
     <color name="corFundoCardViewSwipe">#FC1414</color>
 
 </resources>

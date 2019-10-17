@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateCustom {
 
@@ -18,14 +19,44 @@ public class DateCustom {
 
     }
 
-    public static String formatarDiaMesAno(String data) {
-        String retornoData[] = data.split("/");
-        String dia = retornoData[0];
-        String mes = retornoData[1];
-        String ano = retornoData[2];
+    public static String formatarMesAno(String data) {
+        String mesAno = "";
 
-        String diaMesAno = dia + mes + ano;
-        return diaMesAno;
+        if(data.startsWith("1")){
+            StringBuilder sb = new StringBuilder(data);
+            String dataBarra = String.valueOf(sb.insert(2, "/"));
+
+            SimpleDateFormat mesPadrao = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+            SimpleDateFormat dataEntrada = new SimpleDateFormat("MM/yyyy");
+
+            Date date = null;
+            try {
+                date = dataEntrada.parse(dataBarra);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            mesAno = mesPadrao.format(date);
+
+        }else{
+            StringBuilder sb = new StringBuilder(data);
+            String dataBarra = String.valueOf(sb.insert(1, "/"));
+
+            SimpleDateFormat mesPadrao = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+            SimpleDateFormat dataEntrada = new SimpleDateFormat("MM/yyyy");
+
+            Date date = null;
+            try {
+                date = dataEntrada.parse(dataBarra);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            mesAno = mesPadrao.format(date);
+        }
+
+        return mesAno;
+
     }
 
     public static String retornaMesAno(){
@@ -76,6 +107,24 @@ public class DateCustom {
             System.out.println("Exception :" + e);
             return null;
         }
+    }
+
+    public static String formataMesAnoFirebase(String mesAnoExtenso){
+        String mesAnoFirebase = "";
+
+        SimpleDateFormat dataEntrada = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+        SimpleDateFormat mesAnoF = new SimpleDateFormat("MMyyyy");
+
+        Date date = null;
+        try {
+            date = dataEntrada.parse(mesAnoExtenso);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return mesAnoFirebase = mesAnoF.format(date);
+
+
     }
 
 }

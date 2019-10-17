@@ -45,7 +45,7 @@ public class RecebiFragment extends Fragment {
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
     private FloatingActionButton fabAdicionarCategoriaRecebimento;
-    private Button buttonCriarRecebimento;
+    private Button buttonCriarRecebimento, buttonCategoriaTESTE;
     private Double recebimentoTotal;
 
     public RecebiFragment() {
@@ -63,6 +63,7 @@ public class RecebiFragment extends Fragment {
         editTextDataSelecionadaRecebimento = view.findViewById(R.id.editTextDataRecebimento);
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
+        //buttonCategoriaTESTE = view.findViewById(R.id.buttonCategoriaTESTE); //BOTÃO CRIADO SÓ PARA PODER TESTAR RELATÓRIOS!!!!!!!!!!!!!!!!!!
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
         recuperarRecebimentoTotal();
 
@@ -108,6 +109,14 @@ public class RecebiFragment extends Fragment {
         });
 
         //criar categoria
+       /* buttonCategoriaTESTE.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                criarCategoriaRecebimento();
+
+            }
+        }); */
+
         fabAdicionarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +148,7 @@ public class RecebiFragment extends Fragment {
             transacao.setValor(recebimentoPreenchido);
             transacao.setData(dataRecebimento);
             transacao.setCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
-            transacao.setTipo("Recebimento");
+            transacao.setTipo("Recebi");
             Double recebimentoAtualizado = recebimentoPreenchido + recebimentoTotal;
             atualizarRecebimento(recebimentoAtualizado);
             transacao.salvarTransacao(dataRecebimento);
