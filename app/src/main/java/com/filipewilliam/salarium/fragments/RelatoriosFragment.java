@@ -73,13 +73,15 @@ public class RelatoriosFragment extends Fragment {
         recyclerViewRelatorio.setHasFixedSize(true);
 
         final ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-        referencia.child("usuarios").child(idUsuario).child("transacao").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+        final List<String> listTransacoesMeses = new ArrayList<String>();
+        referencia.child("usuarios").child(idUsuario).child("transacao").orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listTransacoesMeses.clear();
 
                 if(dataSnapshot.getChildrenCount() > 0){
                     progressBarRelatorios.setVisibility(View.GONE);
-                    List<String> listTransacoesMeses = new ArrayList<String>();
+
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
                         Collections.reverse(listTransacoesMeses); //Não é muito elegante, mas o Firebase não conhece o conceito de ordenar dados de forma decrescente...
@@ -107,7 +109,7 @@ public class RelatoriosFragment extends Fragment {
         spinnerMesAno.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String item = dateCustom.formataMesAnoFirebase((String) adapterView.getItemAtPosition(i));
+                String item = DateCustom.formataMesAnoFirebase((String) adapterView.getItemAtPosition(i));
 
                 referencia.child("usuarios").child(idUsuario).child("transacao").child(item).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -116,6 +118,7 @@ public class RelatoriosFragment extends Fragment {
                         double totalDespesaMes = 0;
                         double totalRecebidoMes = 0;
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                            System.out.println(dataSnapshot1);
                             Transacao transacao = dataSnapshot1.getValue(Transacao.class);
                             listaTransacoes.add(transacao);
 
@@ -155,7 +158,6 @@ public class RelatoriosFragment extends Fragment {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
-        System.out.println(historico.getValor());
         textViewRecebidoRelatorio.setText(tratarValores.tratarValores(saldoPositivo));
         textViewDespesasRelatorio.setText(tratarValores.tratarValores(saldoNegativo));
 

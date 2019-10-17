@@ -32,7 +32,6 @@ import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.ContasVencerAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
-import com.filipewilliam.salarium.helpers.DatasMaskWatcher;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
@@ -72,6 +71,8 @@ public class ContasVencerActivity extends AppCompatActivity {
     private NotificationManagerCompat notificationManagerCompat;
     private final Date hoje = DateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
+
+    public static final String SHARED_PREFERENCES = "notificacoes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,13 +144,14 @@ public class ContasVencerActivity extends AppCompatActivity {
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             if(switchEmitirNotificacaoVencimento.isChecked()){
 
-                                SharedPreferences sharedPreferences = getSharedPreferences("notificacoes", 0);
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putBoolean("valorSwitch", switchEmitirNotificacaoVencimento.isChecked());
                                 editor.apply();
 
                                 long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
-                                criarNotificacao(true, timeStampVencimento);
+                                System.out.println(timeStampVencimento);
+                                criarNotificacao(gerarNotificacao(), timeStampVencimento);
                                 cadastrarContasVencer();
                                 Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
                                 limparCampos();
@@ -254,6 +256,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         editTextDataVencimentoContasVencer.setText(null);
         editTextValorContasVencer.setText(null);
+        switchEmitirNotificacaoVencimento.setChecked(false);
 
     }
 
@@ -289,31 +292,36 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    public void criarNotificacao(Boolean opcao, Long timeStamp){
+    public void criarNotificacao(Notification notification, Long timeStamp){
 
-        if(opcao){
+        long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+        System.out.println(tempoNotificacao);
+        System.out.println(timeStamp);
 
-            long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+        Intent intent = new Intent(this, ContasVencerActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast ( this, 0 , intent , PendingIntent. FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE) ;
+        assert alarmManager != null;
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tempoNotificacao, pendingIntent);
 
-            Intent intent = new Intent(this, ContasVencerActivity.class);
-            PendingIntent notificationIntent = PendingIntent.getActivity(this, 0, intent, 0);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast ( this, 0 , intent , PendingIntent. FLAG_UPDATE_CURRENT);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE ) ;
-            assert alarmManager != null;
-            alarmManager.set(AlarmManager. ELAPSED_REALTIME_WAKEUP, tempoNotificacao, pendingIntent) ;
+    }
 
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID).setSmallIcon(R.drawable.ic_codigo_de_barras_boleto_branco)
-                    .setContentTitle("Você tem contas que vencem amanhã!")
-                    .setContentText("Pague em dia para evitar juros e não esqueça de cadastrar os pagamentos no app!")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setVibrate(new long[] {2000})
-                    .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                    .setContentIntent(notificationIntent)
-                    .setAutoCancel(true)
-                    .build();
+    public Notification gerarNotificacao(){
+        Intent intent = new Intent(this, ContasVencerActivity.class);
+        PendingIntent notificationIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-            notificationManagerCompat.notify(1, notification);
-        }
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID).setSmallIcon(R.drawable.ic_codigo_de_barras_boleto_branco)
+                .setContentTitle("Você tem contas que vencem amanhã!")
+                .setContentText("Pague em dia e não esqueça de cadastrar os pagamentos no app!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setVibrate(new long[] {2000})
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .setContentIntent(notificationIntent)
+                .setAutoCancel(true)
+                .build();
+
+        return notification;
+        //notificationManagerCompat.notify(1, notification);
 
     }
 
