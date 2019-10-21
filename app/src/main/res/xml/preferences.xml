@@ -6,7 +6,7 @@
         android:title="Notificações e rede">
 
         <SwitchPreference
-            app:key="notificações"
+            app:key="notificacoes"
             app:title="Notificações"
             android:summary="Desative todas as notificações do Salarium"
             android:defaultValue="false"/>

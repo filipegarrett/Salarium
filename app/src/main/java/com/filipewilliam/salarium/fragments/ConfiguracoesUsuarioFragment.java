@@ -54,6 +54,13 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
             }
         });
 
+        findPreference("notificacoes").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return false;
+            }
+        });
+
     }
 
     public void resetarSenha(){
