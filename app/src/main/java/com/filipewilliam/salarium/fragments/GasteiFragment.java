@@ -55,7 +55,7 @@ public class GasteiFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recebi, container, false);
+        View view = inflater.inflate(R.layout.fragment_gastei, container, false);
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoRecebimento);
         editTextValorGasto = view.findViewById(R.id.editTextValorRecebimento);
