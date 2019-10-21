@@ -320,6 +320,8 @@ public class ContasVencerActivity extends AppCompatActivity {
                 .setAutoCancel(true)
                 .build();
 
+        notificationManagerCompat.notify(1, notification);
+
         return notification;
         //notificationManagerCompat.notify(1, notification);
 
