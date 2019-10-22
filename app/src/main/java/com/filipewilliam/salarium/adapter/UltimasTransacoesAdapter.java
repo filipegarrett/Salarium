@@ -57,7 +57,7 @@ public class UltimasTransacoesAdapter extends RecyclerView.Adapter<UltimasTransa
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tipoTransacao = itemView.findViewById(R.id.textViewTipoTransacao);
+            tipoTransacao = itemView.findViewById(R.id.textViewEmailUsuario);
             categoriaTransacao = itemView.findViewById(R.id.textViewCategoriaTransacao);
             valorTransacao = itemView.findViewById(R.id.textViewValorTransacao);
             dataTransacao = itemView.findViewById(R.id.textViewDataTransacao);

@@ -4,6 +4,7 @@ package com.filipewilliam.salarium.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +52,7 @@ public class ResumoFragment extends Fragment {
     private Double recebimentoTotal;
     private Double saldoTotal;
     private String mesAtual = dateCustom.retornaMesAno();
+    private FormatarValoresHelper tratarValores;
 
     public ResumoFragment() {
     }
@@ -59,6 +62,7 @@ public class ResumoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         recuperarTransacoes();
+        recuperarResumo();
         //inflando layout de resumo
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
@@ -74,7 +78,7 @@ public class ResumoFragment extends Fragment {
     }
 
     //recupera as transações do mês atual e preenche na recycler view
-    public void recuperarTransacoes(){
+    public void recuperarTransacoes() {
 
         String emailUsuario = autenticacao.getCurrentUser().getEmail();
         String idUsuario = Base64Custom.codificarBase64(emailUsuario);
@@ -83,7 +87,7 @@ public class ResumoFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaTransacoes.clear();
-                for (DataSnapshot dados: dataSnapshot.getChildren()){
+                for (DataSnapshot dados : dataSnapshot.getChildren()) {
                     Transacao transacao = dados.getValue(Transacao.class);
                     listaTransacoes.add(transacao);
                 }
@@ -103,4 +107,54 @@ public class ResumoFragment extends Fragment {
     }
 
     //recupera os totais de gastos e recebimentos e mostra saldo atual
+    public void recuperarResumo() {
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaTransacoes.clear();
+                double totalDespesaMes = 0;
+                double totalRecebidoMes = 0;
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Transacao transacao = dataSnapshot1.getValue(Transacao.class);
+                    listaTransacoes.add(transacao);
+
+                    if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
+                        totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
+
+                    } else {
+                        totalRecebidoMes = totalRecebidoMes + Double.valueOf(transacao.getValor());
+
+                    }
+
+                    atualizaDadosResumo(transacao, totalRecebidoMes, totalDespesaMes);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo){
+
+        Double saldoMes = saldoPositivo - saldoNegativo;
+
+        System.out.println(transacao.getValor());
+        textViewTotalRecebido.setText(tratarValores.tratarValores(saldoPositivo));
+        textViewTotalGasto.setText(tratarValores.tratarValores(saldoNegativo));
+
+        if(saldoMes < 0){
+            textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
+            textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
+
+        }else{
+            textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
+            textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
+
+        }
+
+    }
 }

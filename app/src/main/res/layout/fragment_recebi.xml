@@ -18,7 +18,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
-            android:hint="Descrição"
+            android:hint="Descrição do recebimento"
             android:inputType="textPersonName"
             android:textAlignment="viewStart"
             android:textSize="14sp"
@@ -75,12 +75,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/corBotoesConfirma"
             android:background="@drawable/botao_arredondado"
+            android:backgroundTint="@color/corBotoesConfirma"
             android:text="Confirmar"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerCategoriaRecebimento" />
 
@@ -115,6 +115,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/buttonLimparCamposRecebimentos"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/botao_arredondado"
+            android:backgroundTint="@color/corBotoesCancela"
+            android:text="Limpar"
+            app:layout_constraintEnd_toStartOf="@+id/buttonConfirmarRecebimento"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerCategoriaRecebimento" />
 
     </android.support.constraint.ConstraintLayout>
 

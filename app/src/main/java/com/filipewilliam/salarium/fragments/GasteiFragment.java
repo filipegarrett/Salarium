@@ -22,7 +22,6 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Transacao;
-import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +42,7 @@ public class GasteiFragment extends Fragment {
     private EditText editTextDataSelecionadaGasto;
     private Spinner spinnerCategoriaGasto;
     private Button buttonCriarGasto;
+    private Button buttonLimparCamposGasto;
     private FloatingActionButton fabAdicionarCategoriaGasto;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -55,25 +55,26 @@ public class GasteiFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recebi, container, false);
+        View view = inflater.inflate(R.layout.fragment_gastei, container, false);
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-        editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoRecebimento);
-        editTextValorGasto = view.findViewById(R.id.editTextValorRecebimento);
-        editTextDataSelecionadaGasto = view.findViewById(R.id.editTextDataRecebimento);
-        spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaRecebimento);
-        buttonCriarGasto = view.findViewById(R.id.buttonConfirmarRecebimento);
+        editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoGasto);
+        editTextValorGasto = view.findViewById(R.id.editTextValorGasto);
+        editTextDataSelecionadaGasto = view.findViewById(R.id.editTextDataGasto);
+        spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaGasto);
+        buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
+        buttonLimparCamposGasto = view.findViewById(R.id.buttonLimparCamposGasto);
         fabAdicionarCategoriaGasto = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
         referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> listCategorias = new ArrayList<String>();
+                List<String> listCategorias = new ArrayList<>();
                 for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
                     Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
                     listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
+                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
                     categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerCategoriaGasto.setAdapter(categoriasAdapter);
                 }
@@ -101,6 +102,7 @@ public class GasteiFragment extends Fragment {
                         editTextDataSelecionadaGasto.setText(dayOfMonth + "/" + month + "/" + year);
                     }
                 }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
@@ -113,11 +115,18 @@ public class GasteiFragment extends Fragment {
             }
         });
 
-        //criar recebimento
+        //criar gasto
         buttonCriarGasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 criarGasto();
+            }
+        });
+
+        buttonLimparCamposGasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                limparCamposGasto();
             }
         });
 
@@ -154,11 +163,16 @@ public class GasteiFragment extends Fragment {
         if (!descricao.isEmpty()) {
             if (!valor.isEmpty()) {
                 if (!data.isEmpty()) {
+                    //verifica se foi criado ao menos uma categoria para poder cadastrar
+                    if (spinnerCategoriaGasto != null && spinnerCategoriaGasto.getSelectedItem()!= null){
+                    } else{
+                        Toast.makeText(getContext(), "Você precisa criar uma categoria antes!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
                 } else {
                     Toast.makeText(getContext(), "Você precisa escolher uma data", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-
             } else {
                 Toast.makeText(getContext(), "Você precisa precisa definir um valor", Toast.LENGTH_SHORT).show();
                 return false;
@@ -205,6 +219,13 @@ public class GasteiFragment extends Fragment {
 
         dialog.create();
         dialog.show();
+    }
+
+    public void limparCamposGasto (){
+
+        editTextDescricaoGasto.setText("");
+        editTextValorGasto.setText("");
+        editTextDataSelecionadaGasto.setText("");
     }
 
 
