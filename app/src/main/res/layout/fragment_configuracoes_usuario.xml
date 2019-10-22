@@ -1,36 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ConfiguracoesUsuarioFragment">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="32dp">
+        android:layout_height="wrap_content"
+        android:text="teste"/>
 
-        <Button
-            android:id="@+id/buttonReenviarSenha"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:background="@color/corBotoesConfirma"
-            android:text="Mudar senha"
-            android:textColor="@android:color/white" />
+    <FrameLayout
+        android:id="@android:id/list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-        <Button
-            android:id="@+id/buttonExcluirConta"
-            style="@android:style/Widget.Material.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:background="@color/corBotoesCancela"
-            android:text="Excluir conta"
-            android:textColor="@android:color/white" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>

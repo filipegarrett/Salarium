@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
-import com.filipewilliam.salarium.helpers.InvestimentosHelper;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.ContasVencer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +26,7 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
 
     private Context context;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private InvestimentosHelper tratarValores;
+    private FormatarValoresHelper tratarValores;
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     ArrayList<ContasVencer> contasVencerArrayList;
     ArrayList<String> keys;

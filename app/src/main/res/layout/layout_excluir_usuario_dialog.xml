@@ -4,4 +4,28 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editTextEmailExcluirUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_email_cinza_24dp"
+            android:drawablePadding="5dp"
+            android:inputType="textEmailAddress"
+            android:hint="E-mail" />
+
+        <EditText
+            android:id="@+id/editTextSenhaExcluirUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_cadeado_cinza_24dp"
+            android:drawablePadding="5dp"
+            android:inputType="textPassword"
+            android:hint="Senha" />
+    </LinearLayout>
+
 </RelativeLayout>

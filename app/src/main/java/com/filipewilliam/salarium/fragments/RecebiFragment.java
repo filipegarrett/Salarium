@@ -22,7 +22,6 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Transacao;
-import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +44,7 @@ public class RecebiFragment extends Fragment {
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
     private FloatingActionButton fabAdicionarCategoriaRecebimento;
-    private Button buttonCriarRecebimento, buttonCategoriaTESTE;
+    private Button buttonCriarRecebimento, buttonCategoriaTESTE, buttonLimparCamposRecebimento;
     private Double recebimentoTotal;
 
     public RecebiFragment() {
@@ -63,9 +62,9 @@ public class RecebiFragment extends Fragment {
         editTextDataSelecionadaRecebimento = view.findViewById(R.id.editTextDataRecebimento);
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
-        //buttonCategoriaTESTE = view.findViewById(R.id.buttonCategoriaTESTE); //BOTÃO CRIADO SÓ PARA PODER TESTAR RELATÓRIOS!!!!!!!!!!!!!!!!!!
+        buttonLimparCamposRecebimento = view.findViewById(R.id.buttonLimparCamposRecebimentos);
+        buttonCategoriaTESTE = view.findViewById(R.id.buttonCategoriaTESTE); //BOTÃO CRIADO SÓ PARA PODER TESTAR RELATÓRIOS!!!!!!!!!!!!!!!!!!
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
-        recuperarRecebimentoTotal();
 
         referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
 
@@ -79,7 +78,7 @@ public class RecebiFragment extends Fragment {
                 ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
                 categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                 spinnerCategoriaRecebimento.setAdapter(categoriasAdapter);
-                }
+            }
         }
 
             @Override
@@ -104,18 +103,18 @@ public class RecebiFragment extends Fragment {
                         editTextDataSelecionadaRecebimento.setText(dayOfMonth + "/" + month + "/" + year);
                     }
                 }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
 
         //criar categoria
-       /* buttonCategoriaTESTE.setOnClickListener(new View.OnClickListener() {
+        buttonCategoriaTESTE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 criarCategoriaRecebimento();
-
             }
-        }); */
+        });
 
         fabAdicionarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +131,14 @@ public class RecebiFragment extends Fragment {
             }
         });
 
-        return view;
+        buttonLimparCamposRecebimento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                limparCamposRecebimento();
+            }
+        });
 
+        return view;
 
     }
 
@@ -149,14 +154,11 @@ public class RecebiFragment extends Fragment {
             transacao.setData(dataRecebimento);
             transacao.setCategoria( spinnerCategoriaRecebimento.getSelectedItem().toString());
             transacao.setTipo("Recebi");
-            Double recebimentoAtualizado = recebimentoPreenchido + recebimentoTotal;
-            atualizarRecebimento(recebimentoAtualizado);
             transacao.salvarTransacao(dataRecebimento);
-            Toast.makeText(getContext(), "Foi cadastrado um novo recebimento!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Valor cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
 
         }
     }
-
 
     public boolean validarCamposRecebimentos() {
 
@@ -167,17 +169,24 @@ public class RecebiFragment extends Fragment {
         if (!descricao.isEmpty()) {
             if (!valor.isEmpty()) {
                 if (!data.isEmpty()) {
+                    if (spinnerCategoriaRecebimento != null && spinnerCategoriaRecebimento.getSelectedItem()!= null){
+
+                    } else{
+                        Toast.makeText(getContext(), "Você precisa criar uma categoria antes!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
                 } else {
-                    Toast.makeText(getContext(), "Data não foi preenchida", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Você precisa escolher uma data", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 
             } else {
-                Toast.makeText(getContext(), "Valor não foi preenchido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Você precisa precisa definir um valor", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
-            Toast.makeText(getContext(), "Descrição não foi preenchida", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Você precisa descrever o gasto", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -185,17 +194,15 @@ public class RecebiFragment extends Fragment {
 
     }
 
-
     public void criarCategoriaRecebimento (){
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setTitle("Criar categoria de ganhos");
+        dialog.setTitle("Criar nova categoria");
         dialog.setCancelable(true);
         //necessário estes parâmetros pois somente o edittext não aparecia.
         final EditText categoria = new EditText(getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         categoria.setLayoutParams(lp);
         dialog.setView(categoria);
 
@@ -220,32 +227,18 @@ public class RecebiFragment extends Fragment {
         dialog.show();
     }
 
-    public void recuperarRecebimentoTotal (){
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        DatabaseReference usuarioRef = referencia.child("usuarios").child( idUsuario );
-
-        usuarioRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                recebimentoTotal = usuario.getRecebimentoTotal();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     public void atualizarRecebimento (Double recebimento){
 
         String emailUsuario = autenticacao.getCurrentUser().getEmail();
         String idUsuario = Base64Custom.codificarBase64(emailUsuario);
         referencia.child("usuarios").child(idUsuario).child("recebimentoTotal").setValue(recebimento);
+    }
+
+    public void limparCamposRecebimento (){
+
+        editTextDescricaoRecebimento.setText("");
+        editTextValorRecebimento.setText("");
+        editTextDataSelecionadaRecebimento.setText("");
     }
 
 }

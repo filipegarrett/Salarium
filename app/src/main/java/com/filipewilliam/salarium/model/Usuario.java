@@ -16,10 +16,55 @@ public class Usuario {
 
     private String idUsuario, senha;
     private String nome, dataNascimento, email;
-    private Double gastoTotal = 0.0, recebimentoTotal = 0.0;
     private String token;
 
     public Usuario() {
+    }
+
+    @Exclude
+    public String getIdUsuario() { return idUsuario; }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(String dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setIdUsuario(String idUsuario) { this.idUsuario = idUsuario; }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    @Exclude
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public void salvarUsuarioFirebase(){
@@ -56,71 +101,10 @@ public class Usuario {
 
     }
 
-    public void removerUsuarioFirebase(){
+    public void removerUsuarioFirebase(String id){
         DatabaseReference firebase = ConfiguracaoFirebase.getFirebaseDatabase();
         firebase.child("usuarios")
-                .child(this.idUsuario).removeValue();
+                .child(id).removeValue();
     }
 
-    @Exclude
-    public String getIdUsuario() { return idUsuario; }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setIdUsuario(String idUsuario) { this.idUsuario = idUsuario; }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Double getRecebimentoTotal() {
-        return recebimentoTotal;
-    }
-
-    public void setRecebimentoTotal(Double recebimentoTotal) {
-        this.recebimentoTotal = recebimentoTotal;
-    }
-
-    public Double getGastoTotal() {
-        return gastoTotal;
-    }
-
-    public void setGastoTotal(Double gastoTotal) {
-        this.gastoTotal = gastoTotal;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    @Exclude
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 }

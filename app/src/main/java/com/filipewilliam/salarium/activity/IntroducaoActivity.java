@@ -17,7 +17,6 @@ public class IntroducaoActivity extends IntroActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_introducao);
 
         setButtonBackVisible(false);
         setButtonNextVisible(false);

@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -56,23 +57,20 @@ import static com.filipewilliam.salarium.activity.App.CHANNEL_1_ID;
 
 public class ContasVencerActivity extends AppCompatActivity {
 
+    Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
     private Spinner spinnerCategoriaContas;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
     private EditText editTextValorContasVencer, editTextDataVencimentoContasVencer;
     private Switch switchEmitirNotificacaoVencimento;
     private ProgressBar progressBar;
     private TextView textViewSemContaCadastrada;
     private RecyclerView recyclerViewContasVencerCadastradas;
-    private DatasMaskWatcher maskWatcher;
-    private DateCustom dateCustom;
     private ArrayList<ContasVencer> listaContasVencer;
     private ArrayList<String> keys = new ArrayList<>();
     private ContasVencerAdapter adapter;
     private NotificationManagerCompat notificationManagerCompat;
-    private final Date hoje = dateCustom.retornaDataHojeDateFormat();
-    private final int mesAtual = Integer.valueOf(dateCustom.retornaMesAno());
+    private final Date hoje = DateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
@@ -110,7 +108,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
                     }
                 }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker();//.setMinDate(System.currentTimeMillis());
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
@@ -144,7 +142,13 @@ public class ContasVencerActivity extends AppCompatActivity {
                     if(!editTextDataVencimentoContasVencer.getText().toString().isEmpty()){
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             if(switchEmitirNotificacaoVencimento.isChecked()){
-                                long timeStampVencimento = dateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("notificacoes", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean("valorSwitch", switchEmitirNotificacaoVencimento.isChecked());
+                                editor.apply();
+
+                                long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
                                 criarNotificacao(true, timeStampVencimento);
                                 cadastrarContasVencer();
                                 Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
@@ -172,7 +176,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        buttonLimparCamposContasVencer.setOnClickListener( new View.OnClickListener() {
+        buttonLimparCamposContasVencer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 limparCampos();
@@ -239,7 +243,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         String dataVencimento = editTextDataVencimentoContasVencer.getText().toString();
         conta.setCategoria(spinnerCategoriaContas.getSelectedItem().toString());
         conta.setDataVencimento(dataVencimento);
-        conta.setTimestampVencimento(dateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString()));
+        conta.setTimestampVencimento(DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString()));
         conta.setValor(Double.parseDouble(editTextValorContasVencer.getText().toString().replace(",","")));
         conta.salvarContasAVencer();
         esconderTeclado();
@@ -265,7 +269,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                     long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
                     if(Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte){
                         dataSnapshot1.getRef().removeValue();
-
                     }
                 }
             }

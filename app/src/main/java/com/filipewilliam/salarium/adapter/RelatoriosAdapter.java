@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.helpers.InvestimentosHelper;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.RelatoriosViewHolder> {
 
     private Context context;
-    private InvestimentosHelper tratarValores;
+    private FormatarValoresHelper tratarValores;
     ArrayList<Transacao> transacoesArrayList;
 
     public RelatoriosAdapter(Context c, ArrayList<Transacao> tArrayList) {
@@ -37,10 +37,10 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
     public void onBindViewHolder(@NonNull RelatoriosAdapter.RelatoriosViewHolder relatoriosViewHolder, int i) {
         Transacao transacao = transacoesArrayList.get(i);
 
-        if(transacao.getTipo().contains("Gasto")){
+        if(transacao.getTipo().contains("Gastei")){
             relatoriosViewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.corFundoCardViewDespesa));
             relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
-            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + " :");
+            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + ":");
             relatoriosViewHolder.descricao.setText(transacao.getDescricao());
             relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
             relatoriosViewHolder.data.setText(transacao.getData());
@@ -48,7 +48,7 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
         }else{
             relatoriosViewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.corFundoCardViewRecebido));
             relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
-            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + " :");
+            relatoriosViewHolder.categoria.setText(transacao.getCategoria() + ":");
             relatoriosViewHolder.descricao.setText(transacao.getDescricao());
             relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
             relatoriosViewHolder.data.setText(transacao.getData());

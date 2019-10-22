@@ -1,14 +1,16 @@
 package com.filipewilliam.salarium.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,20 +21,19 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
 import com.filipewilliam.salarium.service.MyFirebaseMessagingService;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
-    private TextView resetarSenha, reenviarEmail;
+
+    TextView resetarSenha, reenviarEmail;
+    private ProgressBar progressBarLogin;
     private Button botaoEntrar, reset;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
@@ -48,16 +49,20 @@ public class LoginActivity extends AppCompatActivity {
         botaoEntrar = findViewById(R.id.buttonEntrar);
         resetarSenha = findViewById(R.id.textViewResetarSenha);
         reenviarEmail = findViewById(R.id.textViewReenviarEmail);
+        progressBarLogin = findViewById(R.id.progressBarLogin);
 
         botaoEntrar.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+                esconderTeclado();
                 String email = editTextEmail.getText().toString();
                 String senha = editTextSenha.getText().toString();
 
                 if(!email.isEmpty()){
                     if(!senha.isEmpty()){
+                        botaoEntrar.setVisibility(View.INVISIBLE);
+                        progressBarLogin.setVisibility(View.VISIBLE);
                         usuario = new Usuario();
                         usuario.setEmail(email);
                         usuario.setSenha(senha);
@@ -78,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 resetarSenha();
-
             }
         });
 
@@ -105,9 +109,13 @@ public class LoginActivity extends AppCompatActivity {
                         abrirMainActivity();
 
                     }else{
+                        botaoEntrar.setVisibility(View.VISIBLE);
+                        progressBarLogin.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "Por favor, confirme sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
                     }
                 }else{
+                    botaoEntrar.setVisibility(View.VISIBLE);
+                    progressBarLogin.setVisibility(View.GONE);
                     String excecao = "";
                     try{
                         throw task.getException();
@@ -152,7 +160,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }else {
                         Toast.makeText(LoginActivity.this, "Tente novamente mais tarde", Toast.LENGTH_LONG).show();
-
                     }
                 }
             });
@@ -168,6 +175,15 @@ public class LoginActivity extends AppCompatActivity {
         final String usuarioToken = MyFirebaseMessagingService.retornaToken(getApplicationContext());
         final String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
         usuario.salvarToken(usuarioToken, idUsuario);
+
+    }
+
+    public void esconderTeclado(){
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch(Exception ignored) {
+        }
 
     }
 

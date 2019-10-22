@@ -1,14 +1,13 @@
 package com.filipewilliam.salarium.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -18,23 +17,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
-import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -44,12 +35,10 @@ public class MainActivity extends AppCompatActivity
 
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
+    private TextView textViewNomeUsuario, textViewEmailUsuario;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
-    private FirebaseAuth autenticacao;
-    private TextView textViewEmailUsuarioLogado;
-    private TextView textViewNomeUsuarioLogado;
-    private String nomeUsuario;
-
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +56,26 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        View header = navigationView.getHeaderView(0);
-        textViewNomeUsuarioLogado = header.findViewById(R.id.textViewNomeUsuario);
-        textViewEmailUsuarioLogado = header.findViewById(R.id.textViewEmailUsuario);
+
+        textViewNomeUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewNomeUsuarioHeader);
+        textViewEmailUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewEmailUsuarioHeader);
+
+        String nomeUsuario = "";
+        FirebaseUser user = autenticacao.getCurrentUser();
+        if(user != null){
+            nomeUsuario = user.getDisplayName();
+        }
+
+        autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser usuario = firebaseAuth.getCurrentUser();
+                if(usuario != null){
+                    textViewNomeUsuario.setText(usuario.getDisplayName());
+                    textViewEmailUsuario.setText(usuario.getEmail());
+                }
+            }
+        });
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
@@ -91,13 +97,12 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int i) {
 
-                if (i == 0) {
+                if (i ==0 ){
                     fab.hide();
-                } else {
+                }else {
                     fab.show();
                 }
             }
-
 
             @Override
             public void onPageScrollStateChanged(int i) {
@@ -152,6 +157,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_resumo) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_contasVencer) {
             Intent intent = new Intent(this, ContasVencerActivity.class);
@@ -187,43 +194,17 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void verificarUsuarioLogado() {
+    public void verificarUsuarioLogado(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final FirebaseUser usuario = autenticacao.getCurrentUser();
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        DatabaseReference referenciaUsuarios = FirebaseDatabase.getInstance().getReference();
-        referenciaUsuarios.child("usuarios").child(idUsuario);
 
-        if (usuario != null) {
-            referenciaUsuarios.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                   // String nome = dataSnapshot.child("nome").getValue(Usuario.class).toString();
-                    textViewEmailUsuarioLogado.setText(usuario.getEmail());
-                    //textViewNomeUsuarioLogado.setText(nome);
+        if(usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
 
-                    }
-
-
-
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-
-            if (usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
-
-
-            } else {
-                finishAffinity();
-                System.exit(0);
-            }
-
+        }else{
+            finishAffinity();
+            System.exit(0);
         }
 
     }
+
 }

@@ -1,13 +1,16 @@
 package com.filipewilliam.salarium.activity;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
@@ -25,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -32,9 +36,9 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
     private EditText editTextNome, editTextDataNascimento, editTextEmail, editTextSenha;
     private Button botaoCadastrarUsuario;
+    private ProgressBar progressBarCadastrarUsuario;
     private FirebaseAuth autenticacao;
     private Usuario usuario;
-    private DatasMaskWatcher maskDataNascimento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +48,17 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
         editTextNome = findViewById(R.id.editTextNome);
         editTextDataNascimento = findViewById(R.id.editTextDadaNascimento);
-        editTextDataNascimento.addTextChangedListener(maskDataNascimento.aplicarMaskDataNascimento());
+        editTextDataNascimento.addTextChangedListener(DatasMaskWatcher.aplicarMaskDataNascimento());
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
+        progressBarCadastrarUsuario = findViewById(R.id.progressBarCadastrarUsuario);
         botaoCadastrarUsuario = findViewById(R.id.buttonEntrar);
 
         botaoCadastrarUsuario.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+                esconderTeclado();
                 String nome = editTextNome.getText().toString();
                 String dataNascimento = editTextDataNascimento.getText().toString();
                 String email = editTextEmail.getText().toString();
@@ -64,14 +70,14 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                     if(!dataNascimento.isEmpty()){
                         if(!email.isEmpty()){
                             if(!senha.isEmpty()){
+                                botaoCadastrarUsuario.setVisibility(View.GONE);
+                                progressBarCadastrarUsuario.setVisibility(View.VISIBLE);
 
-                                Double gastoTotal = 0.0;
                                 usuario = new Usuario();
                                 usuario.setNome(nome);
                                 usuario.setDataNascimento(dataNascimento);
                                 usuario.setEmail(email);
                                 usuario.setSenha(senha);
-                                usuario.setGastoTotal(gastoTotal);
                                 usuario.setToken(token);
                                 cadastrarUsuario();
 
@@ -105,17 +111,35 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
                 if(task.isSuccessful()){
                     final FirebaseUser user = autenticacao.getCurrentUser();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(editTextNome.getText().toString())
+                            .build();
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        //'Log.d(TAG, "User profile updated.");
+                                    }
+                                }
+                            });
+
                     user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
 
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+                                progressBarCadastrarUsuario.setVisibility(View.GONE);
+                                botaoCadastrarUsuario.setVisibility(View.VISIBLE);
 
                                 String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
                                 usuario.setIdUsuario(idUsuario);
                                 usuario.salvarUsuarioFirebase();
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para " + user.getEmail(), Toast.LENGTH_SHORT).show();
                             }else{
+                                progressBarCadastrarUsuario.setVisibility(View.GONE);
+                                botaoCadastrarUsuario.setVisibility(View.VISIBLE);
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Ocorreu uma falha na verificação de seu e-mail", Toast.LENGTH_SHORT).show();
 
                             }
@@ -148,6 +172,15 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
 
         final String usuarioToken = MyFirebaseMessagingService.retornaToken(getApplicationContext());
         return usuarioToken;
+
+    }
+
+    public void esconderTeclado(){
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch(Exception ignored) {
+        }
 
     }
 

@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 public class App extends Application {
 
     public static final String CHANNEL_1_ID = "contas a vencer";
@@ -13,6 +15,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         criarCanaisNotificacoes();
     }
@@ -21,7 +24,7 @@ public class App extends Application {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel1 = new NotificationChannel(
-                    CHANNEL_1_ID, "contas à vencer", NotificationManager.IMPORTANCE_HIGH
+                    CHANNEL_1_ID, "Contas à vencer", NotificationManager.IMPORTANCE_HIGH
             );
             channel1.enableVibration(true);
             channel1.enableLights(true);
