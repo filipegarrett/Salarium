@@ -22,7 +22,6 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Transacao;
-import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +44,7 @@ public class RecebiFragment extends Fragment {
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
     private FloatingActionButton fabAdicionarCategoriaRecebimento;
-    private Button buttonCriarRecebimento, buttonCategoriaTESTE;
+    private Button buttonCriarRecebimento, buttonCategoriaTESTE, buttonLimparCamposRecebimento;
     private Double recebimentoTotal;
 
     public RecebiFragment() {
@@ -63,6 +62,7 @@ public class RecebiFragment extends Fragment {
         editTextDataSelecionadaRecebimento = view.findViewById(R.id.editTextDataRecebimento);
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
+        buttonLimparCamposRecebimento = view.findViewById(R.id.buttonLimparCamposRecebimentos);
         buttonCategoriaTESTE = view.findViewById(R.id.buttonCategoriaTESTE); //BOTÃO CRIADO SÓ PARA PODER TESTAR RELATÓRIOS!!!!!!!!!!!!!!!!!!
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
@@ -103,6 +103,7 @@ public class RecebiFragment extends Fragment {
                         editTextDataSelecionadaRecebimento.setText(dayOfMonth + "/" + month + "/" + year);
                     }
                 }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
@@ -127,6 +128,13 @@ public class RecebiFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 criarRecebimento();
+            }
+        });
+
+        buttonLimparCamposRecebimento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                limparCamposRecebimento();
             }
         });
 
@@ -161,6 +169,13 @@ public class RecebiFragment extends Fragment {
         if (!descricao.isEmpty()) {
             if (!valor.isEmpty()) {
                 if (!data.isEmpty()) {
+                    if (spinnerCategoriaRecebimento != null && spinnerCategoriaRecebimento.getSelectedItem()!= null){
+
+                    } else{
+                        Toast.makeText(getContext(), "Você precisa criar uma categoria antes!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
                 } else {
                     Toast.makeText(getContext(), "Você precisa escolher uma data", Toast.LENGTH_SHORT).show();
                     return false;
@@ -217,6 +232,13 @@ public class RecebiFragment extends Fragment {
         String emailUsuario = autenticacao.getCurrentUser().getEmail();
         String idUsuario = Base64Custom.codificarBase64(emailUsuario);
         referencia.child("usuarios").child(idUsuario).child("recebimentoTotal").setValue(recebimento);
+    }
+
+    public void limparCamposRecebimento (){
+
+        editTextDescricaoRecebimento.setText("");
+        editTextValorRecebimento.setText("");
+        editTextDataSelecionadaRecebimento.setText("");
     }
 
 }
