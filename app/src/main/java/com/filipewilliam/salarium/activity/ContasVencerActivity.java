@@ -37,6 +37,7 @@ import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.ContasVencer;
+import com.filipewilliam.salarium.service.MyNotificationsBroadcaster;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,6 +72,8 @@ public class ContasVencerActivity extends AppCompatActivity {
     private NotificationManagerCompat notificationManagerCompat;
     private final Date hoje = DateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
+    public static final String NOTIFICATION_CHANNEL_ID = "contas a vencer" ;
+    private final static String default_notification_channel_id = "default";
 
     public static final String SHARED_PREFERENCES = "notificacoes";
 
@@ -151,7 +154,8 @@ public class ContasVencerActivity extends AppCompatActivity {
 
                                 long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
                                 System.out.println(timeStampVencimento);
-                                criarNotificacao(gerarNotificacao(), timeStampVencimento);
+                                agendarNotificacao(gerarNotificacao(), timeStampVencimento);
+                                //criarNotificacao();
                                 cadastrarContasVencer();
                                 Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
                                 limparCampos();
@@ -292,37 +296,29 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    public void criarNotificacao(Notification notification, Long timeStamp){
+    public void agendarNotificacao(Notification notificacao, long timeStamp){
 
         long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
-        System.out.println(tempoNotificacao);
-        System.out.println(timeStamp);
 
-        Intent intent = new Intent(this, ContasVencerActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast ( this, 0 , intent , PendingIntent. FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE) ;
+        Intent notificationIntent = new Intent( this, MyNotificationsBroadcaster.class) ;
+        notificationIntent.putExtra(MyNotificationsBroadcaster.NOTIFICATION_ID , 1) ;
+        notificationIntent.putExtra(MyNotificationsBroadcaster.NOTIFICATION, notificacao) ;
+        PendingIntent pendingIntent = PendingIntent. getBroadcast (this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT) ;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE ) ;
         assert alarmManager != null;
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tempoNotificacao, pendingIntent);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, tempoNotificacao, pendingIntent) ;
 
     }
 
     public Notification gerarNotificacao(){
-        Intent intent = new Intent(this, ContasVencerActivity.class);
-        PendingIntent notificationIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id ) ;
+        builder.setContentTitle("Scheduled Notification") ;
+        builder.setContentText("?????") ;
+        builder.setSmallIcon(R.drawable. ic_launcher_foreground ) ;
+        builder.setAutoCancel( true ) ;
+        builder.setChannelId( NOTIFICATION_CHANNEL_ID ) ;
+        return builder.build() ;
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID).setSmallIcon(R.drawable.ic_codigo_de_barras_boleto_branco)
-                .setContentTitle("Você tem contas que vencem amanhã!")
-                .setContentText("Pague em dia e não esqueça de cadastrar os pagamentos no app!")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setVibrate(new long[] {2000})
-                .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                .setContentIntent(notificationIntent)
-                .setAutoCancel(true)
-                .build();
-
-        notificationManagerCompat.notify(1, notification);
-
-        return notification;
         //notificationManagerCompat.notify(1, notification);
 
     }

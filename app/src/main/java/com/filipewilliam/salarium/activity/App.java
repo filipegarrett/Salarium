@@ -23,9 +23,7 @@ public class App extends Application {
     private void criarCanaisNotificacoes(){
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel1 = new NotificationChannel(
-                    CHANNEL_1_ID, "Contas à vencer", NotificationManager.IMPORTANCE_HIGH
-            );
+            NotificationChannel channel1 = new NotificationChannel(CHANNEL_1_ID, "Contas à vencer", NotificationManager.IMPORTANCE_HIGH);
             channel1.enableVibration(true);
             channel1.enableLights(true);
             channel1.setDescription("Contas à vencer");

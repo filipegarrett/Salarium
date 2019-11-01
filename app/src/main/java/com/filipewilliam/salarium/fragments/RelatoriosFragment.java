@@ -83,7 +83,7 @@ public class RelatoriosFragment extends Fragment {
                     progressBarRelatorios.setVisibility(View.GONE);
 
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                        listTransacoesMeses.add(DateCustom.formatarMesAno(dataSnapshot1.getKey()));
                         Collections.reverse(listTransacoesMeses); //Não é muito elegante, mas o Firebase não conhece o conceito de ordenar dados de forma decrescente...
 
                         ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
@@ -118,7 +118,6 @@ public class RelatoriosFragment extends Fragment {
                         double totalDespesaMes = 0;
                         double totalRecebidoMes = 0;
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                            System.out.println(dataSnapshot1);
                             Transacao transacao = dataSnapshot1.getValue(Transacao.class);
                             listaTransacoes.add(transacao);
 
