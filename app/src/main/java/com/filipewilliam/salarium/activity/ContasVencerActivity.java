@@ -61,6 +61,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private Spinner spinnerCategoriaContas;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private ValueEventListener valueEventListenerSpinner, valueEventListenerRecycler;
     private EditText editTextValorContasVencer, editTextDataVencimentoContasVencer;
     private Switch switchEmitirNotificacaoVencimento;
     private ProgressBar progressBar;
@@ -74,7 +75,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
     public static final String NOTIFICATION_CHANNEL_ID = "contas a vencer" ;
     private final static String default_notification_channel_id = "default";
-
+    final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     public static final String SHARED_PREFERENCES = "notificacoes";
 
     @Override
@@ -83,7 +84,6 @@ public class ContasVencerActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Próximas despesas");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas_vencer);
-        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
 
         spinnerCategoriaContas = findViewById(R.id.spinnerCategoriaContasVencer);
         editTextValorContasVencer = findViewById(R.id.editTextValorContasVencer);
@@ -115,27 +115,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
-        });
-
-        referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> listCategorias = new ArrayList<String>();
-                for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
-                    Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
-                    listCategorias.add(nomeCategoria.getDescricaoCategoria());
-
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listCategorias);
-                    categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                    spinnerCategoriaContas.setAdapter(categoriasAdapter);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-
         });
 
         buttonCadastrarContasVencer.setOnClickListener(new View.OnClickListener() {
@@ -191,10 +170,38 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         recyclerViewContasVencerCadastradas.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewContasVencerCadastradas.setHasFixedSize(true);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        valueEventListenerSpinner = referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> listCategorias = new ArrayList<String>();
+                for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
+                    Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
+                    listCategorias.add(nomeCategoria.getDescricaoCategoria());
+
+                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listCategorias);
+                    categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                    spinnerCategoriaContas.setAdapter(categoriasAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
         listaContasVencer = new ArrayList<ContasVencer>();
 
-        final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
-        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
+        //final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
+        valueEventListenerRecycler = referencia.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 keys.clear();
@@ -238,9 +245,6 @@ public class ContasVencerActivity extends AppCompatActivity {
 
             }
         });
-
-        notificationManagerCompat = NotificationManagerCompat.from(this);
-
     }
 
     public void cadastrarContasVencer(){
@@ -333,4 +337,10 @@ public class ContasVencerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        referencia.removeEventListener(valueEventListenerSpinner);
+        referencia.removeEventListener(valueEventListenerRecycler);
+    }
 }
