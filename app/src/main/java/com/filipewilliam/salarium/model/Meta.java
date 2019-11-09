@@ -4,9 +4,6 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Meta {
 
     private Double valor;
@@ -50,10 +47,6 @@ public class Meta {
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        /* Map<String, Object> atualizacoes = new HashMap<>();
-        atualizacoes.put("data", data);
-        atualizacoes.put("valor", valor); */
         referenciaFirebase.child("usuarios").child(idUsuario).child("meta").child(data).removeValue();
-        //referenciaFirebase.child("usuarios").child(idUsuario).child("meta").child(data).updateChildren(atualizacoes);
     }
 }

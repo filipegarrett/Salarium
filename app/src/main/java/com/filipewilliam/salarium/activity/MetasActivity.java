@@ -1,13 +1,17 @@
 package com.filipewilliam.salarium.activity;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -16,6 +20,7 @@ import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Meta;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,6 +42,7 @@ public class MetasActivity extends AppCompatActivity {
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private DateCustom dateCustom;
+    private EditText editTextDataMeta;
     private EditText editTextValorMetas;
     private TextView textViewValorMetas;
     private TextView textViewTotalGastoMetas;
@@ -43,6 +50,7 @@ public class MetasActivity extends AppCompatActivity {
     private String mesAtual = dateCustom.retornaMesAno();
     private Double gastoMes = 0.0;
     private Double valorMeta = 0.0;
+    private List<String> listMetasMeses = new ArrayList<>();
 
 
     @Override
@@ -50,137 +58,99 @@ public class MetasActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Metas:");
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_metas);
         spinnerMetas = findViewById(R.id.spinnerMesMetas);
         editTextValorMetas = findViewById(R.id.editTextValorMetas);
+        editTextDataMeta = findViewById(R.id.editTextDataMeta);
         buttonSalvarOuAlterarMetas = findViewById(R.id.buttonSalvarOuAlterarMetas);
         buttonExcluirMetas = findViewById(R.id.buttonExcluirMetas);
         textViewSaldoMetas = findViewById(R.id.textViewSaldoMetas);
-        textViewTotalGastoMetas = findViewById(R.id.textViewTotalGastoMetas);
+        textViewTotalGastoMetas = findViewById(R.id.textViewGastoMes);
         textViewValorMetas = findViewById(R.id.textViewValorMetas);
+        recuperarGastoMes(mesAtual);
+        recuperarValorMeta(mesAtual);
 
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-        final List<String> listMetasMeses = new ArrayList<>();
-
-        referencia.child("usuarios").child(idUsuario).child("meta").orderByKey().addValueEventListener(new ValueEventListener() {
+        referencia.child("usuarios").child(idUsuario).child("meta")/*.orderByKey()*/.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.getChildrenCount() > 0) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        listMetasMeses.clear(); //removeu problema de dados duplicados no spinner
-                        listMetasMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
-                        Collections.reverse(listMetasMeses); //Não é muito elegante, mas o Firebase não conhece o conceito de ordenar dados de forma decrescente...
-                        ArrayAdapter<String> metasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listMetasMeses);
-                        metasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                        spinnerMetas.setAdapter(metasAdapter);
-                        //hasChild para corrigir problema do mês seguinte
-
-                    }
-                } else {
-                    //caso não possua metas lançadas entra nesta condição para criar uma com o mês atual
-                    listMetasMeses.clear();
-                    String mesAnoFirebase = dateCustom.retornaMesAno(); // 102019
-                    mesAnoFirebase = dateCustom.formatarMesAno(mesAnoFirebase);  //método para retornar mês descrito ex: Outubro 2019
-                    listMetasMeses.add(mesAnoFirebase);
-                    ArrayAdapter<String> metasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listMetasMeses);
+                    listMetasMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                    ArrayAdapter<String> metasAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, listMetasMeses);
                     metasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerMetas.setAdapter(metasAdapter);
-
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-
         });
 
-        //recuperar valor de gastos do mês atual
-        final ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-        referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).addValueEventListener(new ValueEventListener() {
+        //selecionar data da meta através de um datepicker
+        editTextDataMeta.setOnClickListener(new View.OnClickListener() {
             @Override
+            public void onClick(View v) {
 
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaTransacoes.clear();
-                for (DataSnapshot gastoSnapshot: dataSnapshot.getChildren()) {
-                    Transacao transacao = gastoSnapshot.getValue(Transacao.class);
-                    //gastoMes = transacao.getValor();
-                    listaTransacoes.add(transacao);
-                    if (gastoSnapshot.child("tipo").getValue().toString().equals("Gastei")) {
-                        gastoMes = gastoMes + Double.valueOf(transacao.getValor());
+                Calendar mcurrentDate = Calendar.getInstance();
+
+                int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+                int mMonth = mcurrentDate.get(Calendar.MONTH);
+                int mYear = mcurrentDate.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(MetasActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        month = month + 1;
+                        editTextDataMeta.setText(dayOfMonth + "/" + month + "/" + year);
                     }
-                }
+                }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
+            }
+        });
 
-                textViewTotalGastoMetas.setText(gastoMes.toString());
-                verificarMeta(gastoMes);
+        //listener para atualizar o resumo da tela de metas
+        spinnerMetas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                String item = DateCustom.formataMesAnoFirebase((String) parent.getItemAtPosition(position));
+                System.out.println(position);
+                Double metaAtual = recuperarValorMeta(item);
+                Double gastoAtual = recuperarGastoMes(item);
+                Double saldoTotal = (metaAtual - gastoAtual);
+                textViewTotalGastoMetas.setText(String.valueOf(gastoAtual));
+                textViewValorMetas.setText(String.valueOf(metaAtual));
+                textViewSaldoMetas.setText(String.valueOf(saldoTotal));
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
 
-        //recuperar valor da meta
-            spinnerMetas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                    String item = dateCustom.formataMesAnoFirebase((String) adapterView.getItemAtPosition(position));
-                    // System.out.println(item);
-
-                    referencia.child("usuarios").child(idUsuario).child("meta").child(item).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
-                                Meta meta = dataSnapshot2.getValue(Meta.class);
-                                valorMeta = meta.getValor();
-                                //System.out.println(valorMeta);
-                                textViewValorMetas.setText(String.valueOf(valorMeta));
-                                verificarMeta(valorMeta);
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-
-
-
-
-
-
+        //listener para salvar uma nova meta ou alterar caso já exista uma no mesmo mês (método alterar é chamado de dentro do método criarMeta())
         buttonSalvarOuAlterarMetas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 criarMeta();
-                //listMetasMeses.clear();
 
             }
         });
 
+        //listener para exclusão da meta selecionada no spinner
         buttonExcluirMetas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 excluirMeta();
             }
         });
+
 
     }
 
@@ -197,6 +167,7 @@ public class MetasActivity extends AppCompatActivity {
     }
 
 
+    //cria uma nova meta caso não tenha nó filho ou chama o alterar caso exista
     public void criarMeta() {
 
         if (validarCamposMetas()) {
@@ -204,22 +175,21 @@ public class MetasActivity extends AppCompatActivity {
             FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             DatabaseReference referenciaMeta = FirebaseDatabase.getInstance().getReference();
             String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-            final String dataSelecionada = DateCustom.formataMesAnoFirebase(spinnerMetas.getSelectedItem().toString());
+            final String dataSelecionada = DateCustom.formatarData(editTextDataMeta.getText().toString());
 
-            referenciaMeta.child("usuarios").child(idUsuario).child("meta").child(DateCustom.retornaMesAno()).addListenerForSingleValueEvent(new ValueEventListener() {
+            referenciaMeta.child("usuarios").child(idUsuario).child("meta").child(dataSelecionada).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     if (dataSnapshot.hasChildren()) {
                         alterarMeta();
-                        //Toast.makeText(getApplicationContext(), "Já existe uma meta neste mês", Toast.LENGTH_SHORT).show();
                     } else {
                         Meta meta = new Meta();
                         meta.setData(dataSelecionada);
                         meta.setValor(Double.parseDouble(editTextValorMetas.getText().toString()));
                         meta.salvarMetaFirebase(dataSelecionada);
                         Toast.makeText(getApplicationContext(), "Foi cadastrado uma nova meta!", Toast.LENGTH_SHORT).show();
-
+                        listMetasMeses.clear();
                     }
 
                 }
@@ -236,12 +206,12 @@ public class MetasActivity extends AppCompatActivity {
 
     }
 
-
+    //método chamado caso o mês selecionado tenha nós filhos
     private void alterarMeta() {
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         final DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        final String dataSelecionada = DateCustom.formataMesAnoFirebase(spinnerMetas.getSelectedItem().toString());
+        final String dataSelecionada = DateCustom.formatarData(editTextDataMeta.getText().toString());
         final Meta meta = new Meta();
         Double valor = Double.parseDouble(editTextValorMetas.getText().toString());
         meta.setData(dataSelecionada);
@@ -250,12 +220,11 @@ public class MetasActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot metaSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot metaSnapshot : dataSnapshot.getChildren()) {
                     final String key = metaSnapshot.getKey();
                     referenciaFirebase.child("usuarios").child(idUsuario).child("meta").child(dataSelecionada).child(key).setValue(meta);
-
+                    listMetasMeses.clear();
                 }
-
             }
 
             @Override
@@ -263,35 +232,91 @@ public class MetasActivity extends AppCompatActivity {
 
             }
         });
+
         Toast.makeText(getApplicationContext(), "Foi alterado a meta do mês selecionado!", Toast.LENGTH_SHORT).show();
     }
 
-    public void excluirMeta(){
+    //método para excluir a meta que foi selecionada no spinner
+    public void excluirMeta() {
         String dataSelecionada = DateCustom.formataMesAnoFirebase(spinnerMetas.getSelectedItem().toString());
         Meta.excluirMetaFirebase(dataSelecionada);
         textViewSaldoMetas.setText("");
         textViewValorMetas.setText("");
         Toast.makeText(getApplicationContext(), "A Meta foi excluída com sucesso!", Toast.LENGTH_SHORT).show();
-
+        listMetasMeses.clear();
     }
 
-    public void verificarMeta(Double meta){
-
-        Double saldoTotal = 0.0;
-        saldoTotal = (meta - gastoMes);
-        textViewSaldoMetas.setText(String.valueOf(saldoTotal));
-
-    }
-
+    //verifica se os campos da meta foram preenchidos e impede cadastro caso estejam sem valor
     public boolean validarCamposMetas() {
 
         if (!editTextValorMetas.getText().toString().isEmpty()) {
-            return true;
+            if(!editTextDataMeta.getText().toString().isEmpty()){
+            }else{
+                Toast.makeText(getApplicationContext(), "A data da Meta não foi preenchida", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "O valor da Meta não foi preenchido", Toast.LENGTH_SHORT).show();
+            return false;
         }
-        Toast.makeText(getApplicationContext(), "O valor da Meta não foi preenchido", Toast.LENGTH_SHORT).show();
-        return false;
-
+        return true;
 
     }
 
+    //método para recuperar o gasto do Mes selecionado
+    public Double recuperarGastoMes(String item) {
+        System.out.println("Item gasto do mes " +item);
+        final ArrayList<Transacao> listaTransacoes = new ArrayList<>();
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        referencia.child("usuarios").child(idUsuario).child("transacao").child(item)/*.orderByChild("data")*/.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                listaTransacoes.clear();
+                double totalDespesaMes = 0.0;
+
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Transacao transacao = dataSnapshot1.getValue(Transacao.class);
+                    listaTransacoes.add(transacao);
+
+                    if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
+                        totalDespesaMes = totalDespesaMes + (transacao.getValor());
+                        gastoMes = totalDespesaMes;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return gastoMes;
+    }
+
+    //recuperar valor da meta
+    public Double recuperarValorMeta(String item) {
+        System.out.println("Item meta do mes " +item);
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        referencia.child("usuarios").child(idUsuario).child("meta").child(item).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
+                    Meta meta = dataSnapshot2.getValue(Meta.class);
+                    valorMeta = meta.getValor();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return valorMeta;
+    }
+
+
 }
+

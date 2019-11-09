@@ -8,10 +8,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
@@ -19,6 +21,8 @@ import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
+import com.filipewilliam.salarium.helpers.DeslizarApagarCallbackResumo;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.filipewilliam.salarium.model.Usuario;
@@ -53,6 +57,7 @@ public class ResumoFragment extends Fragment {
     private Double saldoTotal;
     private String mesAtual = dateCustom.retornaMesAno();
     private FormatarValoresHelper tratarValores;
+    private ArrayList<String> keys = new ArrayList<>();
 
     public ResumoFragment() {
     }
@@ -63,7 +68,7 @@ public class ResumoFragment extends Fragment {
 
         recuperarTransacoes();
         recuperarResumo();
-        //inflando layout de resumo
+        //swipe();
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
         textViewTotalRecebido = view.findViewById(R.id.textViewTotalRecebido);
@@ -77,6 +82,29 @@ public class ResumoFragment extends Fragment {
 
     }
 
+   /* public void swipe() {
+        final ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE;
+                int swipeFlags = ItemTouchHelper.LEFT;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                Toast.makeText(getContext(), "arrastado", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerViewTransacoes);
+    }*/
+
     //recupera as transações do mês atual e preenche na recycler view
     public void recuperarTransacoes() {
 
@@ -86,14 +114,18 @@ public class ResumoFragment extends Fragment {
         referenciaTransacoes.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                keys.clear();
                 listaTransacoes.clear();
                 for (DataSnapshot dados : dataSnapshot.getChildren()) {
                     Transacao transacao = dados.getValue(Transacao.class);
+                    keys.add(dados.getKey());
                     listaTransacoes.add(transacao);
                 }
 
-                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(getActivity(), listaTransacoes);
+                UltimasTransacoesAdapter adapterTransacoes = new UltimasTransacoesAdapter(getActivity(), listaTransacoes, keys);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallbackResumo(adapterTransacoes));
+                itemTouchHelper.attachToRecyclerView(recyclerViewTransacoes);
 
             }
 
@@ -108,6 +140,7 @@ public class ResumoFragment extends Fragment {
 
     //recupera os totais de gastos e recebimentos e mostra saldo atual
     public void recuperarResumo() {
+        //swipe();
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -138,7 +171,7 @@ public class ResumoFragment extends Fragment {
         });
     }
 
-    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo){
+    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo) {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
@@ -146,11 +179,11 @@ public class ResumoFragment extends Fragment {
         textViewTotalRecebido.setText(tratarValores.tratarValores(saldoPositivo));
         textViewTotalGasto.setText(tratarValores.tratarValores(saldoNegativo));
 
-        if(saldoMes < 0){
+        if (saldoMes < 0) {
             textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
             textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
 
-        }else{
+        } else {
             textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
             textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
 

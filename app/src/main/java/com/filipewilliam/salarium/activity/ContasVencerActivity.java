@@ -150,7 +150,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                                 editor.apply();
 
                                 long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
-                                System.out.println(timeStampVencimento);
+                               // System.out.println(timeStampVencimento);
                                 criarNotificacao(gerarNotificacao(), timeStampVencimento);
                                 cadastrarContasVencer();
                                 Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
@@ -295,8 +295,8 @@ public class ContasVencerActivity extends AppCompatActivity {
     public void criarNotificacao(Notification notification, Long timeStamp){
 
         long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
-        System.out.println(tempoNotificacao);
-        System.out.println(timeStamp);
+        //System.out.println(tempoNotificacao);
+        //System.out.println(timeStamp);
 
         Intent intent = new Intent(this, ContasVencerActivity.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast ( this, 0 , intent , PendingIntent. FLAG_UPDATE_CURRENT);
