@@ -20,6 +20,8 @@ public class NotificacaoService {
 
     public static final int NOTIFICATION_REQUEST_CODE = 50;
 
+    public static final String CHANNEL_1_ID = "contas a vencer";
+
     public static void showNotification(Context context, String channelId, int notificationId) {
         createNotificationChannel(context, channelId);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
@@ -35,12 +37,11 @@ public class NotificacaoService {
 
     public static void createNotificationChannel(Context context, String channelId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //TODO change channel name and description
             CharSequence name = "tESTE";
             String description = "Muita String";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(
-                    channelId, name, importance);
+                    CHANNEL_1_ID, name, importance);
             channel.setDescription(description);
             NotificationManager notificationManager = context
                     .getSystemService(NotificationManager.class);
