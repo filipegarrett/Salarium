@@ -28,6 +28,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.ContasVencerAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
@@ -38,6 +42,7 @@ import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.ContasVencer;
 import com.filipewilliam.salarium.service.MyNotificationsBroadcaster;
+import com.filipewilliam.salarium.service.NotificacaoWorker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,6 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,6 +66,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
     private Spinner spinnerCategoriaContas;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private ValueEventListener valueEventListenerSpinner, valueEventListenerRecycler;
     private EditText editTextValorContasVencer, editTextDataVencimentoContasVencer;
@@ -126,15 +133,8 @@ public class ContasVencerActivity extends AppCompatActivity {
                         if(!editTextValorContasVencer.getText().toString().isEmpty()){
                             if(switchEmitirNotificacaoVencimento.isChecked()){
 
-                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("valorSwitch", switchEmitirNotificacaoVencimento.isChecked());
-                                editor.apply();
-
                                 long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
-                                System.out.println(timeStampVencimento);
-                                agendarNotificacao(gerarNotificacao(), timeStampVencimento);
-                                //criarNotificacao();
+                                agendarNotificacao(timeStampVencimento);
                                 cadastrarContasVencer();
                                 Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
                                 limparCampos();
@@ -183,6 +183,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                 List<String> listCategorias = new ArrayList<String>();
                 for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
                     Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
+                    assert nomeCategoria != null;
                     listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
                     ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listCategorias);
@@ -200,8 +201,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         listaContasVencer = new ArrayList<ContasVencer>();
 
-        //final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
-        valueEventListenerRecycler = referencia.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
+        valueEventListenerRecycler = referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 keys.clear();
@@ -300,11 +300,26 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    public void agendarNotificacao(Notification notificacao, long timeStamp){
+    public void agendarNotificacao(long timeStamp){
 
         long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+        System.out.println("timestamp correto " + tempoNotificacao);
 
-        Intent notificationIntent = new Intent( this, MyNotificationsBroadcaster.class) ;
+        Date dataAlerta = new Date(tempoNotificacao);
+
+        Date data = DateCustom.retornaDataHojeDateFormat();
+        int dataNotificacao = DateCustom.calculaDiferencaDias(data, dataAlerta);
+
+
+        int numeroDias = (int) TimeUnit.DAYS.convert(tempoNotificacao, TimeUnit.DAYS);
+        System.out.println(dataNotificacao);
+
+        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(NotificacaoWorker.class)
+                .setInitialDelay(dataNotificacao, TimeUnit.DAYS).build();
+
+        WorkManager.getInstance().beginUniqueWork(NotificacaoWorker.WORKER, ExistingWorkPolicy.REPLACE,oneTimeWorkRequest).enqueue();
+
+        /*Intent notificationIntent = new Intent( this, MyNotificationsBroadcaster.class) ;
         notificationIntent.putExtra(MyNotificationsBroadcaster.NOTIFICATION_ID , 1) ;
         notificationIntent.putExtra(MyNotificationsBroadcaster.NOTIFICATION, notificacao) ;
         PendingIntent pendingIntent = PendingIntent. getBroadcast (this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT) ;
@@ -312,20 +327,34 @@ public class ContasVencerActivity extends AppCompatActivity {
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, tempoNotificacao, pendingIntent) ;
 
+        fun scheduleNotification(timeDelay: Long, tag: String, body: String) {
+
+            val data = Data.Builder().putString("body", body)
+
+            val work = OneTimeWorkRequestBuilder<NotificationSchedule>()
+                    .setInitialDelay(timeDelay, TimeUnit.MILLISECONDS)
+                    .setConstraints(Constraints.Builder().setTriggerContentMaxDelay(Constant.ONE_SECOND, TimeUnit.MILLISECONDS).build()) // API Level 24
+                    .setInputData(data.build())
+                    .addTag(tag)
+                    .build()
+
+            WorkManager.getInstance().enqueue(work)
+        }*/
+
     }
 
-    public Notification gerarNotificacao(){
+    /*public Notification gerarNotificacao(){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id ) ;
         builder.setContentTitle("Scheduled Notification") ;
         builder.setContentText("?????") ;
-        builder.setSmallIcon(R.drawable. ic_launcher_foreground ) ;
+        builder.setSmallIcon(R.drawable. ic_launcher_foreground) ;
         builder.setAutoCancel( true ) ;
         builder.setChannelId( NOTIFICATION_CHANNEL_ID ) ;
         return builder.build() ;
 
         //notificationManagerCompat.notify(1, notification);
 
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -341,6 +370,6 @@ public class ContasVencerActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         referencia.removeEventListener(valueEventListenerSpinner);
-        referencia.removeEventListener(valueEventListenerRecycler);
+        referencia2.removeEventListener(valueEventListenerRecycler);
     }
 }

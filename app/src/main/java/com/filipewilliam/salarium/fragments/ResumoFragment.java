@@ -40,18 +40,12 @@ public class ResumoFragment extends Fragment {
 
     private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
-    private DateCustom dateCustom;
-    private UltimasTransacoesAdapter adapterTransacoes;
-    public FragmentPagerItemAdapter adapterView;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private TextView textViewTotalGasto;
     private TextView textViewTotalRecebido;
     private TextView textViewValorSaldo;
-    private Double gastoTotal;
-    private Double recebimentoTotal;
-    private Double saldoTotal;
-    private String mesAtual = dateCustom.retornaMesAno();
+    private String mesAtual = DateCustom.retornaMesAno();
     private FormatarValoresHelper tratarValores;
 
     public ResumoFragment() {

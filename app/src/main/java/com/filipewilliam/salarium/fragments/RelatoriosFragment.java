@@ -41,12 +41,10 @@ public class RelatoriosFragment extends Fragment {
     Spinner spinnerMesAno;
     public DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DateCustom dateCustom;
     private TextView textViewDespesasRelatorio;
     private TextView textViewSaldoRelatorio;
     private TextView textViewRecebidoRelatorio;
     private TextView textViewNadaAReportar;
-    private FormatarValoresHelper tratarValores;
     private RecyclerView recyclerViewRelatorio;
     private ProgressBar progressBarRelatorios;
     private ValueEventListener eventListener;
@@ -157,15 +155,15 @@ public class RelatoriosFragment extends Fragment {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
-        textViewRecebidoRelatorio.setText(tratarValores.tratarValores(saldoPositivo));
-        textViewDespesasRelatorio.setText(tratarValores.tratarValores(saldoNegativo));
+        textViewRecebidoRelatorio.setText(FormatarValoresHelper.tratarValores(saldoPositivo));
+        textViewDespesasRelatorio.setText(FormatarValoresHelper.tratarValores(saldoNegativo));
 
         if(saldoMes < 0){
-            textViewSaldoRelatorio.setText(tratarValores.tratarValores(saldoMes));
+            textViewSaldoRelatorio.setText(FormatarValoresHelper.tratarValores(saldoMes));
             textViewSaldoRelatorio.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
 
         }else{
-            textViewSaldoRelatorio.setText(tratarValores.tratarValores(saldoMes));
+            textViewSaldoRelatorio.setText(FormatarValoresHelper.tratarValores(saldoMes));
             textViewSaldoRelatorio.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
 
         }

@@ -4,6 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 public class DatasMaskWatcher implements TextWatcher {
+
     private boolean isRunning = false;
     private boolean isDeleting = false;
     private final String mask;
