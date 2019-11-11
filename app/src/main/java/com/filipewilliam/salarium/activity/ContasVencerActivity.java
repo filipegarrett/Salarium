@@ -1,17 +1,12 @@
 package com.filipewilliam.salarium.activity;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +39,6 @@ import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.ContasVencer;
-import com.filipewilliam.salarium.service.MyNotificationsBroadcaster;
 import com.filipewilliam.salarium.service.NotificacaoWorker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.Timestamp;
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,8 +55,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.filipewilliam.salarium.activity.App.CHANNEL_1_ID;
 
 public class ContasVencerActivity extends AppCompatActivity {
 
@@ -83,10 +75,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private NotificationManagerCompat notificationManagerCompat;
     private final Date hoje = DateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
-    public static final String NOTIFICATION_CHANNEL_ID = "contas a vencer";
-    private final static String default_notification_channel_id = "default";
     final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-    public static final String SHARED_PREFERENCES = "notificacoes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +84,9 @@ public class ContasVencerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas_vencer);
 
-        AsyncTaskLimparBanco asyncTaskLimparBanco = new AsyncTaskLimparBanco();
-        asyncTaskLimparBanco.execute();
+
+        new LimparBancoAsyncTask(this).execute(); //chama a thread que garante que o banco não vai manter dados referentes a contas já vencidas
+        //new AsyncTaskLimparBanco(this).execute();
 
         spinnerCategoriaContas = findViewById(R.id.spinnerCategoriaContasVencer);
         editTextValorContasVencer = findViewById(R.id.editTextValorContasVencer);
@@ -374,12 +364,20 @@ public class ContasVencerActivity extends AppCompatActivity {
         referencia2.removeEventListener(valueEventListenerRecycler);
     }
 
-    class AsyncTaskLimparBanco extends AsyncTask<Void, Integer, Boolean> {
+    private static class LimparBancoAsyncTask extends AsyncTask<Void, Integer, Boolean> {
+
+        private WeakReference<ContasVencerActivity> activityReference;
+
+        // a ideia aqui dessa WeakReference e construtor customizado é impedir problemas de vazamento de memória
+        LimparBancoAsyncTask(ContasVencerActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
 
 
         @Override
         protected Boolean doInBackground(Void... voids) {
 
+            final FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
             final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
             final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
             referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
@@ -402,6 +400,12 @@ public class ContasVencerActivity extends AppCompatActivity {
             });
 
             return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            ContasVencerActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
         }
     }
 }
