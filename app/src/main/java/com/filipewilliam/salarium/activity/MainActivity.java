@@ -85,6 +85,12 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
 
+        if(getIntent().getIntExtra("EXTRA",0) == 1){
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.viewPager, new GasteiFragment()).commit();
+
+        }
+
         //método para ocultar o FAB na fragment de resumo
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
