@@ -48,7 +48,7 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
         int iconTop = itemView.getTop() + (itemView.getHeight() - iconeLixeira.getIntrinsicHeight()) / 2;
         int iconBottom = iconTop + iconeLixeira.getIntrinsicHeight();
 
-        if (dX > 0) { // comportamento de deslizar para a direita (tentei desativar para só permitir o deslize à esquerda, mas deu um monte de problema)
+        if (dX > 0) { // comportamento de deslizar para a direita (tentei desativar para só permitir o deslize à esquerda, mas deu um monte de pobrema)
             int iconLeft = itemView.getLeft() + iconMargin;
             int iconRight = itemView.getLeft() + iconMargin + iconeLixeira.getIntrinsicWidth();
             iconeLixeira.setBounds(iconLeft, iconTop, iconRight, iconBottom);

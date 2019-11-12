@@ -84,9 +84,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas_vencer);
 
-
         new LimparBancoAsyncTask(this).execute(); //chama a thread que garante que o banco não vai manter dados referentes a contas já vencidas
-        //new AsyncTaskLimparBanco(this).execute();
 
         spinnerCategoriaContas = findViewById(R.id.spinnerCategoriaContasVencer);
         editTextValorContasVencer = findViewById(R.id.editTextValorContasVencer);
@@ -158,9 +156,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        recyclerViewContasVencerCadastradas.setLayoutManager(new
-
-                LinearLayoutManager(this));
+        recyclerViewContasVencerCadastradas.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewContasVencerCadastradas.setHasFixedSize(true);
 
     }
@@ -269,7 +265,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    /*public void limparBanco() {
+    public void limparBanco() {
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
         referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
@@ -290,7 +286,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
             }
         });
-    }*/
+    }
 
     public void esconderTeclado() {
         try {
@@ -310,7 +306,6 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         Date data = DateCustom.retornaDataHojeDateFormat();
         int dataNotificacao = DateCustom.calculaDiferencaDias(data, dataAlerta);
-
 
         int numeroDias = (int) TimeUnit.DAYS.convert(tempoNotificacao, TimeUnit.DAYS);
         System.out.println(dataNotificacao);
