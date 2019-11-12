@@ -11,18 +11,18 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
+import com.filipewilliam.salarium.adapter.ResumoAdapter;
 
 public class DeslizarApagarCallbackResumo extends ItemTouchHelper.SimpleCallback {
 
-    private UltimasTransacoesAdapter ultimasTransacoesAdapter;
+    private ResumoAdapter resumoAdapter;
     private Drawable iconeLixeira;
     private final ColorDrawable fundoExcluir;
 
-    public DeslizarApagarCallbackResumo(UltimasTransacoesAdapter adapter){
+    public DeslizarApagarCallbackResumo(ResumoAdapter adapter){
         super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-        ultimasTransacoesAdapter = adapter;
-        iconeLixeira = ContextCompat.getDrawable(ultimasTransacoesAdapter.gerarContext(), R.drawable.ic_lixeira_excluir_branco_24dp);
+        resumoAdapter = adapter;
+        iconeLixeira = ContextCompat.getDrawable(resumoAdapter.gerarContext(), R.drawable.ic_lixeira_excluir_branco_24dp);
         fundoExcluir = new ColorDrawable(Color.RED);
     }
 
@@ -35,7 +35,7 @@ public class DeslizarApagarCallbackResumo extends ItemTouchHelper.SimpleCallback
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         int posicao =  viewHolder.getAdapterPosition();
         System.out.println(posicao);
-        ultimasTransacoesAdapter.excluirItem(posicao);
+        resumoAdapter.excluirItem(posicao);
     }
 
     @Override
