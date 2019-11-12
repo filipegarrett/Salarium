@@ -35,7 +35,7 @@ import com.google.firebase.iid.InstanceIdResult;
 public class CadastrarUsuarioActivity extends AppCompatActivity {
 
     private EditText editTextNome, editTextDataNascimento, editTextEmail, editTextSenha;
-    private Button botaoCadastrarUsuario;
+    private Button buttonCadastrarUsuario;
     private ProgressBar progressBarCadastrarUsuario;
     private FirebaseAuth autenticacao;
     private Usuario usuario;
@@ -52,9 +52,9 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
         progressBarCadastrarUsuario = findViewById(R.id.progressBarCadastrarUsuario);
-        botaoCadastrarUsuario = findViewById(R.id.buttonEntrar);
+        buttonCadastrarUsuario = findViewById(R.id.buttonEntrar);
 
-        botaoCadastrarUsuario.setOnClickListener(new View.OnClickListener() {
+        buttonCadastrarUsuario.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -70,7 +70,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                     if(!dataNascimento.isEmpty()){
                         if(!email.isEmpty()){
                             if(!senha.isEmpty()){
-                                botaoCadastrarUsuario.setVisibility(View.GONE);
+                                buttonCadastrarUsuario.setVisibility(View.GONE);
                                 progressBarCadastrarUsuario.setVisibility(View.VISIBLE);
 
                                 usuario = new Usuario();
@@ -131,7 +131,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 progressBarCadastrarUsuario.setVisibility(View.GONE);
-                                botaoCadastrarUsuario.setVisibility(View.VISIBLE);
+                                buttonCadastrarUsuario.setVisibility(View.VISIBLE);
 
                                 String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
                                 usuario.setIdUsuario(idUsuario);
@@ -139,7 +139,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Um e-mail de confirmação foi enviado para " + user.getEmail(), Toast.LENGTH_SHORT).show();
                             }else{
                                 progressBarCadastrarUsuario.setVisibility(View.GONE);
-                                botaoCadastrarUsuario.setVisibility(View.VISIBLE);
+                                buttonCadastrarUsuario.setVisibility(View.VISIBLE);
                                 Toast.makeText(CadastrarUsuarioActivity.this, "Ocorreu uma falha na verificação de seu e-mail", Toast.LENGTH_SHORT).show();
 
                             }

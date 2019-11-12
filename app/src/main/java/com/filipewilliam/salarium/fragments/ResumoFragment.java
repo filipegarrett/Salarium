@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,23 +14,19 @@ import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
-import com.filipewilliam.salarium.adapter.UltimasTransacoesAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
-import com.filipewilliam.salarium.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,18 +35,12 @@ public class ResumoFragment extends Fragment {
 
     private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
-    private DateCustom dateCustom;
-    private UltimasTransacoesAdapter adapterTransacoes;
-    public FragmentPagerItemAdapter adapterView;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private TextView textViewTotalGasto;
     private TextView textViewTotalRecebido;
     private TextView textViewValorSaldo;
-    private Double gastoTotal;
-    private Double recebimentoTotal;
-    private Double saldoTotal;
-    private String mesAtual = dateCustom.retornaMesAno();
+    private String mesAtual = DateCustom.retornaMesAno();
     private FormatarValoresHelper tratarValores;
 
     public ResumoFragment() {

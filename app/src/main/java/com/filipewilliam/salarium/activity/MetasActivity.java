@@ -44,7 +44,6 @@ public class MetasActivity extends AppCompatActivity {
     private Double gastoMes = 0.0;
     private Double valorMeta = 0.0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

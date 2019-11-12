@@ -41,12 +41,10 @@ public class RelatoriosFragment extends Fragment {
     Spinner spinnerMesAno;
     public DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DateCustom dateCustom;
     private TextView textViewDespesasRelatorio;
     private TextView textViewSaldoRelatorio;
     private TextView textViewRecebidoRelatorio;
     private TextView textViewNadaAReportar;
-    private FormatarValoresHelper tratarValores;
     private RecyclerView recyclerViewRelatorio;
     private ProgressBar progressBarRelatorios;
     private ValueEventListener eventListener;
@@ -83,7 +81,7 @@ public class RelatoriosFragment extends Fragment {
                     progressBarRelatorios.setVisibility(View.GONE);
 
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        listTransacoesMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                        listTransacoesMeses.add(DateCustom.formatarMesAno(dataSnapshot1.getKey()));
                         Collections.reverse(listTransacoesMeses); //Não é muito elegante, mas o Firebase não conhece o conceito de ordenar dados de forma decrescente...
 
                         ArrayAdapter<String> transacoesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, listTransacoesMeses);
@@ -118,7 +116,6 @@ public class RelatoriosFragment extends Fragment {
                         double totalDespesaMes = 0;
                         double totalRecebidoMes = 0;
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                            System.out.println(dataSnapshot1);
                             Transacao transacao = dataSnapshot1.getValue(Transacao.class);
                             listaTransacoes.add(transacao);
 
@@ -158,15 +155,15 @@ public class RelatoriosFragment extends Fragment {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
-        textViewRecebidoRelatorio.setText(tratarValores.tratarValores(saldoPositivo));
-        textViewDespesasRelatorio.setText(tratarValores.tratarValores(saldoNegativo));
+        textViewRecebidoRelatorio.setText(FormatarValoresHelper.tratarValores(saldoPositivo));
+        textViewDespesasRelatorio.setText(FormatarValoresHelper.tratarValores(saldoNegativo));
 
         if(saldoMes < 0){
-            textViewSaldoRelatorio.setText(tratarValores.tratarValores(saldoMes));
+            textViewSaldoRelatorio.setText(FormatarValoresHelper.tratarValores(saldoMes));
             textViewSaldoRelatorio.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
 
         }else{
-            textViewSaldoRelatorio.setText(tratarValores.tratarValores(saldoMes));
+            textViewSaldoRelatorio.setText(FormatarValoresHelper.tratarValores(saldoMes));
             textViewSaldoRelatorio.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
 
         }

@@ -132,7 +132,6 @@ public class GasteiFragment extends Fragment {
 
         return view;
 
-
     }
 
     public void criarGasto() {
