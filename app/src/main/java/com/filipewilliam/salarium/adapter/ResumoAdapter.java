@@ -41,13 +41,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
     ArrayList<Transacao> transacoesArrayList;
     ArrayList<String> keys;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-    private ArrayList<Double> valores = new ArrayList<>();
-    private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-    private TextView textViewTotalGasto;
-    private TextView textViewTotalRecebido;
-    private TextView textViewValorSaldo;
 
     public ResumoAdapter(Context c, ArrayList<Transacao> tArrayList, ArrayList<String> k) {
         this.context = c;
@@ -100,6 +94,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
                 transacoesArrayList.remove(posicaoSelecionada);
                 referencia.child(key).removeValue(mRemoveListener);
                 notifyItemRemoved(posicaoSelecionada);
+
                 //recuperarResumo();
                 notifyItemRangeChanged(posicaoSelecionada, transacoesArrayList.size());
                 notifyDataSetChanged();
@@ -156,9 +151,6 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
             descricao = itemView.findViewById(R.id.textViewDescricaoRelatorio);
             valor = itemView.findViewById(R.id.textViewValorRelatorio);
             data = itemView.findViewById(R.id.textViewDataRelatorio);
-            textViewValorSaldo = itemView.findViewById(R.id.textViewValorSaldo);
-            textViewTotalRecebido = itemView.findViewById(R.id.textViewTotalRecebido);
-            textViewTotalGasto = itemView.findViewById(R.id.textViewTotalGasto);
 
         }
 

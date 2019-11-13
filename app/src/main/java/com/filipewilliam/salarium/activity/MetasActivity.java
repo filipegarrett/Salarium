@@ -41,13 +41,12 @@ public class MetasActivity extends AppCompatActivity {
     private Button buttonExcluirMetas;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private DateCustom dateCustom;
     private EditText editTextDataMeta;
     private EditText editTextValorMetas;
     private TextView textViewValorMetas;
     private TextView textViewTotalGastoMetas;
     private TextView textViewSaldoMetas;
-    private String mesAtual = dateCustom.retornaMesAno();
+    private String mesAtual = DateCustom.retornaMesAno();
     private Double gastoMes = 0.0;
     private Double valorMeta = 0.0;
     private List<String> listMetasMeses = new ArrayList<>();
@@ -55,7 +54,7 @@ public class MetasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Metas:");
+        getSupportActionBar().setTitle("Metas");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metas);
         spinnerMetas = findViewById(R.id.spinnerMesMetas);
@@ -76,7 +75,7 @@ public class MetasActivity extends AppCompatActivity {
 
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
-                    listMetasMeses.add(dateCustom.formatarMesAno(dataSnapshot1.getKey()));
+                    listMetasMeses.add(DateCustom.formatarMesAno(dataSnapshot1.getKey()));
                     ArrayAdapter<String> metasAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, listMetasMeses);
                     metasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerMetas.setAdapter(metasAdapter);
@@ -192,7 +191,6 @@ public class MetasActivity extends AppCompatActivity {
                     }
 
                 }
-
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -315,7 +313,6 @@ public class MetasActivity extends AppCompatActivity {
 
         return valorMeta;
     }
-
 
 }
 

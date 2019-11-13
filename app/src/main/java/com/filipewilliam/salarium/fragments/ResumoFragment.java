@@ -1,7 +1,6 @@
 package com.filipewilliam.salarium.fragments;
 
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,7 @@ import com.filipewilliam.salarium.adapter.ResumoAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
-import com.filipewilliam.salarium.helpers.DeslizarApagarCallbackResumo;
+import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -41,15 +39,13 @@ public class ResumoFragment extends Fragment {
 
     private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
-    private DateCustom dateCustom;
     public FragmentPagerItemAdapter adapterView;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private TextView textViewTotalGasto;
     private TextView textViewTotalRecebido;
     private TextView textViewValorSaldo;
-    private String mesAtual = dateCustom.retornaMesAno();
-    private static FormatarValoresHelper tratarValores;
+    private String mesAtual = DateCustom.retornaMesAno();
     private ArrayList<String> keys = new ArrayList<>();
     private static MainActivity activityInstancia;
 
@@ -63,7 +59,7 @@ public class ResumoFragment extends Fragment {
         activityInstancia = (MainActivity) getContext();
         recuperarTransacoes();
         recuperarResumo();
-        new AtualizarResumoAsyncTask(this).execute();
+        //new AtualizarResumoAsyncTask(this).execute();
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
         textViewTotalRecebido = view.findViewById(R.id.textViewTotalRecebido);
@@ -96,7 +92,7 @@ public class ResumoFragment extends Fragment {
 
                 ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallbackResumo(adapterTransacoes));
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallback(adapterTransacoes));
                 itemTouchHelper.attachToRecyclerView(recyclerViewTransacoes);
 
             }
@@ -132,7 +128,7 @@ public class ResumoFragment extends Fragment {
 
                     }
 
-                    //atualizaDadosResumo(transacao, totalRecebidoMes, totalDespesaMes);
+                    atualizaDadosResumo(transacao, totalRecebidoMes, totalDespesaMes);
                 }
             }
 
@@ -143,39 +139,57 @@ public class ResumoFragment extends Fragment {
         });
     }
 
-    /*public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo) {
+    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo) {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
         System.out.println(transacao.getValor());
-        textViewTotalRecebido.setText(tratarValores.tratarValores(saldoPositivo));
-        textViewTotalGasto.setText(tratarValores.tratarValores(saldoNegativo));
+        textViewTotalRecebido.setText(FormatarValoresHelper.tratarValores(saldoPositivo));
+        textViewTotalGasto.setText(FormatarValoresHelper.tratarValores(saldoNegativo));
 
         if (saldoMes < 0) {
-            textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
+            textViewValorSaldo.setText(FormatarValoresHelper.tratarValores(saldoMes));
             textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
 
         } else {
-            textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
+            textViewValorSaldo.setText(FormatarValoresHelper.tratarValores(saldoMes));
             textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
 
         }
 
-    }*/
+    }
 
-    private static class AtualizarResumoAsyncTask extends AsyncTask<Void, Void, AtualizarResumoAsyncTask.Resultados> {
+    /*private static class AtualizarResumoAsyncTask extends AsyncTask<Void, Void, double[]> {
 
         final DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
         final FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         private String mesAtual = DateCustom.retornaMesAno();
-        private ArrayList<Double> valores = new ArrayList<>();
-        private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-        public Resultados r = new Resultados();
-
+        Resultados r = new Resultados();
+        double totalDespesaMes = 0;
+        double totalRecebidoMes = 0;
 
         public class Resultados{
 
-            public double totalRecebidoMes, totalDespesasMes = 0.0;
+            public double totalRecebido, totalDespesas = 0.0;
+
+            public Resultados() {
+            }
+
+            public double getTotalRecebidoMes() {
+                return totalRecebido;
+            }
+
+            public void setTotalRecebidoMes(double totalRecebidoMes) {
+                this.totalRecebido = totalRecebidoMes;
+            }
+
+            public double getTotalDespesasMes() {
+                return totalDespesas;
+            }
+
+            public void setTotalDespesasMes(double totalDespesasMes) {
+                this.totalDespesas = totalDespesasMes;
+            }
         }
 
         private WeakReference<ResumoFragment> fragmentWeakReference;
@@ -187,30 +201,26 @@ public class ResumoFragment extends Fragment {
 
 
         @Override
-        protected Resultados doInBackground(Void... params) {
+        protected double[] doInBackground(Void... params) {
+
             final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
             referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    listaTransacoes.clear();
-                    valores.clear();
-                    double totalDespesaMes = 0;
-                    double totalRecebidoMes = 0;
+
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Transacao transacao = dataSnapshot1.getValue(Transacao.class);
-                        listaTransacoes.add(transacao);
 
                         if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
-                            totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
+                            totalDespesaMes = totalDespesaMes + transacao.getValor();
+                            System.out.println(totalDespesaMes);
+                            r.setTotalDespesasMes(totalDespesaMes);
 
                         } else {
                             totalRecebidoMes = totalRecebidoMes + Double.valueOf(transacao.getValor());
 
                         }
                     }
-                    Resultados r = new Resultados();
-                    r.totalDespesasMes = totalRecebidoMes;
-                    r.totalDespesasMes = totalDespesaMes;
                 }
 
                 @Override
@@ -218,28 +228,33 @@ public class ResumoFragment extends Fragment {
 
                 }
             });
-            return r;
+            System.out.println("rerwerwrwe " + totalRecebidoMes);
+            return new double[] {totalRecebidoMes, totalDespesaMes};
         }
 
         @Override
-        protected void onPostExecute(Resultados r) {
+        protected void onPostExecute(double... doubles) {
             ResumoFragment fragment = fragmentWeakReference.get();
             if (fragment == null || fragment.isRemoving()) return;
 
-            double saldoMes = r.totalRecebidoMes - r.totalDespesasMes;
-            fragment.textViewTotalRecebido.setText(tratarValores.tratarValores(r.totalRecebidoMes));
-            fragment.textViewTotalGasto.setText(tratarValores.tratarValores(r.totalDespesasMes));
+            System.out.println("dsdadad" + doubles[0]);
+
+            TextView textViewSaldo = fragment.getView().findViewById(R.id.textViewValorSaldo);
+
+            double saldoMes = r.getTotalRecebidoMes() - r.getTotalDespesasMes();
+            fragment.textViewTotalRecebido.setText(FormatarValoresHelper.tratarValores(doubles[0]));
+            fragment.textViewTotalGasto.setText(FormatarValoresHelper.tratarValores(doubles[1]));
 
             if (saldoMes < 0) {
-                fragment.textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
-                fragment.textViewValorSaldo.setTextColor(ContextCompat.getColor(activityInstancia.getApplicationContext(), R.color.corBotoesCancela));
+                textViewSaldo.setText(FormatarValoresHelper.tratarValores(saldoMes));
+                textViewSaldo.setTextColor(ContextCompat.getColor(activityInstancia.getApplicationContext(), R.color.corBotoesCancela));
 
             } else {
-                fragment.textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
+                fragment.textViewValorSaldo.setText(FormatarValoresHelper.tratarValores(saldoMes));
                 fragment.textViewValorSaldo.setTextColor(ContextCompat.getColor(activityInstancia.getApplicationContext(), R.color.corBotoesConfirma));
 
             }
         }
-    }
+    }*/
 
 }
