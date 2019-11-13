@@ -35,18 +35,18 @@ import static android.support.constraint.Constraints.TAG;
 public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoViewHolder> {
 
     private Context context;
-    private DateCustom dateCustom;
-    private String mesAtual = dateCustom.retornaMesAno();
-    private FormatarValoresHelper tratarValores;
+    private String mesAtual = DateCustom.retornaMesAno();
+    private ResumoFragment resumoFragment;
     ArrayList<Transacao> transacoesArrayList;
     ArrayList<String> keys;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
 
-    public ResumoAdapter(Context c, ArrayList<Transacao> tArrayList, ArrayList<String> k) {
+    public ResumoAdapter(Context c, ArrayList<Transacao> tArrayList, ArrayList<String> k, ResumoFragment fragment) {
         this.context = c;
         keys = k;
         this.transacoesArrayList = tArrayList;
+        this.resumoFragment = fragment;
     }
 
     @NonNull
@@ -65,7 +65,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
             resumoViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
             resumoViewHolder.categoria.setText(transacao.getCategoria() + ":");
             resumoViewHolder.descricao.setText(transacao.getDescricao());
-            resumoViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
+            resumoViewHolder.valor.setText(FormatarValoresHelper.tratarValores(transacao.getValor()));
             resumoViewHolder.data.setText(transacao.getData());
 
         }else{
@@ -73,7 +73,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
             resumoViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
             resumoViewHolder.categoria.setText(transacao.getCategoria() + ":");
             resumoViewHolder.descricao.setText(transacao.getDescricao());
-            resumoViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
+            resumoViewHolder.valor.setText(FormatarValoresHelper.tratarValores(transacao.getValor()));
             resumoViewHolder.data.setText(transacao.getData());
         }
 
@@ -95,7 +95,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
                 referencia.child(key).removeValue(mRemoveListener);
                 notifyItemRemoved(posicaoSelecionada);
 
-                //recuperarResumo();
+                resumoFragment.recuperarResumo();
                 notifyItemRangeChanged(posicaoSelecionada, transacoesArrayList.size());
                 notifyDataSetChanged();
 
@@ -106,7 +106,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show();
-                //recuperarResumo();
+                resumoFragment.recuperarResumo();
                 notifyDataSetChanged();
 
             }

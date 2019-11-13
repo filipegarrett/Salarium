@@ -47,7 +47,6 @@ public class ResumoFragment extends Fragment {
     private TextView textViewValorSaldo;
     private String mesAtual = DateCustom.retornaMesAno();
     private ArrayList<String> keys = new ArrayList<>();
-    private static MainActivity activityInstancia;
 
     public ResumoFragment() {
     }
@@ -56,10 +55,8 @@ public class ResumoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        activityInstancia = (MainActivity) getContext();
         recuperarTransacoes();
         recuperarResumo();
-        //new AtualizarResumoAsyncTask(this).execute();
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
         textViewTotalRecebido = view.findViewById(R.id.textViewTotalRecebido);
@@ -90,7 +87,7 @@ public class ResumoFragment extends Fragment {
                     listaTransacoes.add(transacao);
                 }
 
-                ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys);
+                ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys, ResumoFragment.this);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallback(adapterTransacoes));
                 itemTouchHelper.attachToRecyclerView(recyclerViewTransacoes);
@@ -158,103 +155,5 @@ public class ResumoFragment extends Fragment {
         }
 
     }
-
-    /*private static class AtualizarResumoAsyncTask extends AsyncTask<Void, Void, double[]> {
-
-        final DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
-        final FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        private String mesAtual = DateCustom.retornaMesAno();
-        Resultados r = new Resultados();
-        double totalDespesaMes = 0;
-        double totalRecebidoMes = 0;
-
-        public class Resultados{
-
-            public double totalRecebido, totalDespesas = 0.0;
-
-            public Resultados() {
-            }
-
-            public double getTotalRecebidoMes() {
-                return totalRecebido;
-            }
-
-            public void setTotalRecebidoMes(double totalRecebidoMes) {
-                this.totalRecebido = totalRecebidoMes;
-            }
-
-            public double getTotalDespesasMes() {
-                return totalDespesas;
-            }
-
-            public void setTotalDespesasMes(double totalDespesasMes) {
-                this.totalDespesas = totalDespesasMes;
-            }
-        }
-
-        private WeakReference<ResumoFragment> fragmentWeakReference;
-
-        // a ideia aqui dessa WeakReference e construtor customizado é impedir problemas de vazamento de memória
-        AtualizarResumoAsyncTask(ResumoFragment context) {
-            fragmentWeakReference = new WeakReference<>(context);
-        }
-
-
-        @Override
-        protected double[] doInBackground(Void... params) {
-
-            final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-            referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        Transacao transacao = dataSnapshot1.getValue(Transacao.class);
-
-                        if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
-                            totalDespesaMes = totalDespesaMes + transacao.getValor();
-                            System.out.println(totalDespesaMes);
-                            r.setTotalDespesasMes(totalDespesaMes);
-
-                        } else {
-                            totalRecebidoMes = totalRecebidoMes + Double.valueOf(transacao.getValor());
-
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            System.out.println("rerwerwrwe " + totalRecebidoMes);
-            return new double[] {totalRecebidoMes, totalDespesaMes};
-        }
-
-        @Override
-        protected void onPostExecute(double... doubles) {
-            ResumoFragment fragment = fragmentWeakReference.get();
-            if (fragment == null || fragment.isRemoving()) return;
-
-            System.out.println("dsdadad" + doubles[0]);
-
-            TextView textViewSaldo = fragment.getView().findViewById(R.id.textViewValorSaldo);
-
-            double saldoMes = r.getTotalRecebidoMes() - r.getTotalDespesasMes();
-            fragment.textViewTotalRecebido.setText(FormatarValoresHelper.tratarValores(doubles[0]));
-            fragment.textViewTotalGasto.setText(FormatarValoresHelper.tratarValores(doubles[1]));
-
-            if (saldoMes < 0) {
-                textViewSaldo.setText(FormatarValoresHelper.tratarValores(saldoMes));
-                textViewSaldo.setTextColor(ContextCompat.getColor(activityInstancia.getApplicationContext(), R.color.corBotoesCancela));
-
-            } else {
-                fragment.textViewValorSaldo.setText(FormatarValoresHelper.tratarValores(saldoMes));
-                fragment.textViewValorSaldo.setTextColor(ContextCompat.getColor(activityInstancia.getApplicationContext(), R.color.corBotoesConfirma));
-
-            }
-        }
-    }*/
 
 }
