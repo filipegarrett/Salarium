@@ -101,7 +101,6 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
                 referencia.child(key).removeValue(mRemoveListener);
                 notifyItemRemoved(posicaoSelecionada);
                 //recuperarResumo();
-                iniciarAsyncTask();
                 notifyItemRangeChanged(posicaoSelecionada, transacoesArrayList.size());
                 notifyDataSetChanged();
 
@@ -120,15 +119,6 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
 
         AlertDialog alert = alertDialog.create();
         alert.show();
-
-    }
-
-    public void iniciarAsyncTask(){
-
-        //AsyncAtualizarResumo task = new AsyncAtualizarResumo();
-        //task.execute();
-        ResumoFragment resumoFragment = new ResumoFragment();
-        resumoFragment.recuperarResumo();
 
     }
 
@@ -174,60 +164,4 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
 
     }
 
-    class AsyncAtualizarResumo extends AsyncTask<Void, Void, ArrayList<Double>> {
-
-
-        @Override
-        protected ArrayList<Double> doInBackground(Void... params) {
-            final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-            referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    listaTransacoes.clear();
-                    valores.clear();
-                    double totalDespesaMes = 0;
-                    double totalRecebidoMes = 0;
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        Transacao transacao = dataSnapshot1.getValue(Transacao.class);
-                        listaTransacoes.add(transacao);
-
-                        if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
-                            totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
-
-                        } else {
-                            totalRecebidoMes = totalRecebidoMes + Double.valueOf(transacao.getValor());
-
-                        }
-                    }
-                    valores.add(totalDespesaMes);
-                    valores.add(totalRecebidoMes);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            return valores;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Double> doubles) {
-            super.onPostExecute(doubles);
-
-            Double saldoMes = (doubles.get(1) - (doubles.get(0)));
-            textViewTotalRecebido.setText(tratarValores.tratarValores(doubles.get(1)));
-            textViewTotalGasto.setText(tratarValores.tratarValores(doubles.get(0)));
-
-            if (saldoMes < 0) {
-                textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
-                textViewValorSaldo.setTextColor(ContextCompat.getColor(gerarContext(), R.color.corBotoesCancela));
-
-            } else {
-                textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
-                textViewValorSaldo.setTextColor(ContextCompat.getColor(gerarContext(), R.color.corBotoesConfirma));
-
-            }
-        }
-    }
 }
