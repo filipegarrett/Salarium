@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 
 import java.util.ArrayList;
 
@@ -138,7 +139,7 @@ public class ResumoFragment extends Fragment {
         });
     }
 
-    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo){
+    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo) {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
@@ -146,11 +147,11 @@ public class ResumoFragment extends Fragment {
         textViewTotalRecebido.setText(tratarValores.tratarValores(saldoPositivo));
         textViewTotalGasto.setText(tratarValores.tratarValores(saldoNegativo));
 
-        if(saldoMes < 0){
+        if (saldoMes < 0) {
             textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
             textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesCancela));
 
-        }else{
+        } else {
             textViewValorSaldo.setText(tratarValores.tratarValores(saldoMes));
             textViewValorSaldo.setTextColor(ContextCompat.getColor(getContext(), R.color.corBotoesConfirma));
 
@@ -159,4 +160,4 @@ public class ResumoFragment extends Fragment {
     }
 
 
-    }
+}

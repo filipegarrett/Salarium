@@ -44,7 +44,7 @@ public class RecebiFragment extends Fragment {
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
     private FloatingActionButton fabAdicionarCategoriaRecebimento;
-    private Button buttonCriarRecebimento, buttonCategoriaTESTE, buttonLimparCamposRecebimento;
+    private Button buttonCriarRecebimento, buttonLimparCamposRecebimento;
     private Double recebimentoTotal;
 
     public RecebiFragment() {
@@ -63,7 +63,6 @@ public class RecebiFragment extends Fragment {
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
         buttonLimparCamposRecebimento = view.findViewById(R.id.buttonLimparCamposRecebimentos);
-        buttonCategoriaTESTE = view.findViewById(R.id.buttonCategoriaTESTE); //BOTÃO CRIADO SÓ PARA PODER TESTAR RELATÓRIOS!!!!!!!!!!!!!!!!!!
         fabAdicionarCategoriaRecebimento = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
         referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
@@ -109,12 +108,7 @@ public class RecebiFragment extends Fragment {
         });
 
         //criar categoria
-        buttonCategoriaTESTE.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                criarCategoriaRecebimento();
-            }
-        });
+
 
         fabAdicionarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
