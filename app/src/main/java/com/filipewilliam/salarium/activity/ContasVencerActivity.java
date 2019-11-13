@@ -329,12 +329,6 @@ public class ContasVencerActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
 
         AlertDialog alert = alertDialog.create();
         alert.show();
