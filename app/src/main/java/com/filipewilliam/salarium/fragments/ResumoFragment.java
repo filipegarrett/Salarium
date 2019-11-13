@@ -90,7 +90,7 @@ public class ResumoFragment extends Fragment {
                     listaTransacoes.add(transacao);
                 }
 
-                ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys);
+                ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys, ResumoFragment.this);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallback(adapterTransacoes));
                 itemTouchHelper.attachToRecyclerView(recyclerViewTransacoes);
