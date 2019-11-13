@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setElevation(0); //Remove elevação da titleBar sobre os botões-aba dos fragments. Ou não =/.....
-        final FloatingActionButton fab = findViewById(R.id.fabAdicionarCategoria);
-        fab.hide();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -90,29 +88,6 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().replace(R.id.viewPager, new GasteiFragment()).commit();
 
         }
-
-        //método para ocultar o FAB na fragment de resumo
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-
-                if (i ==0 ){
-                    fab.hide();
-                }else {
-                    fab.show();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
 
     }
 

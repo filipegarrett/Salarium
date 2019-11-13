@@ -18,7 +18,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
-            android:hint="Descrição do recebimento"
+            android:hint="Descrição"
             android:inputType="textPersonName"
             android:textAlignment="viewStart"
             android:textSize="14sp"

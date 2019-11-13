@@ -15,6 +15,7 @@
         <activity android:name=".activity.RelatoriosActivity"></activity>
         <activity
             android:name=".activity.ContasVencerActivity"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activity.ConfiguracoesActivity" />
         <activity
