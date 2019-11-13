@@ -19,6 +19,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
             android:text="Salarium é um aplicativo desenvolvido por Filipe de Almeida Garrett e William Alexandre Senoski como trabalho de conclusão de curso (TCC) em Tecnologia e Análise de Sistemas no Instituto Federal do Paraná (IFPR), sob orientação do Professor Me. Cleverson Sebastião dos Anjos. Irati/PR, novembro de 2019."
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

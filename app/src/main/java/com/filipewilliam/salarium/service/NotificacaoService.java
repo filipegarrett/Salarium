@@ -3,6 +3,7 @@ package com.filipewilliam.salarium.service;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -19,14 +20,20 @@ public class NotificacaoService {
     public static final int NOTIFICATION_REQUEST_CODE = 50;
     public static final String CHANNEL_1_ID = "Contas à vencer";
 
+
+
     public static void showNotification(Context context, String channelId, int notificationId) {
         createNotificationChannel(context, channelId);
+        Intent intent = new Intent(context, ContasVencerActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 context, channelId)
                 .setSmallIcon(R.drawable.ic_codigo_de_barras_boleto_branco)
-                .setContentTitle("NÃO AGUENTO MAIS")
-                .setContentText("Tomara que funcione")
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setContentTitle("Não deixe atrasar!")
+                .setContentText("Pague em dia para evitar juros!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
         NotificationManagerCompat notificationManager = NotificationManagerCompat
                 .from(context);
         notificationManager.notify(notificationId, mBuilder.build());
