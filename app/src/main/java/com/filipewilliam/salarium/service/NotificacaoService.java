@@ -15,11 +15,8 @@ import com.filipewilliam.salarium.activity.ContasVencerActivity;
 public class NotificacaoService {
 
     public static final String UPDATE_CHANNEL_ID = "Contas à vencer";
-
     public static final int UPDATE_NOTIFICATION_ID = 1;
-
     public static final int NOTIFICATION_REQUEST_CODE = 50;
-
     public static final String CHANNEL_1_ID = "Contas à vencer";
 
     public static void showNotification(Context context, String channelId, int notificationId) {

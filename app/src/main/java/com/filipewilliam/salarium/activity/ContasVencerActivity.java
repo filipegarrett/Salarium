@@ -72,7 +72,6 @@ public class ContasVencerActivity extends AppCompatActivity {
     private ArrayList<ContasVencer> listaContasVencer;
     private ArrayList<String> keys = new ArrayList<>();
     private ContasVencerAdapter adapter;
-    private NotificationManagerCompat notificationManagerCompat;
     private final Date hoje = DateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
     final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
@@ -265,7 +264,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    public void limparBanco() {
+    /*public void limparBanco() {
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
         referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
@@ -286,7 +285,7 @@ public class ContasVencerActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     public void esconderTeclado() {
         try {
@@ -310,10 +309,14 @@ public class ContasVencerActivity extends AppCompatActivity {
         int numeroDias = (int) TimeUnit.DAYS.convert(tempoNotificacao, TimeUnit.DAYS);
         System.out.println(dataNotificacao);
 
-        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(NotificacaoWorker.class)
-                .setInitialDelay(dataNotificacao, TimeUnit.DAYS).build();
+        if(dataNotificacao > 1){
 
-        WorkManager.getInstance().beginUniqueWork(NotificacaoWorker.WORKER, ExistingWorkPolicy.REPLACE, oneTimeWorkRequest).enqueue();
+            OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(NotificacaoWorker.class)
+                    .setInitialDelay(dataNotificacao, TimeUnit.DAYS).build();
+
+            WorkManager.getInstance().beginUniqueWork(NotificacaoWorker.WORKER, ExistingWorkPolicy.REPLACE, oneTimeWorkRequest).enqueue();
+
+        }
 
     }
 
