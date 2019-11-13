@@ -1,14 +1,12 @@
 package com.filipewilliam.salarium.activity;
 
-import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +26,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.ContasVencerAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
@@ -37,6 +39,7 @@ import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.ContasVencer;
+import com.filipewilliam.salarium.service.NotificacaoWorker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,14 +56,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.filipewilliam.salarium.activity.App.CHANNEL_1_ID;
-
 public class ContasVencerActivity extends AppCompatActivity {
 
     Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
     private Spinner spinnerCategoriaContas;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private ValueEventListener valueEventListenerSpinner, valueEventListenerRecycler;
     private EditText editTextValorContasVencer, editTextDataVencimentoContasVencer;
     private Switch switchEmitirNotificacaoVencimento;
     private ProgressBar progressBar;
@@ -71,8 +75,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     private NotificationManagerCompat notificationManagerCompat;
     private final Date hoje = DateCustom.retornaDataHojeDateFormat();
     private final SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy");
-
-    public static final String SHARED_PREFERENCES = "notificacoes";
+    final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,8 @@ public class ContasVencerActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Próximas despesas");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas_vencer);
-        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+
+        new LimparBancoAsyncTask(this).execute(); //chama a thread que garante que o banco não vai manter dados referentes a contas já vencidas
 
         spinnerCategoriaContas = findViewById(R.id.spinnerCategoriaContasVencer);
         editTextValorContasVencer = findViewById(R.id.editTextValorContasVencer);
@@ -114,65 +118,32 @@ public class ContasVencerActivity extends AppCompatActivity {
             }
         });
 
-        referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> listCategorias = new ArrayList<String>();
-                for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
-                    Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
-                    listCategorias.add(nomeCategoria.getDescricaoCategoria());
-
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listCategorias);
-                    categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                    spinnerCategoriaContas.setAdapter(categoriasAdapter);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-
-        });
-
         buttonCadastrarContasVencer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(!spinnerCategoriaContas.getSelectedItem().toString().isEmpty()){
-                    if(!editTextDataVencimentoContasVencer.getText().toString().isEmpty()){
-                        if(!editTextValorContasVencer.getText().toString().isEmpty()){
-                            if(switchEmitirNotificacaoVencimento.isChecked()){
+                if (!editTextDataVencimentoContasVencer.getText().toString().isEmpty()) {
+                    if (!editTextValorContasVencer.getText().toString().isEmpty()) {
+                        if (switchEmitirNotificacaoVencimento.isChecked()) {
+                            long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
+                            agendarNotificacao(timeStampVencimento);
+                            cadastrarContasVencer();
+                            Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
+                            limparCampos();
 
-                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("valorSwitch", switchEmitirNotificacaoVencimento.isChecked());
-                                editor.apply();
+                        } else {
+                            cadastrarContasVencer();
+                            Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
+                            limparCampos();
 
-                                long timeStampVencimento = DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString());
-                               // System.out.println(timeStampVencimento);
-                                criarNotificacao(gerarNotificacao(), timeStampVencimento);
-                                cadastrarContasVencer();
-                                Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
-                                limparCampos();
-
-                            }else{
-                                cadastrarContasVencer();
-                                Toast.makeText(getApplicationContext(), "Despesa salva com sucesso!", Toast.LENGTH_SHORT).show();
-                                limparCampos();
-
-                            }
-
-                        }else{
-                            Toast.makeText(ContasVencerActivity.this, "Você precisa definir um valor para a despesa!", Toast.LENGTH_SHORT).show();
                         }
 
-                    }else{
-                        Toast.makeText(ContasVencerActivity.this, "Você precisa escolher uma data antes!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ContasVencerActivity.this, "Você precisa definir um valor para a despesa!", Toast.LENGTH_SHORT).show();
                     }
 
-                }else{
-                    Toast.makeText(ContasVencerActivity.this, "Você precisa escolher uma categoria antes!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ContasVencerActivity.this, "Você precisa escolher uma data antes!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -187,20 +158,57 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         recyclerViewContasVencerCadastradas.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewContasVencerCadastradas.setHasFixedSize(true);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        valueEventListenerSpinner = referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+                    List<String> listCategorias = new ArrayList<String>();
+                    for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
+                        Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
+                        assert nomeCategoria != null;
+                        listCategorias.add(nomeCategoria.getDescricaoCategoria());
+
+                        ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listCategorias);
+                        categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                        spinnerCategoriaContas.setAdapter(categoriasAdapter);
+                    }
+
+                } else {
+                    alertaCategorias();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
         listaContasVencer = new ArrayList<ContasVencer>();
 
-        final DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
-        referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
+        valueEventListenerRecycler = referencia2.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 keys.clear();
                 listaContasVencer.clear();
 
-                if(dataSnapshot.getChildrenCount() > 0){
-                    limparBanco();
+                if (dataSnapshot.getChildrenCount() > 0) {
+                    //limparBanco();
+
                     textViewSemContaCadastrada.setText("");
 
-                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         ContasVencer conta = dataSnapshot1.getValue(ContasVencer.class);
 
                         try {
@@ -215,7 +223,7 @@ public class ContasVencerActivity extends AppCompatActivity {
                         }
                     }
 
-                }else{
+                } else {
                     progressBar.setVisibility(View.GONE);
                     textViewSemContaCadastrada.setText("Você não tem nenhuma despesa para pagar =)");
                 }
@@ -234,25 +242,22 @@ public class ContasVencerActivity extends AppCompatActivity {
 
             }
         });
-
-        notificationManagerCompat = NotificationManagerCompat.from(this);
-
     }
 
-    public void cadastrarContasVencer(){
+    public void cadastrarContasVencer() {
 
         ContasVencer conta = new ContasVencer();
         String dataVencimento = editTextDataVencimentoContasVencer.getText().toString();
         conta.setCategoria(spinnerCategoriaContas.getSelectedItem().toString());
         conta.setDataVencimento(dataVencimento);
         conta.setTimestampVencimento(DateCustom.stringParaTimestamp(editTextDataVencimentoContasVencer.getText().toString()));
-        conta.setValor(Double.parseDouble(editTextValorContasVencer.getText().toString().replace(",","")));
+        conta.setValor(Double.parseDouble(editTextValorContasVencer.getText().toString().replace(",", "")));
         conta.salvarContasAVencer();
         esconderTeclado();
 
     }
 
-    public void limparCampos(){
+    public void limparCampos() {
 
         editTextDataVencimentoContasVencer.setText(null);
         editTextValorContasVencer.setText(null);
@@ -260,17 +265,17 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    public void limparBanco(){
+    public void limparBanco() {
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
         referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
                     long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
-                    if(Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte){
+                    if (Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte) {
                         dataSnapshot1.getRef().removeValue();
                     }
                 }
@@ -283,46 +288,59 @@ public class ContasVencerActivity extends AppCompatActivity {
         });
     }
 
-    public void esconderTeclado(){
+    public void esconderTeclado() {
         try {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch(Exception ignored) {
+        } catch (Exception ignored) {
         }
 
     }
 
-    public void criarNotificacao(Notification notification, Long timeStamp){
+    public void agendarNotificacao(long timeStamp) {
 
         long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
-        //System.out.println(tempoNotificacao);
-        //System.out.println(timeStamp);
 
-        Intent intent = new Intent(this, ContasVencerActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast ( this, 0 , intent , PendingIntent. FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE) ;
-        assert alarmManager != null;
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tempoNotificacao, pendingIntent);
+        System.out.println("timestamp correto " + tempoNotificacao);
+
+        Date dataAlerta = new Date(tempoNotificacao);
+
+        Date data = DateCustom.retornaDataHojeDateFormat();
+        int dataNotificacao = DateCustom.calculaDiferencaDias(data, dataAlerta);
+
+        int numeroDias = (int) TimeUnit.DAYS.convert(tempoNotificacao, TimeUnit.DAYS);
+        System.out.println(dataNotificacao);
+
+        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(NotificacaoWorker.class)
+                .setInitialDelay(dataNotificacao, TimeUnit.DAYS).build();
+
+        WorkManager.getInstance().beginUniqueWork(NotificacaoWorker.WORKER, ExistingWorkPolicy.REPLACE, oneTimeWorkRequest).enqueue();
 
     }
 
-    public Notification gerarNotificacao(){
-        Intent intent = new Intent(this, ContasVencerActivity.class);
-        PendingIntent notificationIntent = PendingIntent.getActivity(this, 0, intent, 0);
+    public void alertaCategorias() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ContasVencerActivity.this);
+        alertDialog.setTitle("Categorias de gastos");
+        alertDialog.setMessage("Para inserir uma despesa que vai vencer, você precisa criar categorias de gastos. Você pode fazer isso em Gastei");
+        alertDialog.setCancelable(false);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID).setSmallIcon(R.drawable.ic_codigo_de_barras_boleto_branco)
-                .setContentTitle("Você tem contas que vencem amanhã!")
-                .setContentText("Pague em dia e não esqueça de cadastrar os pagamentos no app!")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setVibrate(new long[] {2000})
-                .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                .setContentIntent(notificationIntent)
-                .setAutoCancel(true)
-                .build();
+        alertDialog.setPositiveButton("OK! Leve-me para lá!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(ContasVencerActivity.this, MainActivity.class);
+                intent.putExtra("EXTRA", 1);
+                startActivity(intent);
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-        return notification;
-        //notificationManagerCompat.notify(1, notification);
+            }
+        });
 
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
     @Override
@@ -335,4 +353,55 @@ public class ContasVencerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        referencia.removeEventListener(valueEventListenerSpinner);
+        referencia2.removeEventListener(valueEventListenerRecycler);
+    }
+
+    private static class LimparBancoAsyncTask extends AsyncTask<Void, Integer, Boolean> {
+
+        private WeakReference<ContasVencerActivity> activityReference;
+
+        // a ideia aqui dessa WeakReference e construtor customizado é impedir problemas de vazamento de memória
+        LimparBancoAsyncTask(ContasVencerActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            final FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+            final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+            final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
+            referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                        long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+                        if (Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte) {
+                            dataSnapshot1.getRef().removeValue();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            ContasVencerActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+        }
+    }
 }

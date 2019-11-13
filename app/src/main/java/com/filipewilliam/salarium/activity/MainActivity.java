@@ -1,11 +1,9 @@
 package com.filipewilliam.salarium.activity;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GravityCompat;
@@ -86,6 +84,12 @@ public class MainActivity extends AppCompatActivity
 
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
+
+        if(getIntent().getIntExtra("EXTRA",0) == 1){
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.viewPager, new GasteiFragment()).commit();
+
+        }
 
         //método para ocultar o FAB na fragment de resumo
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

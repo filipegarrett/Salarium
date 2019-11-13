@@ -30,7 +30,6 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     ArrayList<ContasVencer> contasVencerArrayList;
     ArrayList<String> keys;
-    ContasVencerViewHolder contasVencerViewHolder;
 
     public ContasVencerAdapter(Context c, ArrayList<ContasVencer> cV, ArrayList<String> k) {
 

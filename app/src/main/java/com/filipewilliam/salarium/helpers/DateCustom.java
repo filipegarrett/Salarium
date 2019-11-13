@@ -113,6 +113,7 @@ public class DateCustom {
     }
 
     public static String formataMesAnoFirebase(String mesAnoExtenso){
+
         String mesAnoFirebase = "";
 
         SimpleDateFormat dataEntrada = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
@@ -127,6 +128,15 @@ public class DateCustom {
 
         return mesAnoFirebase = mesAnoF.format(date);
 
+    }
+
+    public static int calculaDiferencaDias(Date d1, Date d2) {
+
+        int daysdiff = 0;
+        long diferenca = d2.getTime() - d1.getTime();
+        long diffDays = diferenca / (24 * 60 * 60 * 1000);
+        daysdiff = (int) diffDays;
+        return daysdiff;
     }
 
 }

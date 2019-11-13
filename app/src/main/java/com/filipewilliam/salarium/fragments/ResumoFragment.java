@@ -28,7 +28,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 
 import java.util.ArrayList;
 
@@ -41,6 +40,7 @@ public class ResumoFragment extends Fragment {
     private RecyclerView recyclerViewTransacoes;
     private DateCustom dateCustom;
     public FragmentPagerItemAdapter adapterView;
+
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private TextView textViewTotalGasto;
@@ -49,7 +49,6 @@ public class ResumoFragment extends Fragment {
     private String mesAtual = dateCustom.retornaMesAno();
     private static FormatarValoresHelper tratarValores;
     private ArrayList<String> keys = new ArrayList<>();
-
 
     public ResumoFragment() {
     }

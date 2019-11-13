@@ -28,13 +28,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class    LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextSenha;
 
     TextView resetarSenha, reenviarEmail;
     private ProgressBar progressBarLogin;
-    private Button botaoEntrar, reset;
+    private Button buttonEntrar;
     private Usuario usuario;
     private FirebaseAuth autenticacao;
 
@@ -46,12 +46,12 @@ public class LoginActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
-        botaoEntrar = findViewById(R.id.buttonEntrar);
+        buttonEntrar = findViewById(R.id.buttonEntrar);
         resetarSenha = findViewById(R.id.textViewResetarSenha);
         reenviarEmail = findViewById(R.id.textViewReenviarEmail);
         progressBarLogin = findViewById(R.id.progressBarLogin);
 
-        botaoEntrar.setOnClickListener(new View.OnClickListener() {
+        buttonEntrar.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!email.isEmpty()){
                     if(!senha.isEmpty()){
-                        botaoEntrar.setVisibility(View.INVISIBLE);
+                        buttonEntrar.setVisibility(View.INVISIBLE);
                         progressBarLogin.setVisibility(View.VISIBLE);
                         usuario = new Usuario();
                         usuario.setEmail(email);
@@ -109,12 +109,12 @@ public class LoginActivity extends AppCompatActivity {
                         abrirMainActivity();
 
                     }else{
-                        botaoEntrar.setVisibility(View.VISIBLE);
+                        buttonEntrar.setVisibility(View.VISIBLE);
                         progressBarLogin.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "Por favor, confirme sua conta por meio do e-mail", Toast.LENGTH_LONG).show();
                     }
                 }else{
-                    botaoEntrar.setVisibility(View.VISIBLE);
+                    buttonEntrar.setVisibility(View.VISIBLE);
                     progressBarLogin.setVisibility(View.GONE);
                     String excecao = "";
                     try{
