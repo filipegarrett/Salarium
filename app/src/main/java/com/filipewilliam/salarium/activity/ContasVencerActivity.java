@@ -300,6 +300,7 @@ public class ContasVencerActivity extends AppCompatActivity {
     public void agendarNotificacao(long timeStamp) {
 
         long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
+
         System.out.println("timestamp correto " + tempoNotificacao);
 
         Date dataAlerta = new Date(tempoNotificacao);

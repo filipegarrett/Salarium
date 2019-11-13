@@ -1,22 +1,25 @@
 package com.filipewilliam.salarium.fragments;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.adapter.RelatoriosAdapter;
+import com.filipewilliam.salarium.adapter.ResumoAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
+import com.filipewilliam.salarium.helpers.DeslizarApagarCallbackResumo;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,13 +38,17 @@ public class ResumoFragment extends Fragment {
 
     private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
     private RecyclerView recyclerViewTransacoes;
+    private DateCustom dateCustom;
+    public FragmentPagerItemAdapter adapterView;
+
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private TextView textViewTotalGasto;
     private TextView textViewTotalRecebido;
     private TextView textViewValorSaldo;
-    private String mesAtual = DateCustom.retornaMesAno();
-    private FormatarValoresHelper tratarValores;
+    private String mesAtual = dateCustom.retornaMesAno();
+    private static FormatarValoresHelper tratarValores;
+    private ArrayList<String> keys = new ArrayList<>();
 
     public ResumoFragment() {
     }
@@ -52,7 +59,6 @@ public class ResumoFragment extends Fragment {
 
         recuperarTransacoes();
         recuperarResumo();
-        //inflando layout de resumo
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
         textViewTotalRecebido = view.findViewById(R.id.textViewTotalRecebido);
@@ -75,14 +81,18 @@ public class ResumoFragment extends Fragment {
         referenciaTransacoes.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                keys.clear();
                 listaTransacoes.clear();
                 for (DataSnapshot dados : dataSnapshot.getChildren()) {
                     Transacao transacao = dados.getValue(Transacao.class);
+                    keys.add(dados.getKey());
                     listaTransacoes.add(transacao);
                 }
 
-                RelatoriosAdapter adapterTransacoes = new RelatoriosAdapter(getActivity(), listaTransacoes);
+                ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallbackResumo(adapterTransacoes));
+                itemTouchHelper.attachToRecyclerView(recyclerViewTransacoes);
 
             }
 
@@ -97,6 +107,7 @@ public class ResumoFragment extends Fragment {
 
     //recupera os totais de gastos e recebimentos e mostra saldo atual
     public void recuperarResumo() {
+
         final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -146,4 +157,6 @@ public class ResumoFragment extends Fragment {
         }
 
     }
-}
+
+
+    }
