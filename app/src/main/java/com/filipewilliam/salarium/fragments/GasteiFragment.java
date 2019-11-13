@@ -63,7 +63,6 @@ public class GasteiFragment extends Fragment {
         spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaGasto);
         buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
         buttonLimparCamposGasto = view.findViewById(R.id.buttonLimparCamposGasto);
-        fabAdicionarCategoriaGasto = getActivity().findViewById(R.id.fabAdicionarCategoria);
 
         referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
@@ -104,14 +103,6 @@ public class GasteiFragment extends Fragment {
                 }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
-            }
-        });
-
-        //criar categoria
-        fabAdicionarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criarCategoriaGasto();
             }
         });
 

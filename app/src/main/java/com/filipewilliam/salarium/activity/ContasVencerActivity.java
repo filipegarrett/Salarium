@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +32,7 @@ import androidx.work.WorkManager;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.ContasVencerAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
@@ -300,15 +300,9 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         long tempoNotificacao = timeStamp - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
 
-        System.out.println("timestamp correto " + tempoNotificacao);
-
         Date dataAlerta = new Date(tempoNotificacao);
-
         Date data = DateCustom.retornaDataHojeDateFormat();
         int dataNotificacao = DateCustom.calculaDiferencaDias(data, dataAlerta);
-
-        int numeroDias = (int) TimeUnit.DAYS.convert(tempoNotificacao, TimeUnit.DAYS);
-        System.out.println(dataNotificacao);
 
         if(dataNotificacao > 1){
 
@@ -330,7 +324,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("OK! Leve-me para lá!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ContasVencerActivity.this, MainActivity.class);
+                Intent intent = new Intent(ContasVencerActivity.this, GasteiFragment.class);
                 intent.putExtra("EXTRA", 1);
                 startActivity(intent);
             }
