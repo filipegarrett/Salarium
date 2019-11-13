@@ -102,7 +102,7 @@ public class MetasActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         month = month + 1;
-                        editTextDataMeta.setText(dayOfMonth + "/" + month + "/" + year);
+                        editTextDataMeta.setText(month + "/" + year);
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
@@ -186,7 +186,7 @@ public class MetasActivity extends AppCompatActivity {
                         meta.setData(dataSelecionada);
                         meta.setValor(Double.parseDouble(editTextValorMetas.getText().toString()));
                         meta.salvarMetaFirebase(dataSelecionada);
-                        Toast.makeText(getApplicationContext(), "Foi cadastrado uma nova meta!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Meta salva com sucesso!", Toast.LENGTH_SHORT).show();
                         listMetasMeses.clear();
                     }
 

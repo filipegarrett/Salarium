@@ -324,7 +324,7 @@ public class ContasVencerActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("OK! Leve-me para lá!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ContasVencerActivity.this, GasteiFragment.class);
+                Intent intent = new Intent(ContasVencerActivity.this, MainActivity.class);
                 intent.putExtra("EXTRA", 1);
                 startActivity(intent);
             }
