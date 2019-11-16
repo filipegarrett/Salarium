@@ -173,4 +173,15 @@ public class ResumoFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        recuperarResumo();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        recuperarResumo();
+    }
 }
