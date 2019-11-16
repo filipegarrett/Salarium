@@ -140,6 +140,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barChart" />
 
+        <TextView
+            android:id="@+id/textViewNadaARelatarResumo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerViewTransacoes"
+            app:layout_constraintEnd_toEndOf="@+id/recyclerViewTransacoes"
+            app:layout_constraintStart_toStartOf="@+id/recyclerViewTransacoes"
+            app:layout_constraintTop_toTopOf="@+id/recyclerViewTransacoes" />
+
+        <ProgressBar
+            android:id="@+id/progressBarResumo"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerViewTransacoes"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/recyclerViewTransacoes"
+            app:layout_constraintTop_toTopOf="@+id/recyclerViewTransacoes" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewTransacoes"
             android:layout_width="0dp"

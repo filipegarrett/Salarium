@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
@@ -45,6 +46,8 @@ public class ResumoFragment extends Fragment {
     private TextView textViewTotalGasto;
     private TextView textViewTotalRecebido;
     private TextView textViewValorSaldo;
+    private ProgressBar progressBarResumo;
+    private TextView textViewNadaARelatarResumo;
     private String mesAtual = DateCustom.retornaMesAno();
     private ArrayList<String> keys = new ArrayList<>();
 
@@ -61,6 +64,9 @@ public class ResumoFragment extends Fragment {
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
         textViewTotalRecebido = view.findViewById(R.id.textViewTotalRecebido);
         textViewTotalGasto = view.findViewById(R.id.textViewTotalGasto);
+        textViewNadaARelatarResumo = view.findViewById(R.id.textViewNadaARelatarResumo);
+        progressBarResumo = view.findViewById(R.id.progressBarResumo);
+        progressBarResumo.setVisibility(View.VISIBLE);
         recyclerViewTransacoes = view.findViewById(R.id.recyclerViewTransacoes);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewTransacoes.setLayoutManager(layoutManager);
@@ -81,11 +87,22 @@ public class ResumoFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 keys.clear();
                 listaTransacoes.clear();
-                for (DataSnapshot dados : dataSnapshot.getChildren()) {
-                    Transacao transacao = dados.getValue(Transacao.class);
-                    keys.add(dados.getKey());
-                    listaTransacoes.add(transacao);
+
+                if(dataSnapshot.hasChildren()){
+                    progressBarResumo.setVisibility(View.GONE);
+                    textViewNadaARelatarResumo.setText("");
+                    for (DataSnapshot dados : dataSnapshot.getChildren()) {
+                        Transacao transacao = dados.getValue(Transacao.class);
+                        keys.add(dados.getKey());
+                        listaTransacoes.add(transacao);
+                    }
+
+                }else{
+                    recuperarResumo();
+                    progressBarResumo.setVisibility(View.GONE);
+                    textViewNadaARelatarResumo.setText("Você ainda não tem movimentações cadastradas neste mês!");
                 }
+
 
                 ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys, ResumoFragment.this);
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);

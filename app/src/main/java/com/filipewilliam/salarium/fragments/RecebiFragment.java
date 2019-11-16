@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
+import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +46,6 @@ public class RecebiFragment extends Fragment {
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
     private Button buttonCriarRecebimento, buttonLimparCamposRecebimento, buttonCriarCategoriaRecebimento;
-    private Double recebimentoTotal;
 
     public RecebiFragment() {
 
@@ -53,11 +54,14 @@ public class RecebiFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_recebi, container, false);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoRecebimento = view.findViewById(R.id.editTextDescricaoRecebimento);
         editTextValorRecebimento = view.findViewById(R.id.editTextValorRecebimento);
+        editTextValorRecebimento.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorRecebimento));
         editTextDataSelecionadaRecebimento = view.findViewById(R.id.editTextDataRecebimento);
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
@@ -137,7 +141,7 @@ public class RecebiFragment extends Fragment {
         if (validarCamposRecebimentos() == true) {
 
             Transacao transacao = new Transacao();
-            Double recebimentoPreenchido = Double.parseDouble(editTextValorRecebimento.getText().toString());
+            Double recebimentoPreenchido = Double.parseDouble(editTextValorRecebimento.getText().toString().replace(",", ""));
             String dataRecebimento = editTextDataSelecionadaRecebimento.getText().toString();
             transacao.setDescricao(editTextDescricaoRecebimento.getText().toString());
             transacao.setValor(recebimentoPreenchido);
