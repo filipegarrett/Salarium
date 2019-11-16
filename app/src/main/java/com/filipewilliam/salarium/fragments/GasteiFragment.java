@@ -43,6 +43,7 @@ public class GasteiFragment extends Fragment {
     private Spinner spinnerCategoriaGasto;
     private Button buttonCriarGasto;
     private Button buttonLimparCamposGasto;
+    private Button buttonCriarCategoriaGasto;
     private FloatingActionButton fabAdicionarCategoriaGasto;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -63,6 +64,7 @@ public class GasteiFragment extends Fragment {
         spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaGasto);
         buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
         buttonLimparCamposGasto = view.findViewById(R.id.buttonLimparCamposGasto);
+        buttonCriarCategoriaGasto = view.findViewById(R.id.buttonCriarCategoriaGasto);
 
         referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
@@ -103,6 +105,13 @@ public class GasteiFragment extends Fragment {
                 }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
+            }
+        });
+
+        buttonCriarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                criarCategoriaGasto();
             }
         });
 

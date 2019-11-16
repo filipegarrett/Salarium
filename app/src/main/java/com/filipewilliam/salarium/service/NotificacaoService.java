@@ -41,7 +41,7 @@ public class NotificacaoService {
 
     public static void createNotificationChannel(Context context, String channelId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "tESTE";
+            CharSequence name = "TESTE";
             String description = "Muita String";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(

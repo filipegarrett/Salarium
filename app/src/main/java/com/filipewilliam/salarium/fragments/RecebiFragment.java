@@ -43,7 +43,7 @@ public class RecebiFragment extends Fragment {
     private EditText editTextValorRecebimento;
     private EditText editTextDataSelecionadaRecebimento;
     private Spinner spinnerCategoriaRecebimento;
-    private Button buttonCriarRecebimento, buttonLimparCamposRecebimento;
+    private Button buttonCriarRecebimento, buttonLimparCamposRecebimento, buttonCriarCategoriaRecebimento;
     private Double recebimentoTotal;
 
     public RecebiFragment() {
@@ -62,6 +62,7 @@ public class RecebiFragment extends Fragment {
         spinnerCategoriaRecebimento = view.findViewById(R.id.spinnerCategoriaRecebimento);
         buttonCriarRecebimento = view.findViewById(R.id.buttonConfirmarRecebimento);
         buttonLimparCamposRecebimento = view.findViewById(R.id.buttonLimparCamposRecebimentos);
+        buttonCriarCategoriaRecebimento = view.findViewById(R.id.buttonCriarCategoriaRecebido);
 
         referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
 
@@ -102,6 +103,13 @@ public class RecebiFragment extends Fragment {
                 }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
+            }
+        });
+
+        buttonCriarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                criarCategoriaRecebimento();
             }
         });
 
