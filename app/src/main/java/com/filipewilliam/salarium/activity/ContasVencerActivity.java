@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ContasVencerActivity extends AppCompatActivity {
 
-    Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
+    private Button buttonLimparCamposContasVencer, buttonCadastrarContasVencer;
     private Spinner spinnerCategoriaContas;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference referencia2 = FirebaseDatabase.getInstance().getReference();
@@ -264,29 +264,6 @@ public class ContasVencerActivity extends AppCompatActivity {
 
     }
 
-    /*public void limparBanco() {
-        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-        final DatabaseReference referencia3 = FirebaseDatabase.getInstance().getReference();
-        referencia3.child("usuarios").child(idUsuario).child("contas-a-vencer").orderByChild("timestampVencimento").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                    long timestampCorte = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
-                    if (Long.parseLong(dataSnapshot1.child("timestampVencimento").getValue().toString()) < timestampCorte) {
-                        dataSnapshot1.getRef().removeValue();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }*/
-
     public void esconderTeclado() {
         try {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -324,15 +301,9 @@ public class ContasVencerActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("OK! Leve-me para lá!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ContasVencerActivity.this, GasteiFragment.class);
+                Intent intent = new Intent(ContasVencerActivity.this, MainActivity.class);
                 intent.putExtra("EXTRA", 1);
                 startActivity(intent);
-            }
-        });
-        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
             }
         });
 
@@ -361,11 +332,9 @@ public class ContasVencerActivity extends AppCompatActivity {
 
         private WeakReference<ContasVencerActivity> activityReference;
 
-        // a ideia aqui dessa WeakReference e construtor customizado é impedir problemas de vazamento de memória
         LimparBancoAsyncTask(ContasVencerActivity context) {
-            activityReference = new WeakReference<>(context);
+            activityReference = new WeakReference<>(context); //a ideia aqui dessa WeakReference e construtor customizado é impedir problemas de vazamento de memória
         }
-
 
         @Override
         protected Boolean doInBackground(Void... voids) {

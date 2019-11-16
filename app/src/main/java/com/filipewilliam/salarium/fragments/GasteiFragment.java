@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
+import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
 import com.filipewilliam.salarium.model.Categoria;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,10 +45,10 @@ public class GasteiFragment extends Fragment {
     private Spinner spinnerCategoriaGasto;
     private Button buttonCriarGasto;
     private Button buttonLimparCamposGasto;
+    private Button buttonCriarCategoriaGasto;
     private FloatingActionButton fabAdicionarCategoriaGasto;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private Double gastoTotal;
 
     public GasteiFragment() {
 
@@ -56,13 +58,18 @@ public class GasteiFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gastei, container, false);
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoGasto);
         editTextValorGasto = view.findViewById(R.id.editTextValorGasto);
+        editTextValorGasto.addTextChangedListener(new ValoresEmReaisMaskWatcher(editTextValorGasto));
         editTextDataSelecionadaGasto = view.findViewById(R.id.editTextDataGasto);
         spinnerCategoriaGasto = view.findViewById(R.id.spinnerCategoriaGasto);
         buttonCriarGasto = view.findViewById(R.id.buttonConfirmarGasto);
         buttonLimparCamposGasto = view.findViewById(R.id.buttonLimparCamposGasto);
+        buttonCriarCategoriaGasto = view.findViewById(R.id.buttonCriarCategoriaGasto);
 
         referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
 
@@ -106,6 +113,13 @@ public class GasteiFragment extends Fragment {
             }
         });
 
+        buttonCriarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                criarCategoriaGasto();
+            }
+        });
+
         //criar gasto
         buttonCriarGasto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +144,7 @@ public class GasteiFragment extends Fragment {
         if (validarCamposGastos() == true) {
 
             Transacao transacao = new Transacao();
-            Double gastoPreenchido = Double.parseDouble(editTextValorGasto.getText().toString());
+            Double gastoPreenchido = Double.parseDouble(editTextValorGasto.getText().toString().replace(",", ""));
             String dataGasto = editTextDataSelecionadaGasto.getText().toString();
             transacao.setDescricao(editTextDescricaoGasto.getText().toString());
             transacao.setValor(gastoPreenchido);
