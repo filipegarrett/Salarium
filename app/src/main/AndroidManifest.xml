@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.filipewilliam.salarium">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".activity.App"
@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.RelatoriosActivity"></activity>
+        <activity android:name=".activity.ExcluirUsuarioActivity"></activity>
+        <activity android:name=".activity.RelatoriosActivity" />
         <activity
             android:name=".activity.ContasVencerActivity"
             android:launchMode="singleTop"
@@ -61,8 +62,8 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-        <receiver android:name= ".service.MyNotificationsBroadcaster" />
 
+        <receiver android:name=".service.MyNotificationsBroadcaster" />
     </application>
 
 </manifest>

@@ -24,6 +24,7 @@ import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -183,4 +184,5 @@ public class ResumoFragment extends Fragment {
         super.onResume();
         recuperarResumo();
     }
+
 }
