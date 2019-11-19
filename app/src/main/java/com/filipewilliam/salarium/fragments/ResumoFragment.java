@@ -58,7 +58,6 @@ public class ResumoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        verificarUsuarioLogado();
         recuperarTransacoes();
         recuperarResumo();
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
@@ -177,27 +176,13 @@ public class ResumoFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        verificarUsuarioLogado();
         recuperarResumo();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        verificarUsuarioLogado();
         recuperarResumo();
     }
 
-    public void verificarUsuarioLogado(){
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        final FirebaseUser firebaseUsuario = autenticacao.getCurrentUser();
-
-        if(firebaseUsuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
-
-        }else{
-            getActivity().finishAffinity();
-            System.exit(0);
-        }
-
-    }
 }

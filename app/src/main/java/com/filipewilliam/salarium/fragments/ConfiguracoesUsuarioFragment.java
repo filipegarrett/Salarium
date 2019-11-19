@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.activity.ConfiguracoesActivity;
 import com.filipewilliam.salarium.activity.ContasVencerActivity;
+import com.filipewilliam.salarium.activity.ExcluirUsuarioActivity;
 import com.filipewilliam.salarium.activity.MainActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
@@ -41,7 +42,6 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
     private FirebaseAuth autenticacao;
     private EditText editTextExcluirEmail;
     private EditText editTextExcluirSenha;
-    private ConfiguracoesActivity configuracoesActivity = new ConfiguracoesActivity();
 
     public ConfiguracoesUsuarioFragment() {
         // Required empty public constructor
@@ -97,8 +97,6 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
     }
 
     public void excluirUsuario() {
-        //ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
-        //excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -119,36 +117,21 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
                 }).setPositiveButton("SIM!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                getActivity().findViewById(R.id.relative_progress).setVisibility(View.VISIBLE);
-                AuthCredential authCredential = EmailAuthProvider.getCredential(editTextExcluirEmail.getText().toString(), editTextExcluirSenha.getText().toString());
-                final FirebaseUser usuarioFirebase = FirebaseAuth.getInstance().getCurrentUser();
-                final Usuario usuario = new Usuario();
-                if (usuarioFirebase != null){
-                    usuarioFirebase.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            usuarioFirebase.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task1) {
-                                    if(task1.isSuccessful()){
-                                        usuario.removerUsuarioFirebase(Base64Custom.codificarBase64(editTextExcluirEmail.getText().toString()));
-                                        Log.d("Tag", "Usuário excluído do Auth");
-                                        getActivity().finishAffinity();
-                                        //System.exit(0);
-
-                                    }
-
-                                }
-                            });
-                        }
-                    });
-                }
+                excluirActivity(editTextExcluirEmail.getText().toString(), editTextExcluirSenha.getText().toString());
 
             }
         });
 
         AlertDialog alert = alertDialog.create();
         alert.show();
+    }
+
+    public void excluirActivity(String email, String senha){
+
+        Intent intent = new Intent(getContext(), ExcluirUsuarioActivity.class);
+        intent.putExtra("Email", email).putExtra("Senha", senha);
+        startActivity(intent);
+
     }
 
 }

@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private TextView textViewNomeUsuario, textViewEmailUsuario;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +64,23 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        verificarUsuarioLogado();
+
 
         textViewNomeUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewNomeUsuarioHeader);
         textViewEmailUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewEmailUsuarioHeader);
+
+        verificarUsuarioLogado();
+
+        /*autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser usuario = firebaseAuth.getCurrentUser();
+                if(usuario != null){
+                    textViewNomeUsuario.setText(usuario.getDisplayName());
+                    textViewEmailUsuario.setText(usuario.getEmail());
+                }
+            }
+        });*/
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
@@ -167,28 +182,38 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(mAuthListener != null){
+            autenticacao.removeAuthStateListener(mAuthListener);
+
+        }
+    }
+
     public void verificarUsuarioLogado(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         final FirebaseUser firebaseUsuario = autenticacao.getCurrentUser();
+        firebaseUsuario.reload();
 
-        if(firebaseUsuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseUsuario != null) {
 
-            autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    FirebaseUser usuario = firebaseAuth.getCurrentUser();
-                    if(usuario != null){
-                        textViewNomeUsuario.setText(usuario.getDisplayName());
-                        textViewEmailUsuario.setText(usuario.getEmail());
-                    }
+                    textViewNomeUsuario.setText(firebaseUsuario.getDisplayName());
+                    textViewEmailUsuario.setText(firebaseUsuario.getEmail());
+
+                } else {
+                    finishAffinity();
+                    System.exit(0);
+
                 }
-            });
 
-        }else{
-            finishAffinity();
-            System.exit(0);
-        }
+            }
+
+        };
 
     }
 
