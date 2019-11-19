@@ -99,7 +99,7 @@ public class ResumoFragment extends Fragment {
                 }else{
                     recuperarResumo();
                     progressBarResumo.setVisibility(View.GONE);
-                    textViewNadaARelatarResumo.setText("Você ainda não tem movimentações cadastradas neste mês!");
+                    textViewNadaARelatarResumo.setText("Você ainda não tem movimentações neste mês!");
                 }
 
 
