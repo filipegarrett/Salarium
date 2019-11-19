@@ -1,5 +1,8 @@
 package com.filipewilliam.salarium.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,16 +10,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.ConfiguracoesActivity;
+import com.filipewilliam.salarium.activity.ContasVencerActivity;
+import com.filipewilliam.salarium.activity.MainActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.helpers.Base64Custom;
+import com.filipewilliam.salarium.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -26,6 +39,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
 
     private FirebaseAuth autenticacao;
+    private EditText editTextExcluirEmail;
+    private EditText editTextExcluirSenha;
+    private ConfiguracoesActivity configuracoesActivity = new ConfiguracoesActivity();
 
     public ConfiguracoesUsuarioFragment() {
         // Required empty public constructor
@@ -65,7 +81,7 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
 
     public void resetarSenha(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        FirebaseUser usuario = autenticacao.getCurrentUser();
+        final FirebaseUser usuario = autenticacao.getCurrentUser();
         autenticacao.sendPasswordResetEmail(usuario.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             @Override
@@ -81,9 +97,58 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
     }
 
     public void excluirUsuario() {
-        ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
-        excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
+        //ExcluirUsuarioDialog excluirUsuarioDialog = new ExcluirUsuarioDialog();
+        //excluirUsuarioDialog.show(getActivity().getSupportFragmentManager(), "dialog");
 
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View viewDialog = inflater.inflate(R.layout.layout_excluir_usuario_dialog, null);
+        editTextExcluirEmail = viewDialog.findViewById(R.id.editTextEmailExcluirUsuario);
+        editTextExcluirSenha = viewDialog.findViewById(R.id.editTextSenhaExcluirUsuario);
+        String mensagem = "Excluir a sua conta resultará na eliminação completa dos seus dados do Salarium." +
+                "\n\nPara exlcuir sua conta você precisa confirmar seu e-mail e senha:";
+
+        alertDialog.setView(viewDialog)
+                .setTitle("Deseja mesmo excluir a sua conta?")
+                .setMessage(mensagem)
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).setPositiveButton("SIM!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                getActivity().findViewById(R.id.relative_progress).setVisibility(View.VISIBLE);
+                AuthCredential authCredential = EmailAuthProvider.getCredential(editTextExcluirEmail.getText().toString(), editTextExcluirSenha.getText().toString());
+                final FirebaseUser usuarioFirebase = FirebaseAuth.getInstance().getCurrentUser();
+                final Usuario usuario = new Usuario();
+                if (usuarioFirebase != null){
+                    usuarioFirebase.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            usuarioFirebase.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task1) {
+                                    if(task1.isSuccessful()){
+                                        usuario.removerUsuarioFirebase(Base64Custom.codificarBase64(editTextExcluirEmail.getText().toString()));
+                                        Log.d("Tag", "Usuário excluído do Auth");
+                                        getActivity().finishAffinity();
+                                        //System.exit(0);
+
+                                    }
+
+                                }
+                            });
+                        }
+                    });
+                }
+
+            }
+        });
+
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
 }

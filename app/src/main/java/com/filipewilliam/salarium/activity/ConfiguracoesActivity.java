@@ -4,7 +4,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ProgressBar;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.fragments.ConfiguracoesSobreFragment;
@@ -37,6 +39,12 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
     }
 

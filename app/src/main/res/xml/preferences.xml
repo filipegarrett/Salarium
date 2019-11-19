@@ -41,4 +41,8 @@
             app:key="enviarEmail"
             app:title="salariumapp@gmail.com"/>
 
+    <PreferenceCategory>
+        <Preference android:widgetLayout="@layout/layout_progress_excluir"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

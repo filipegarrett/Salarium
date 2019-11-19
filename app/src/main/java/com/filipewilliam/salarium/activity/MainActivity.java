@@ -22,9 +22,17 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
+import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.model.Usuario;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -37,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     private TextView textViewNomeUsuario, textViewEmailUsuario;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,25 +62,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        verificarUsuarioLogado();
+
         textViewNomeUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewNomeUsuarioHeader);
         textViewEmailUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewEmailUsuarioHeader);
-
-        String nomeUsuario = "";
-        FirebaseUser user = autenticacao.getCurrentUser();
-        if(user != null){
-            nomeUsuario = user.getDisplayName();
-        }
-
-        autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser usuario = firebaseAuth.getCurrentUser();
-                if(usuario != null){
-                    textViewNomeUsuario.setText(usuario.getDisplayName());
-                    textViewEmailUsuario.setText(usuario.getEmail());
-                }
-            }
-        });
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);
@@ -177,9 +169,21 @@ public class MainActivity extends AppCompatActivity
 
     public void verificarUsuarioLogado(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        final FirebaseUser usuario = autenticacao.getCurrentUser();
+        final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        final FirebaseUser firebaseUsuario = autenticacao.getCurrentUser();
 
-        if(usuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
+        if(firebaseUsuario != null && autenticacao.getCurrentUser().isEmailVerified()) {
+
+            autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser usuario = firebaseAuth.getCurrentUser();
+                    if(usuario != null){
+                        textViewNomeUsuario.setText(usuario.getDisplayName());
+                        textViewEmailUsuario.setText(usuario.getEmail());
+                    }
+                }
+            });
 
         }else{
             finishAffinity();

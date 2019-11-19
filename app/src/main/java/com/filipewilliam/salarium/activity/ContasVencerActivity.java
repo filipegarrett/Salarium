@@ -370,4 +370,5 @@ public class ContasVencerActivity extends AppCompatActivity {
             if (activity == null || activity.isFinishing()) return;
         }
     }
+
 }
