@@ -23,6 +23,7 @@ import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.model.Transacao;
+import com.github.mikephil.charting.charts.PieChart;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 public class ResumoFragment extends Fragment {
 
     private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
+    private PieChart pieChartMetas;
     private RecyclerView recyclerViewTransacoes;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -157,7 +159,6 @@ public class ResumoFragment extends Fragment {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
-        System.out.println(transacao.getValor());
         textViewTotalRecebido.setText(FormatarValoresHelper.tratarValores(saldoPositivo));
         textViewTotalGasto.setText(FormatarValoresHelper.tratarValores(saldoNegativo));
 

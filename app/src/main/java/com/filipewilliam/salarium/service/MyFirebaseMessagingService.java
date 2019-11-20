@@ -18,6 +18,12 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    /*
+    * Esta classe é pertinente ao recurso de notificações em tempo real do Firebase. Embora a funcionalidade em si, de envio de notificações por meio do Firebase
+    * Cloud Messaging (FCM) não esteja em uso no projeto, alguns métodos dessa classe continuam em apliação para geração de canais de notificações e especialmente
+    * o token que identifica o dispositivo do usuário perante o FCM. Em resumo: parece que não faz nada, mas faz, então não apague ou edite.
+    * */
+
     @Override
     public void onMessageReceived(RemoteMessage notificacao) {
         super.onMessageReceived(notificacao);
