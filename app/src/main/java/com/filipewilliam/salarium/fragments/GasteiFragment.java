@@ -46,7 +46,6 @@ public class GasteiFragment extends Fragment {
     private Button buttonCriarGasto;
     private Button buttonLimparCamposGasto;
     private Button buttonCriarCategoriaGasto;
-    private FloatingActionButton fabAdicionarCategoriaGasto;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
@@ -58,8 +57,6 @@ public class GasteiFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gastei, container, false);
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoGasto = view.findViewById(R.id.editTextDescricaoGasto);

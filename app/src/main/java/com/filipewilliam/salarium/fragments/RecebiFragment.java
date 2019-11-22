@@ -56,8 +56,6 @@ public class RecebiFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recebi, container, false);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         editTextDescricaoRecebimento = view.findViewById(R.id.editTextDescricaoRecebimento);
         editTextValorRecebimento = view.findViewById(R.id.editTextValorRecebimento);

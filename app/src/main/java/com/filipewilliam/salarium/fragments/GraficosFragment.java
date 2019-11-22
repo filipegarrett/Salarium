@@ -81,7 +81,7 @@ public class GraficosFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.getChildrenCount() > 0){
+                if (dataSnapshot.getChildrenCount() > 0) {
                     textViewAviso.setVisibility(View.GONE);
                     List<String> listTransacoesMeses = new ArrayList<String>();
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
@@ -94,7 +94,7 @@ public class GraficosFragment extends Fragment {
 
                     }
 
-                }else {
+                } else {
                     spinnerGraficos.setVisibility(View.GONE);
                     textViewAviso.setText("Você ainda não tem um histórico de despesas!");
                     pieChart.setNoDataText("");
@@ -120,9 +120,9 @@ public class GraficosFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         listaDados.clear();
-                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
-                            if(dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")){
+                            if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
                                 categoriaGasto = String.valueOf(dataSnapshot1.child("categoria").getValue());
                                 valorGasto = Float.parseFloat(String.valueOf(dataSnapshot1.child("valor").getValue()));
                                 listaDados.add(new PieEntry(valorGasto, categoriaGasto));
@@ -131,7 +131,7 @@ public class GraficosFragment extends Fragment {
 
                         }
 
-                        if(!listaDados.isEmpty()){
+                        if (!listaDados.isEmpty()) {
                             PieDataSet dataSet = new PieDataSet(listaDados, ""); //dataSet é o objeto que condensa os dados (valores e categoria) que usamos no gráfico
                             PieData dados = new PieData(dataSet);
 
@@ -159,7 +159,7 @@ public class GraficosFragment extends Fragment {
                             pieChart.setCenterText("Seus gastos em " + spinnerGraficos.getSelectedItem().toString().toLowerCase());//constroi o texto no miolo do gráfico
                             pieChart.getCenterText();
 
-                        }else{
+                        } else {
                             System.out.println(listaDados.isEmpty());
                             System.out.println(listaDados.size());
                             spinnerGraficos.setVisibility(View.GONE);
@@ -189,7 +189,7 @@ public class GraficosFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ) {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
                     String dataHora = sdf.format(new Date());
 
@@ -198,7 +198,7 @@ public class GraficosFragment extends Fragment {
 
                     Toast.makeText(getActivity(), "Imagem salva com sucesso na sua galeria!", Toast.LENGTH_SHORT).show();
 
-                }else{
+                } else {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                 }
             }
