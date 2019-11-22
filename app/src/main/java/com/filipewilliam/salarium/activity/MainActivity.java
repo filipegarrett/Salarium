@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_definirMetas) {
             //maneira de abrir outra activity em vez de fragment
-            Intent intent = new Intent(this, MetasActivity.class);
+            Intent intent = new Intent(this, Metas2Activity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_simularPoupanca) {

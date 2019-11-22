@@ -9,6 +9,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class App extends Application {
 
+    /*
+    * */
+
     public static final String CHANNEL_1_ID = "contas a vencer";
 
     @Override
