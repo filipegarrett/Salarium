@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,7 +23,7 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
-import com.filipewilliam.salarium.model.Metas2;
+import com.filipewilliam.salarium.model.Meta;
 import com.filipewilliam.salarium.model.Transacao;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -54,7 +55,6 @@ public class Metas2Activity extends AppCompatActivity {
     private DatabaseReference referenciaTotais = ConfiguracaoFirebase.getFirebaseDatabase();
     private ValueEventListener valueEventListenerMetas;
     private ValueEventListener valueEventListenerTotais;
-    private ValueEventListener valueEventListenerAtualizaMetas;
     private PieChart pieChartMetas;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
@@ -160,7 +160,7 @@ public class Metas2Activity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (!editTextMes.getText().toString().isEmpty()) {
-                    Metas2.excluirMetasFirebase(mesAnoDatePicker);
+                    Meta.excluirMetasFirebase(mesAnoDatePicker);
                     Toast.makeText(getApplicationContext(), "Meta foi excluída com sucesso!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -173,8 +173,6 @@ public class Metas2Activity extends AppCompatActivity {
 
     public void recuperaMetas(String mes) {
 
-        System.out.println("TESTE MÊS recuperaMetas " + mes);
-
         referenciaTotais = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios").child(idUsuario).child("transacao").child(mes);
 
         valueEventListenerMetas = referenciaMetas.child("usuarios").child(idUsuario).child("metas").child(mes).addValueEventListener(new ValueEventListener() {
@@ -185,7 +183,7 @@ public class Metas2Activity extends AppCompatActivity {
                     progressBarResumoMetas.setVisibility(View.GONE);
                     progressBarGraficoMetas.setVisibility(View.GONE);
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        Metas2 metasFirebase = dataSnapshot1.getValue(Metas2.class);
+                        Meta metasFirebase = dataSnapshot1.getValue(Meta.class);
                         valorMetas = Double.valueOf(metasFirebase.valorMeta);
                         atualizaValoresTela(true);
 
@@ -271,10 +269,7 @@ public class Metas2Activity extends AppCompatActivity {
             pieChartMetas.setVisibility(View.VISIBLE);
 
             double saldoMeta = valorMetas - totalGasto;
-            System.out.println("SALDO " + saldoMeta);
-
             ArrayList dadosMetas = new ArrayList();
-
 
             if (saldoMeta > 0 && totalGasto > 0) {
                 dadosMetas.add(new PieEntry((float) totalGasto, ""));
@@ -296,10 +291,6 @@ public class Metas2Activity extends AppCompatActivity {
             dataSet.setSliceSpace(2f);
             dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
             dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
-            dataSet.setValueLinePart1OffsetPercentage(80.f);
-            dataSet.setValueLinePart1Length(0.4f);
-            dataSet.setValueLinePart2Length(0.1f);
-
             dados.setValueTextSize(12f);
             dados.setValueTextColor(Color.WHITE);
             pieChartMetas.setMaxAngle(180f);
@@ -321,6 +312,10 @@ public class Metas2Activity extends AppCompatActivity {
     }
 
     public void atualizaMetas() {
+        
+        if(mesAnoDatePicker.isEmpty()){
+            mesAnoDatePicker = DateCustom.retornaMesAno();
+        }
 
         referenciaAtualiza.child("usuarios").child(idUsuario).child("metas").child(mesAnoDatePicker).addListenerForSingleValueEvent
                 (new ValueEventListener() {
@@ -335,7 +330,7 @@ public class Metas2Activity extends AppCompatActivity {
                                 referencia = referenciaAtualiza.child("usuarios").child(idUsuario).child("metas").child(mesAnoDatePicker).child(keys).child("valorMeta");
 
                             }
-                            Metas2 metas2 = new Metas2();
+                            Meta metas2 = new Meta();
                             metas2.atualizarMetasFirebase(referencia, Double.parseDouble(editTextValorMetas.getText().toString().replace(",", "")));
                             Toast.makeText(Metas2Activity.this, "Meta atualizada com sucesso!", Toast.LENGTH_SHORT).show();
 
@@ -356,7 +351,7 @@ public class Metas2Activity extends AppCompatActivity {
 
     public void salvarMetas() {
 
-        Metas2 meta = new Metas2();
+        Meta meta = new Meta();
         meta.setMesMeta(mesAnoDatePicker);
         meta.setValorMeta(Double.parseDouble(editTextValorMetas.getText().toString().replace(",", "")));
         meta.salvarMetasFirebase(mesAnoDatePicker);
@@ -380,6 +375,7 @@ public class Metas2Activity extends AppCompatActivity {
             editTextValorMetas.getText().clear();
 
         } else {
+            progressBarResumoMetas.setVisibility(View.GONE);
             textViewSemDadosResumo.setVisibility(View.VISIBLE);
             textViewSaldoTexto.setVisibility(View.INVISIBLE);
             textViewSaldoTexto.setVisibility(View.INVISIBLE);
@@ -408,6 +404,12 @@ public class Metas2Activity extends AppCompatActivity {
         } catch (Exception ignored) {
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        referenciaMetas.removeEventListener(valueEventListenerMetas);
     }
 
     @Override
