@@ -53,8 +53,7 @@ public class Metas2Activity extends AppCompatActivity {
     private DatabaseReference referenciaMetas = ConfiguracaoFirebase.getFirebaseDatabase();
     private DatabaseReference referenciaAtualiza = ConfiguracaoFirebase.getFirebaseDatabase();
     private DatabaseReference referenciaTotais = ConfiguracaoFirebase.getFirebaseDatabase();
-    private ValueEventListener valueEventListenerMetas;
-    private ValueEventListener valueEventListenerTotais;
+    private ValueEventListener valueEventListenerMetas, valueEventListenerTotais;
     private PieChart pieChartMetas;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
@@ -312,7 +311,7 @@ public class Metas2Activity extends AppCompatActivity {
     }
 
     public void atualizaMetas() {
-        
+
         if(mesAnoDatePicker.isEmpty()){
             mesAnoDatePicker = DateCustom.retornaMesAno();
         }

@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.adapter.CategoriasAdapter;
 import com.filipewilliam.salarium.adapter.ContasVencerAdapter;
 import com.filipewilliam.salarium.adapter.ResumoAdapter;
 
@@ -18,6 +19,7 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
 
     private ContasVencerAdapter contasVencerAdapter;
     private ResumoAdapter resumoAdapter;
+    private CategoriasAdapter categoriasAdapter;
     private Drawable iconeLixeira;
     private final ColorDrawable fundoExlcuir;
 
@@ -29,9 +31,16 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
     }
 
     public DeslizarApagarCallback(ResumoAdapter adapter) {
-        super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.RIGHT);
         resumoAdapter = adapter;
         iconeLixeira = ContextCompat.getDrawable(resumoAdapter.gerarContext(), R.drawable.ic_lixeira_excluir_branco_24dp);
+        fundoExlcuir = new ColorDrawable(Color.RED);
+    }
+
+    public DeslizarApagarCallback(CategoriasAdapter adapter) {
+        super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        categoriasAdapter = adapter;
+        iconeLixeira = ContextCompat.getDrawable(categoriasAdapter.gerarContext(), R.drawable.ic_lixeira_excluir_branco_24dp);
         fundoExlcuir = new ColorDrawable(Color.RED);
     }
 
@@ -44,13 +53,16 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         int posicao =  viewHolder.getAdapterPosition();
 
-        if(contasVencerAdapter == null){
+        if(contasVencerAdapter == null && categoriasAdapter == null ){
             resumoAdapter.excluirItem(posicao);
 
         }
-        if (resumoAdapter == null){
+        if (resumoAdapter == null && categoriasAdapter == null){
             contasVencerAdapter.excluirItem(posicao);
 
+        }
+        if(contasVencerAdapter == null && resumoAdapter == null){
+            categoriasAdapter.excluirItem(posicao);
         }
     }
 

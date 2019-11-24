@@ -2,6 +2,7 @@ package com.filipewilliam.salarium.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.CategoriasActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
@@ -77,7 +79,7 @@ public class GasteiFragment extends Fragment {
                     Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
                     listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
+                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listCategorias);
                     categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerCategoriaGasto.setAdapter(categoriasAdapter);
                 }
@@ -113,7 +115,9 @@ public class GasteiFragment extends Fragment {
         buttonCriarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                criarCategoriaGasto();
+                Intent intent = new Intent(getContext(), CategoriasActivity.class);
+                startActivity(intent);
+                //criarCategoriaGasto();
             }
         });
 

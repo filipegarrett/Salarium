@@ -96,6 +96,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/botao_arredondado"
         android:backgroundTint="@color/colorPrimary"
+        android:fontFamily="sans-serif-medium"
         android:text="ENVIAR"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
