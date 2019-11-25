@@ -1,6 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,11 +48,10 @@ public class ResumoFragment extends Fragment {
     private String mesAtual = DateCustom.retornaMesAno();
     private ArrayList<String> keys = new ArrayList<>();
     private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
-    private TextView textViewTotalGasto,textViewTotalRecebido, textViewValorSaldo, textViewNadaARelatarResumo, textViewSemDadosGrafico;
+    private TextView textViewTotalGasto, textViewTotalRecebido, textViewValorSaldo, textViewNadaARelatarResumo, textViewSemDadosGrafico;
     private RecyclerView recyclerViewTransacoes;
     private ProgressBar progressBarResumo, progressBarGrafico;
     private PieChart pieChartResumo;
-    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference referenciaMetas = FirebaseDatabase.getInstance().getReference();
     private ValueEventListener valueEventListenerResumo;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -65,7 +65,7 @@ public class ResumoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         recuperarTransacoes();
-        recuperarResumo();
+        //recuperarResumo();
         View view = inflater.inflate(R.layout.fragment_resumo, container, false);
         textViewValorSaldo = view.findViewById(R.id.textViewValorSaldo);
         textViewTotalRecebido = view.findViewById(R.id.textViewTotalRecebido);
@@ -75,7 +75,9 @@ public class ResumoFragment extends Fragment {
         progressBarResumo = view.findViewById(R.id.progressBarResumo);
         progressBarResumo.setVisibility(View.VISIBLE);
         pieChartResumo = view.findViewById(R.id.pieChartResumo);
+        pieChartResumo.setNoDataText("Você ainda não definiu uma meta para o mês");
         progressBarGrafico = view.findViewById(R.id.progressBarGraficoResumo);
+        progressBarGrafico.setVisibility(View.INVISIBLE);
         recyclerViewTransacoes = view.findViewById(R.id.recyclerViewTransacoes);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewTransacoes.setLayoutManager(layoutManager);
@@ -95,24 +97,42 @@ public class ResumoFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 keys.clear();
                 listaTransacoes.clear();
+                double totalDespesaMes = 0;
+                double totalRecebidoMes = 0;
 
-                if(dataSnapshot.hasChildren()){
+                System.out.println("TESTE " + dataSnapshot.hasChildren());
+
+                if (dataSnapshot.hasChildren()) {
                     progressBarResumo.setVisibility(View.GONE);
                     textViewNadaARelatarResumo.setText("");
                     for (DataSnapshot dados : dataSnapshot.getChildren()) {
                         Transacao transacao = dados.getValue(Transacao.class);
                         keys.add(dados.getKey());
                         listaTransacoes.add(transacao);
+
+                        if (dados.child("tipo").getValue().toString().equals("Gastei")) {
+                            totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
+
+                        } else {
+                            totalRecebidoMes = totalRecebidoMes + Double.valueOf(transacao.getValor());
+
+                        }
+
+                        atualizaDadosResumo(totalRecebidoMes, totalDespesaMes);
+                        gerarGrafico(totalDespesaMes);
+
                     }
 
-                }else{
-                    recuperarResumo();
+                } else {
+                    atualizaDadosResumo(totalRecebidoMes, totalDespesaMes);
+
+                    //recuperarResumo();
                     progressBarResumo.setVisibility(View.GONE);
                     textViewNadaARelatarResumo.setText("Você ainda não tem movimentações neste mês!");
                 }
 
-
                 ResumoAdapter adapterTransacoes = new ResumoAdapter(getActivity(), listaTransacoes, keys, ResumoFragment.this);
+                adapterTransacoes.notifyDataSetChanged();
                 recyclerViewTransacoes.setAdapter(adapterTransacoes);
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DeslizarApagarCallback(adapterTransacoes));
                 itemTouchHelper.attachToRecyclerView(recyclerViewTransacoes);
@@ -128,8 +148,10 @@ public class ResumoFragment extends Fragment {
     }
 
     //recupera os totais de gastos e recebimentos e mostra saldo atual
-    public void recuperarResumo() {
+    /*public void recuperarResumo() {
 
+        DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
+        //referencia.keepSynced(true);
         referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -159,9 +181,9 @@ public class ResumoFragment extends Fragment {
 
             }
         });
-    }
+    }*/
 
-    public void atualizaDadosResumo(Transacao transacao, Double saldoPositivo, Double saldoNegativo) {
+    public void atualizaDadosResumo(Double saldoPositivo, Double saldoNegativo) {
 
         Double saldoMes = saldoPositivo - saldoNegativo;
 
@@ -180,7 +202,7 @@ public class ResumoFragment extends Fragment {
 
     }
 
-    public void gerarGrafico(double totalGasto){
+    public void gerarGrafico(double totalGasto) {
 
         gastoTotal = totalGasto;
 
@@ -188,12 +210,12 @@ public class ResumoFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.hasChildren()){
-                    progressBarGrafico.setVisibility(View.GONE);
+                if (dataSnapshot.hasChildren()) {
+                    progressBarGrafico.setVisibility(View.INVISIBLE);
                     pieChartResumo.setVisibility(View.VISIBLE);
                     textViewSemDadosGrafico.setVisibility(View.INVISIBLE);
 
-                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Meta metasFirebase = dataSnapshot1.getValue(Meta.class);
                         valorMetas = Double.valueOf(metasFirebase.valorMeta);
 
@@ -225,7 +247,7 @@ public class ResumoFragment extends Fragment {
                     pieChartResumo.animateX(1000);
                     pieChartResumo.invalidate();
 
-                }else{
+                } else {
                     progressBarGrafico.setVisibility(View.GONE);
                     pieChartResumo.setVisibility(View.GONE);
                     textViewSemDadosGrafico.setVisibility(View.VISIBLE);
@@ -242,20 +264,21 @@ public class ResumoFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        recuperarTransacoes();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        recuperarResumo();
+        recuperarTransacoes();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        recuperarResumo();
+        recuperarTransacoes();
     }
 
 }

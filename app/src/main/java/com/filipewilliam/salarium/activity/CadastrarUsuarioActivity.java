@@ -1,6 +1,9 @@
 package com.filipewilliam.salarium.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -164,6 +167,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
         });
 
     }
+
     public String recuperarToken(){
 
         final String usuarioToken = MyFirebaseMessagingService.retornaToken(getApplicationContext());

@@ -28,7 +28,7 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
     private Context context;
     private String tipo;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+    String idUsuario = ConfiguracaoFirebase.idUsuario();
     ArrayList<Categoria> categoriasArrayList;
     ArrayList<String> keys;
 
