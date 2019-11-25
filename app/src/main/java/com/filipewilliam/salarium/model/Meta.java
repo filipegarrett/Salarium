@@ -1,13 +1,9 @@
 package com.filipewilliam.salarium.model;
 
-import android.widget.Toast;
-
-import com.filipewilliam.salarium.activity.Metas2Activity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-
 
 public class Meta {
 
@@ -39,7 +35,6 @@ public class Meta {
     }
 
     public void salvarMetasFirebase(String mesAno) {
-
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
@@ -48,9 +43,6 @@ public class Meta {
     }
 
     public void atualizarMetasFirebase(DatabaseReference referencia, double valor){
-
-        //Map<String, Object> atualizacao = new HashMap<String, Object>();
-        //atualizacao.put("valorMeta", valor);
         referencia.setValue(valor);
 
     }

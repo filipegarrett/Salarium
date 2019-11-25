@@ -29,7 +29,8 @@
         <activity android:name=".activity.LoginActivity" />
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activity.IntroducaoActivity"
             android:theme="@style/Theme.Intro">

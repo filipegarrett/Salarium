@@ -1,7 +1,6 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.activity.LoginActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

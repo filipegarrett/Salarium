@@ -2,7 +2,6 @@ package com.filipewilliam.salarium.fragments;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
@@ -22,13 +21,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.activity.RelatoriosActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DateCustom;
 import com.filipewilliam.salarium.helpers.FormatarValoresHelper;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -57,7 +54,6 @@ public class GraficosFragment extends Fragment {
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private String categoriaGasto;
     private Float valorGasto;
-    private Context context = getContext();
 
     public GraficosFragment() {
         // Required empty public constructor

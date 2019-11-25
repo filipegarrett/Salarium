@@ -1,17 +1,15 @@
 package com.filipewilliam.salarium.activity;
 
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.fragments.ConfiguracoesSobreFragment;
-import com.filipewilliam.salarium.fragments.ConfiguracoesUsuarioFragment;
 import com.filipewilliam.salarium.fragments.GraficosFragment;
 import com.filipewilliam.salarium.fragments.RelatoriosFragment;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;

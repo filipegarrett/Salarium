@@ -26,7 +26,6 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
 
     private Context context;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private FormatarValoresHelper tratarValores;
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     ArrayList<ContasVencer> contasVencerArrayList;
     ArrayList<String> keys;
@@ -53,7 +52,7 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     @Override
     public void onBindViewHolder(@NonNull final ContasVencerViewHolder contasVencerViewHolder, final int i) {
         contasVencerViewHolder.categoria.setText(contasVencerArrayList.get(i).getCategoria());
-        contasVencerViewHolder.valor.setText(tratarValores.tratarValores(contasVencerArrayList.get(i).getValor()));
+        contasVencerViewHolder.valor.setText(FormatarValoresHelper.tratarValores(contasVencerArrayList.get(i).getValor()));
         contasVencerViewHolder.dataVencimento.setText("Vence em: " + contasVencerArrayList.get(i).getDataVencimento());
 
     }

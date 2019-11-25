@@ -21,7 +21,7 @@ public class NotificacaoWorker extends Worker {
     @Override
     public Result doWork() {
 
-        NotificacaoService.showNotification(getApplicationContext(), NotificacaoService.UPDATE_CHANNEL_ID, NotificacaoService.UPDATE_NOTIFICATION_ID);
+        NotificacaoService.mostrarNotificacao(getApplicationContext(), NotificacaoService.UPDATE_CHANNEL_ID, NotificacaoService.UPDATE_NOTIFICATION_ID);
 
         return Result.success();
 

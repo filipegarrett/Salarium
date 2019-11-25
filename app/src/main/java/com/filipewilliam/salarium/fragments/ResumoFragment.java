@@ -16,8 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
-import com.filipewilliam.salarium.activity.MainActivity;
-import com.filipewilliam.salarium.activity.Metas2Activity;
 import com.filipewilliam.salarium.adapter.ResumoAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
@@ -31,13 +29,11 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 
 import java.util.ArrayList;
 

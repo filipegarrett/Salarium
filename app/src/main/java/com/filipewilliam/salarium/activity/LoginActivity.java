@@ -33,7 +33,6 @@ public class    LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextSenha;
 
     TextView resetarSenha, reenviarEmail;
-    private Context context;
     private ProgressBar progressBarLogin;
     private Button buttonEntrar;
     private Usuario usuario;

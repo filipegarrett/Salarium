@@ -1,17 +1,14 @@
 package com.filipewilliam.salarium.activity;
 
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.ProgressBar;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.fragments.ConfiguracoesSobreFragment;
 import com.filipewilliam.salarium.fragments.ConfiguracoesUsuarioFragment;
-import com.google.firebase.auth.FirebaseAuth;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -20,7 +17,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
-    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,11 +1,10 @@
 package com.filipewilliam.salarium.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
@@ -21,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 
 public class ExcluirUsuarioActivity extends AppCompatActivity {
 
-    private ProgressBar progressBarExcluirUsuario;
     private String email, senha, uid;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
