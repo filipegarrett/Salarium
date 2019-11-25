@@ -98,7 +98,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
                 notifyItemRemoved(posicaoSelecionada);
                 notifyItemRangeChanged(posicaoSelecionada, transacoesArrayList.size());
                 notifyDataSetChanged();
-                resumoFragment.recuperarResumo();
+                resumoFragment.recuperarTransacoes();
 
             }
         });
@@ -108,7 +108,7 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show();
                 notifyDataSetChanged();
-                resumoFragment.recuperarResumo();
+                resumoFragment.recuperarTransacoes();
 
             }
         });

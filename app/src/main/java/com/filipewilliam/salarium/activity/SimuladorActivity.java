@@ -126,7 +126,7 @@ public class SimuladorActivity extends AppCompatActivity {
             String resultadoTratado = formatarValoresHelper.tratarValores(resultadoSimulacao);
 
             textViewResultadoTexto.setText("Ao final você terá: ");
-            textViewRendimentoTexto.setText("O rendimento no período é: ");
+            textViewRendimentoTexto.setText("Rendimento no período: ");
             textViewResultadoSimulacao.setText(resultadoTratado);
             textViewResultadoRendimento.setText(rendimento);
             editTextValorSimulacao.setText("");
@@ -163,7 +163,7 @@ public class SimuladorActivity extends AppCompatActivity {
 
             textViewPeriodoCDB.setText("Simulação até " + data);
             textViewResultadoTexto.setText("Em " + data + " você terá: ");
-            textViewRendimentoTexto.setText("O rendimento no período é: ");
+            textViewRendimentoTexto.setText("Rendimento no período: ");
             textViewResultadoSimulacao.setText(resultadoTratado);
             textViewResultadoRendimento.setText(rendimento);
             editTextValorSimulacao.setText("");

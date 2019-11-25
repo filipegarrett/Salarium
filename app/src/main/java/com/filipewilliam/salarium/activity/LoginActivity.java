@@ -166,8 +166,6 @@ public class    LoginActivity extends AppCompatActivity {
 
         }else{
 
-
-
             Toast.makeText(LoginActivity.this, "Você precisa antes criar uma conta de usuário", Toast.LENGTH_LONG).show();
         }
 

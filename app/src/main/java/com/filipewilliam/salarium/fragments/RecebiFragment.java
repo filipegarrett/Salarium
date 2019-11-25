@@ -205,7 +205,7 @@ public class RecebiFragment extends Fragment {
                 return false;
             }
         } else {
-            Toast.makeText(getContext(), "Você precisa descrever o gasto", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Você precisa descrever a movimentação", Toast.LENGTH_SHORT).show();
             return false;
         }
 
