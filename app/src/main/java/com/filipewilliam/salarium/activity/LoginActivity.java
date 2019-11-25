@@ -33,8 +33,6 @@ public class    LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextSenha;
 
     TextView resetarSenha, reenviarEmail;
-    private final int REENVIAR_CONFIRMACAO = 0;
-    private final int RESETAR_SENHA = 1;
     private Context context;
     private ProgressBar progressBarLogin;
     private Button buttonEntrar;
