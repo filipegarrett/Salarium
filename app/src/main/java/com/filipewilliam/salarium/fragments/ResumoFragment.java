@@ -46,22 +46,19 @@ import java.util.ArrayList;
  */
 public class ResumoFragment extends Fragment {
 
-    private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
     double valorMetas = 0;
     double gastoTotal;
-    private PieChart pieChartResumo;
-    private RecyclerView recyclerViewTransacoes;
-    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference referenciaMetas = FirebaseDatabase.getInstance().getReference();
-    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private TextView textViewTotalGasto;
-    private TextView textViewTotalRecebido;
-    private TextView textViewValorSaldo;
-    private ProgressBar progressBarResumo, progressBarGrafico;
-    private TextView textViewNadaARelatarResumo, textViewSemDadosGrafico;
-    private ValueEventListener valueEventListenerResumo;
     private String mesAtual = DateCustom.retornaMesAno();
     private ArrayList<String> keys = new ArrayList<>();
+    private ArrayList<Transacao> listaTransacoes = new ArrayList<>();
+    private TextView textViewTotalGasto,textViewTotalRecebido, textViewValorSaldo, textViewNadaARelatarResumo, textViewSemDadosGrafico;
+    private RecyclerView recyclerViewTransacoes;
+    private ProgressBar progressBarResumo, progressBarGrafico;
+    private PieChart pieChartResumo;
+    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference referenciaMetas = FirebaseDatabase.getInstance().getReference();
+    private ValueEventListener valueEventListenerResumo;
+    private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     final String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
 
     public ResumoFragment() {

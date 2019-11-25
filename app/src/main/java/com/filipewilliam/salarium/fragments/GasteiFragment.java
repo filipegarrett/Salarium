@@ -2,15 +2,14 @@ package com.filipewilliam.salarium.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -19,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.CategoriasActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
@@ -77,7 +77,7 @@ public class GasteiFragment extends Fragment {
                     Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
                     listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listCategorias);
+                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listCategorias);
                     categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
                     spinnerCategoriaGasto.setAdapter(categoriasAdapter);
                 }
@@ -113,7 +113,10 @@ public class GasteiFragment extends Fragment {
         buttonCriarCategoriaGasto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                criarCategoriaGasto();
+                Intent intent = new Intent(getContext(), CategoriasActivity.class);
+                intent.putExtra("TIPO", "gasto");
+                startActivity(intent);
+                //criarCategoriaGasto();
             }
         });
 
@@ -213,7 +216,7 @@ public class GasteiFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 Categoria novaCategoria = new Categoria();
                 novaCategoria.setDescricaoCategoria(categoria.getText().toString());
-                novaCategoria.salvarCategoriaGasto();
+                novaCategoria.salvarCategoria("categorias_gasto");
                 Toast.makeText(getContext(), "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
             }
         });

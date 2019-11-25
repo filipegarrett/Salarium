@@ -52,8 +52,13 @@ public class ResumoAdapter extends RecyclerView.Adapter<ResumoAdapter.ResumoView
     @NonNull
     @Override
     public ResumoAdapter.ResumoViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemListaTransacoes = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_adapter_relatorios, viewGroup, false);
-        return new ResumoViewHolder(itemListaTransacoes);
+        //View itemListaTransacoes = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_adapter_relatorios, viewGroup, false);
+        View itemView;
+        itemView = LayoutInflater.from(context).inflate(R.layout.layout_adapter_relatorios, viewGroup, false);
+        ResumoViewHolder resumoViewHolder = new ResumoViewHolder(itemView);
+        resumoViewHolder.itemView.setTag("normal");
+
+        return resumoViewHolder;
     }
 
     @Override

@@ -20,17 +20,10 @@ public class Categoria {
         this.descricaoCategoria = descricaoCategoria;
     }
 
-    public void salvarCategoriaRecebimento(){
+    public void salvarCategoria(String tipo){
         FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        referenciaFirebase.child("usuarios").child(idUsuario).child("categorias_recebimentos").push().setValue(this);
-    }
-
-    public void salvarCategoriaGasto(){
-        FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
-        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
-        referenciaFirebase.child("usuarios").child(idUsuario).child("categorias_gastos").push().setValue(this);
+        referenciaFirebase.child("usuarios").child(idUsuario).child(tipo).push().setValue(this);
     }
 }
