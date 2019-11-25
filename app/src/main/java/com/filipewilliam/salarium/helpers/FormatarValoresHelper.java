@@ -39,23 +39,6 @@ public class FormatarValoresHelper extends ValueFormatter {
         return rendimentoResultado;
     }
 
-    /*public String tratarValores(Double valor){
-        String valorOriginal = String.valueOf(NumberFormat.getCurrencyInstance().format(valor));
-
-        String valorTratado = "";
-        int indice = 1;
-
-        for (int i = 0; i < valorOriginal.length(); i++) {
-            valorTratado += valorOriginal.charAt(i);
-
-            if (i == indice) {
-                valorTratado += " ";
-            }
-        }
-
-        return valorTratado;
-    }*/
-
     public static String tratarValores(double d){
 
         DecimalFormat fmt = (DecimalFormat) NumberFormat.getInstance();
@@ -104,6 +87,5 @@ public class FormatarValoresHelper extends ValueFormatter {
         return fmt.format(value);
 
     }
-
 
 }

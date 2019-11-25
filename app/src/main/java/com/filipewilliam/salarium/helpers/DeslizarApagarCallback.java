@@ -31,7 +31,7 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
     }
 
     public DeslizarApagarCallback(ResumoAdapter adapter) {
-        super(0, ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         resumoAdapter = adapter;
         iconeLixeira = ContextCompat.getDrawable(resumoAdapter.gerarContext(), R.drawable.ic_lixeira_excluir_branco_24dp);
         fundoExlcuir = new ColorDrawable(Color.RED);

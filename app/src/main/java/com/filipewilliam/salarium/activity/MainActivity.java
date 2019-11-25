@@ -3,19 +3,16 @@ package com.filipewilliam.salarium.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.WindowManager;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
@@ -23,17 +20,8 @@ import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.fragments.GasteiFragment;
 import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.fragments.ResumoFragment;
-import com.filipewilliam.salarium.helpers.Base64Custom;
-import com.filipewilliam.salarium.model.Usuario;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -70,17 +58,6 @@ public class MainActivity extends AppCompatActivity
         textViewEmailUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewEmailUsuarioHeader);
 
         verificarUsuarioLogado();
-
-        /*autenticacao.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser usuario = firebaseAuth.getCurrentUser();
-                if(usuario != null){
-                    textViewNomeUsuario.setText(usuario.getDisplayName());
-                    textViewEmailUsuario.setText(usuario.getEmail());
-                }
-            }
-        });*/
 
         viewPager = findViewById(R.id.viewPager);
         smartTabLayout = findViewById(R.id.viewPagerTab);

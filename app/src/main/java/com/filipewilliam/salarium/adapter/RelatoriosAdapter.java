@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.RelatoriosViewHolder> {
 
     private Context context;
-    private FormatarValoresHelper tratarValores;
     ArrayList<Transacao> transacoesArrayList;
 
     public RelatoriosAdapter(Context c, ArrayList<Transacao> tArrayList) {
@@ -42,7 +41,7 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
             relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
             relatoriosViewHolder.categoria.setText(transacao.getCategoria() + ":");
             relatoriosViewHolder.descricao.setText(transacao.getDescricao());
-            relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
+            relatoriosViewHolder.valor.setText(FormatarValoresHelper.tratarValores(transacao.getValor()));
             relatoriosViewHolder.data.setText(transacao.getData());
 
         }else{
@@ -50,7 +49,7 @@ public class RelatoriosAdapter extends RecyclerView.Adapter<RelatoriosAdapter.Re
             relatoriosViewHolder.tipo.setText(transacoesArrayList.get(i).getTipo());
             relatoriosViewHolder.categoria.setText(transacao.getCategoria() + ":");
             relatoriosViewHolder.descricao.setText(transacao.getDescricao());
-            relatoriosViewHolder.valor.setText(tratarValores.tratarValores(transacao.getValor()));
+            relatoriosViewHolder.valor.setText(FormatarValoresHelper.tratarValores(transacao.getValor()));
             relatoriosViewHolder.data.setText(transacao.getData());
         }
 

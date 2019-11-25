@@ -1,24 +1,20 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.activity.CategoriasActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
@@ -32,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -116,7 +113,6 @@ public class RecebiFragment extends Fragment {
                 Intent intent = new Intent(getContext(), CategoriasActivity.class);
                 intent.putExtra("TIPO", "recebido");
                 startActivity(intent);
-                //criarCategoriaRecebimento();
             }
         });
 
@@ -191,48 +187,7 @@ public class RecebiFragment extends Fragment {
 
     }
 
-    public void criarCategoriaRecebimento (){
-
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setTitle("Criar nova categoria");
-        dialog.setCancelable(true);
-        //necessário estes parâmetros pois somente o edittext não aparecia.
-        final EditText categoria = new EditText(getContext());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        categoria.setLayoutParams(lp);
-        dialog.setView(categoria);
-
-
-        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-
-        dialog.setPositiveButton("Criar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Categoria novaCategoria = new Categoria();
-                novaCategoria.setDescricaoCategoria(categoria.getText().toString());
-                novaCategoria.salvarCategoria("categorias_recebimentos");
-                Toast.makeText(getContext(), "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        dialog.create();
-        dialog.show();
-    }
-
-    public void atualizarRecebimento (Double recebimento){
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
-        referencia.child("usuarios").child(idUsuario).child("recebimentoTotal").setValue(recebimento);
-    }
-
     public void limparCamposRecebimento (){
-
         editTextDescricaoRecebimento.setText("");
         editTextValorRecebimento.setText("");
         editTextDataSelecionadaRecebimento.setText("");

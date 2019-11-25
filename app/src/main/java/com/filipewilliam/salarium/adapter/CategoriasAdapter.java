@@ -75,7 +75,6 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
                     AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                     dialog.setTitle("Criar nova categoria");
                     dialog.setCancelable(true);
-                    //necessário estes parâmetros pois somente o edittext não aparecia.
                     final EditText categoria = new EditText(context);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -107,7 +106,6 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
         } else {
             categoriasViewHolder.categoria.setText(categoriasArrayList.get(i).getDescricaoCategoria());
         }
-        //categoriasViewHolder.categoria.setText(categoriasArrayList.get(i).getDescricaoCategoria());
 
     }
 

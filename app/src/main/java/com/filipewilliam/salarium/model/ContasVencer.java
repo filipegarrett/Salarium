@@ -5,9 +5,6 @@ import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
-import java.sql.Timestamp;
-
-
 public class ContasVencer {
 
     public String categoria;
