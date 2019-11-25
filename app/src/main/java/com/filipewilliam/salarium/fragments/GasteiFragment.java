@@ -72,6 +72,7 @@ public class GasteiFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> listCategorias = new ArrayList<>();
+                listCategorias.clear();
                 for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
                     Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
                     listCategorias.add(nomeCategoria.getDescricaoCategoria());
@@ -166,8 +167,8 @@ public class GasteiFragment extends Fragment {
             if (!valor.isEmpty()) {
                 if (!data.isEmpty()) {
                     //verifica se foi criado ao menos uma categoria para poder cadastrar
-                    if (spinnerCategoriaGasto != null && spinnerCategoriaGasto.getSelectedItem()!= null){
-                    } else{
+                    if (spinnerCategoriaGasto != null && spinnerCategoriaGasto.getSelectedItem() != null) {
+                    } else {
                         Toast.makeText(getContext(), "Você precisa criar uma categoria antes!", Toast.LENGTH_SHORT).show();
                         return false;
                     }
@@ -188,7 +189,7 @@ public class GasteiFragment extends Fragment {
 
     }
 
-    public void limparCamposGasto (){
+    public void limparCamposGasto() {
         editTextDescricaoGasto.setText("");
         editTextValorGasto.setText("");
         editTextDataSelecionadaGasto.setText("");

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.adapter.CategoriasAdapter;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
+import com.filipewilliam.salarium.fragments.RecebiFragment;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.DeslizarApagarCallback;
 import com.filipewilliam.salarium.model.Categoria;
