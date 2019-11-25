@@ -26,15 +26,17 @@ import java.util.ArrayList;
 public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.CategoriasViewHolder> {
 
     private Context context;
+    private String tipo;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
     ArrayList<Categoria> categoriasArrayList;
     ArrayList<String> keys;
 
-    public CategoriasAdapter(Context c, ArrayList<Categoria> cat, ArrayList<String> k) {
+    public CategoriasAdapter(Context c, ArrayList<Categoria> cat, ArrayList<String> k, String t) {
         context = c;
         categoriasArrayList = cat;
         keys = k;
+        tipo = t;
     }
 
     @Override
@@ -49,21 +51,24 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
 
         View itemView;
 
-        if(viewType == R.layout.layout_adapter_categorias_adicionar){
+        if (viewType == R.layout.layout_adapter_categorias_adicionar) {
             itemView = LayoutInflater.from(context).inflate(R.layout.layout_adapter_categorias_adicionar, viewGroup, false);
-        }
-
-        else {
+            CategoriasViewHolder categoriasViewHolder = new CategoriasViewHolder(itemView);
+            categoriasViewHolder.itemView.setTag("bloqueado");
+            return categoriasViewHolder;
+        } else {
             itemView = LayoutInflater.from(context).inflate(R.layout.layout_adapter_categorias, viewGroup, false);
+            CategoriasViewHolder categoriasViewHolder = new CategoriasViewHolder(itemView);
+            categoriasViewHolder.itemView.setTag("normal");
+            return categoriasViewHolder;
         }
 
-        return new CategoriasViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoriasViewHolder categoriasViewHolder, int i) {
 
-        if(i == categoriasArrayList.size()) {
+        if (i == categoriasArrayList.size()) {
             categoriasViewHolder.novaCategoria.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -90,7 +95,7 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
                         public void onClick(DialogInterface dialog, int which) {
                             Categoria novaCategoria = new Categoria();
                             novaCategoria.setDescricaoCategoria(categoria.getText().toString());
-                            novaCategoria.salvarCategoriaGasto();
+                            novaCategoria.salvarCategoria(tipo);
                             Toast.makeText(context, "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -99,21 +104,20 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
                     dialog.show();
                 }
             });
-        }
-        else {
+        } else {
             categoriasViewHolder.categoria.setText(categoriasArrayList.get(i).getDescricaoCategoria());
         }
         //categoriasViewHolder.categoria.setText(categoriasArrayList.get(i).getDescricaoCategoria());
 
     }
 
-    public Context gerarContext(){
+    public Context gerarContext() {
         return this.context;
     }
 
-    public void excluirItem(int posicao){
+    public void excluirItem(int posicao) {
         String key = keys.get(posicao);
-        DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("usuarios").child(idUsuario).child("categorias_gastos");
+        DatabaseReference referencia = FirebaseDatabase.getInstance().getReference().child("usuarios").child(idUsuario).child(tipo);
         categoriasArrayList.remove(posicao);
         referencia.child(key).removeValue();
         notifyItemRemoved(posicao);
@@ -124,10 +128,10 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
 
     @Override
     public int getItemCount() {
-       return categoriasArrayList.size() + 1;
+        return categoriasArrayList.size() + 1;
     }
 
-    class CategoriasViewHolder extends RecyclerView.ViewHolder{
+    class CategoriasViewHolder extends RecyclerView.ViewHolder {
 
         TextView categoria;
         TextView novaCategoria;

@@ -41,7 +41,13 @@ public class ContasVencerAdapter extends RecyclerView.Adapter<ContasVencerAdapte
     @NonNull
     @Override
     public ContasVencerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ContasVencerViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_adapter_ultimas_contas_a_vencer, viewGroup, false));
+
+        View itemView;
+        itemView = LayoutInflater.from(context).inflate(R.layout.layout_adapter_ultimas_contas_a_vencer, viewGroup, false);
+        ContasVencerViewHolder contasVencerViewHolder = new ContasVencerViewHolder(itemView);
+        contasVencerViewHolder.itemView.setTag("normal");
+
+        return contasVencerViewHolder;
     }
 
     @Override

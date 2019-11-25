@@ -33,6 +33,9 @@ public class    LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextSenha;
 
     TextView resetarSenha, reenviarEmail;
+    private final int REENVIAR_CONFIRMACAO = 0;
+    private final int RESETAR_SENHA = 1;
+    private Context context;
     private ProgressBar progressBarLogin;
     private Button buttonEntrar;
     private Usuario usuario;
@@ -165,6 +168,9 @@ public class    LoginActivity extends AppCompatActivity {
             });
 
         }else{
+
+
+
             Toast.makeText(LoginActivity.this, "Você precisa antes criar uma conta de usuário", Toast.LENGTH_LONG).show();
         }
 

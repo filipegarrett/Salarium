@@ -45,6 +45,15 @@ public class DeslizarApagarCallback extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
+    public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        if("normal".equalsIgnoreCase((String) viewHolder.itemView.getTag())) {
+            return makeMovementFlags(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
         return false;
     }

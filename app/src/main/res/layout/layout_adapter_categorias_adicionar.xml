@@ -16,7 +16,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/corFundoPopUpMenu">
 
             <TextView
                 android:id="@+id/textViewNovaCategoria"
@@ -26,7 +27,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="4dp"
-                android:drawableStart="@drawable/ic_adicionar_branco_24dp"
+                android:drawableStart="@drawable/ic_adicionar_cinza_24dp"
                 android:text="Nova categoria"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"

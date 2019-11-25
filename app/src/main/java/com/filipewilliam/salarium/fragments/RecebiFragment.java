@@ -2,6 +2,7 @@ package com.filipewilliam.salarium.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.filipewilliam.salarium.R;
+import com.filipewilliam.salarium.activity.CategoriasActivity;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.filipewilliam.salarium.helpers.Base64Custom;
 import com.filipewilliam.salarium.helpers.ValoresEmReaisMaskWatcher;
@@ -111,7 +113,10 @@ public class RecebiFragment extends Fragment {
         buttonCriarCategoriaRecebimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                criarCategoriaRecebimento();
+                Intent intent = new Intent(getContext(), CategoriasActivity.class);
+                intent.putExtra("TIPO", "recebido");
+                startActivity(intent);
+                //criarCategoriaRecebimento();
             }
         });
 
@@ -210,7 +215,7 @@ public class RecebiFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 Categoria novaCategoria = new Categoria();
                 novaCategoria.setDescricaoCategoria(categoria.getText().toString());
-                novaCategoria.salvarCategoriaRecebimento();
+                novaCategoria.salvarCategoria("categorias_recebimentos");
                 Toast.makeText(getContext(), "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show();
             }
         });
