@@ -1,6 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,7 @@ import java.util.List;
 public class RecebiFragment extends Fragment {
 
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private Context mContext;
     private ValueEventListener valueEventListenerSpinner;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
@@ -119,35 +121,43 @@ public class RecebiFragment extends Fragment {
 
     public void preencheSpinnerCategoria() {
 
-        valueEventListenerSpinner = referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
+        if(isAdded()){
+            valueEventListenerSpinner = referencia.child("usuarios").child(idUsuario).child("categorias_recebimentos").addValueEventListener(new ValueEventListener() {
 
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.hasChildren()) {
-                    List<String> listCategorias = new ArrayList<String>();
-                    listCategorias.clear();
-                    for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
-                        Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
-                        listCategorias.add(nomeCategoria.getDescricaoCategoria());
+                    if (dataSnapshot.hasChildren()) {
+                        spinnerCategoriaRecebimento.setEnabled(true);
+                        List<String> listCategorias = new ArrayList<String>();
+                        listCategorias.clear();
+                        for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
+                            Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
+                            listCategorias.add(nomeCategoria.getDescricaoCategoria());
 
+                        }
+                        if(mContext != null){
+                            ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, listCategorias);
+                            categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                            categoriasAdapter.notifyDataSetChanged();
+                            spinnerCategoriaRecebimento.setAdapter(categoriasAdapter);
+
+                        }
+
+                    } else {
+                        spinnerCategoriaRecebimento.setAdapter(null);
+                        spinnerCategoriaRecebimento.setEnabled(false);
                     }
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(), android.R.layout.simple_spinner_item, listCategorias);
-                    categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                    categoriasAdapter.notifyDataSetChanged();
-                    spinnerCategoriaRecebimento.setAdapter(categoriasAdapter);
 
-                } else {
-                    spinnerCategoriaRecebimento.setAdapter(null);
                 }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
 
-            }
-        });
+        }
 
     }
 
@@ -210,14 +220,20 @@ public class RecebiFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        preencheSpinnerCategoria();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        preencheSpinnerCategoria();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         preencheSpinnerCategoria();
     }
 
@@ -228,9 +244,10 @@ public class RecebiFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         referencia.removeEventListener(valueEventListenerSpinner);
+
     }
 
     @Override
