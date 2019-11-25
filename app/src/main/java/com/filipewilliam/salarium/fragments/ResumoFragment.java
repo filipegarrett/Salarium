@@ -89,6 +89,7 @@ public class ResumoFragment extends Fragment {
     public void recuperarTransacoes() {
 
         DatabaseReference referenciaTransacoes = FirebaseDatabase.getInstance().getReference();
+        referenciaTransacoes.keepSynced(true);
         referenciaTransacoes.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
