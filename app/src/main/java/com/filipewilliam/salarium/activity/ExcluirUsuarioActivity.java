@@ -49,7 +49,15 @@ public class ExcluirUsuarioActivity extends AppCompatActivity {
                             if (task1.isSuccessful()) {
                                 usuario.removerUsuarioFirebase(Base64Custom.codificarBase64(email));
                                 Log.d("Tag", "Usuário excluído do Auth");
+                                try {
+                                    Thread.sleep(2750);
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
                                 finishAffinity();
+                                android.os.Process.killProcess(android.os.Process.myPid());
                                 //System.exit(0);
 
                             }
