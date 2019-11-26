@@ -192,20 +192,27 @@ public class Metas2Activity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             double totalDespesaMes = 0;
                             double totalRecebidoMes = 0;
-                            for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                                Transacao transacao = dataSnapshot1.getValue(Transacao.class);
 
-                                if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
-                                    totalDespesaMes = totalDespesaMes + transacao.getValor();
+                            if (dataSnapshot.hasChildren()) {
+                                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                    Transacao transacao = dataSnapshot1.getValue(Transacao.class);
 
-                                } else {
-                                    totalRecebidoMes = totalRecebidoMes + transacao.getValor();
+                                    if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
+                                        totalDespesaMes = totalDespesaMes + transacao.getValor();
+
+                                    } else {
+                                        totalRecebidoMes = totalRecebidoMes + transacao.getValor();
+
+                                    }
+                                    calculaTotais(true, totalRecebidoMes, totalDespesaMes, valorMetas);
+                                    geraGraficos(true, valorMetas, totalDespesaMes);
 
                                 }
-                                calculaTotais(totalRecebidoMes, totalDespesaMes, valorMetas);
-                                geraGraficos(true, valorMetas, totalDespesaMes);
 
+                            } else {
+                                calculaTotais(false, totalRecebidoMes, totalDespesaMes, valorMetas);
                             }
+
                         }
 
                         @Override
@@ -230,30 +237,38 @@ public class Metas2Activity extends AppCompatActivity {
 
     }
 
-    public void calculaTotais(double totalRecebido, double totalGasto, double valorMetas) {
+    public void calculaTotais(boolean mesExistente, double totalRecebido, double totalGasto, double valorMetas) {
 
         double saldoCorrente;
         double saldo;
-        saldoCorrente = totalRecebido - totalGasto;
 
-        saldo = valorMetas - saldoCorrente;
+        if (mesExistente) {
+            saldo = valorMetas - totalGasto;
 
-        textViewMetas.setText(FormatarValoresHelper.tratarValores(valorMetas));
+            textViewMetas.setText(FormatarValoresHelper.tratarValores(valorMetas));
 
-        if (saldo < 0) {
+            if (saldo < 0) {
 
-            textViewMetasSaldo.setText(FormatarValoresHelper.tratarValores(saldo));
-            textViewMetasSaldo.setTextColor(ContextCompat.getColor(Metas2Activity.this, R.color.corBotoesCancela));
+                textViewMetasSaldo.setText(FormatarValoresHelper.tratarValores(saldo));
+                textViewMetasSaldo.setTextColor(ContextCompat.getColor(Metas2Activity.this, R.color.corBotoesCancela));
 
-        } else {
+            } else {
 
-            textViewMetasSaldo.setText(FormatarValoresHelper.tratarValores(saldo));
-            textViewMetasSaldo.setTextColor(ContextCompat.getColor(Metas2Activity.this, R.color.corBotoesConfirma));
+                textViewMetasSaldo.setText(FormatarValoresHelper.tratarValores(saldo));
+                textViewMetasSaldo.setTextColor(ContextCompat.getColor(Metas2Activity.this, R.color.corBotoesConfirma));
+
+            }
+
+            textViewMetasTotalRecebido.setText(FormatarValoresHelper.tratarValores(totalRecebido));
+            textViewMetasTotalGasto.setText(FormatarValoresHelper.tratarValores(totalGasto));
+
+        }else{
+
+            textViewMetas.setText(FormatarValoresHelper.tratarValores(valorMetas));
 
         }
 
-        textViewMetasTotalRecebido.setText(FormatarValoresHelper.tratarValores(totalRecebido));
-        textViewMetasTotalGasto.setText(FormatarValoresHelper.tratarValores(totalGasto));
+
 
     }
 
@@ -311,7 +326,7 @@ public class Metas2Activity extends AppCompatActivity {
 
     public void atualizaMetas() {
 
-        if(mesAnoDatePicker.isEmpty()){
+        if (mesAnoDatePicker.isEmpty()) {
             mesAnoDatePicker = DateCustom.retornaMesAno();
         }
 
