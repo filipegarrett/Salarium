@@ -4,8 +4,11 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
+import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -15,8 +18,6 @@ public class App extends Application {
     * */
 
     public static final String CHANNEL_1_ID = "contas a vencer";
-    private static FirebaseAuth autenticacao;
-    private static DatabaseReference firebase;
 
     @Override
     public void onCreate() {
@@ -39,4 +40,5 @@ public class App extends Application {
 
         }
     }
+
 }

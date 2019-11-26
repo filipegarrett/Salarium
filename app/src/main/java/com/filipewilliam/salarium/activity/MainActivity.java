@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         textViewNomeUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewNomeUsuarioHeader);
         textViewEmailUsuario = navigationView.getHeaderView(0).findViewById(R.id.textViewEmailUsuarioHeader);
 
+        autenticacao.getCurrentUser().reload();
         verificarUsuarioLogado();
 
         DatabaseReference referenciaEmail = ConfiguracaoFirebase.getFirebaseDatabase();
