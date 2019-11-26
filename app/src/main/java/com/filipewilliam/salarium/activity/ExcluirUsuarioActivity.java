@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.filipewilliam.salarium.R;
 import com.filipewilliam.salarium.config.ConfiguracaoFirebase;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 public class ExcluirUsuarioActivity extends AppCompatActivity {
 
     private String email, senha, uid;
+    private TextView textViewExcluindo;
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebaseDatabase();
 
@@ -30,9 +32,12 @@ public class ExcluirUsuarioActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_excluir_usuario);
 
+        textViewExcluindo = findViewById(R.id.textViewExcluindoUsuario);
+
         Intent intent = getIntent();
         email = intent.getStringExtra("Email");
         senha = intent.getStringExtra("Senha");
+        textViewExcluindo.setText("Excluindo usuário " + email + ", aguarde...");
 
         AuthCredential authCredential = EmailAuthProvider.getCredential(email, senha);
         final FirebaseUser usuarioFirebase = FirebaseAuth.getInstance().getCurrentUser();
