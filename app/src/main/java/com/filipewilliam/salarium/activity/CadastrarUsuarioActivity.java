@@ -162,6 +162,7 @@ public class CadastrarUsuarioActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     Toast.makeText(CadastrarUsuarioActivity.this, excecao, Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });

@@ -1,6 +1,7 @@
 package com.filipewilliam.salarium.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,6 +39,7 @@ import java.util.List;
  */
 public class GasteiFragment extends Fragment {
 
+    private Context mContext;
     private EditText editTextDescricaoGasto;
     private EditText editTextValorGasto;
     private EditText editTextDataSelecionadaGasto;
@@ -45,8 +47,11 @@ public class GasteiFragment extends Fragment {
     private Button buttonCriarGasto;
     private Button buttonLimparCamposGasto;
     private Button buttonCriarCategoriaGasto;
+    private ValueEventListener valueEventListenerSpinner;
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+    private String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+
 
     public GasteiFragment() {
 
@@ -67,27 +72,7 @@ public class GasteiFragment extends Fragment {
         buttonLimparCamposGasto = view.findViewById(R.id.buttonLimparCamposGasto);
         buttonCriarCategoriaGasto = view.findViewById(R.id.buttonCriarCategoriaGasto);
 
-        referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> listCategorias = new ArrayList<>();
-                listCategorias.clear();
-                for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
-                    Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
-                    listCategorias.add(nomeCategoria.getDescricaoCategoria());
-
-                    ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listCategorias);
-                    categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-                    spinnerCategoriaGasto.setAdapter(categoriasAdapter);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        preencheSpinnerCategoria();
 
         //selecionar data
         editTextDataSelecionadaGasto.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +120,48 @@ public class GasteiFragment extends Fragment {
         });
 
         return view;
+
+    }
+
+    public void preencheSpinnerCategoria() {
+
+        if(isAdded()){
+            valueEventListenerSpinner = referencia.child("usuarios").child(idUsuario).child("categorias_gastos").addValueEventListener(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.hasChildren()) {
+                        spinnerCategoriaGasto.setEnabled(true);
+                        List<String> listCategorias = new ArrayList<String>();
+                        listCategorias.clear();
+                        for (DataSnapshot categoriaSnapshot : dataSnapshot.getChildren()) {
+                            Categoria nomeCategoria = categoriaSnapshot.getValue(Categoria.class);
+                            listCategorias.add(nomeCategoria.getDescricaoCategoria());
+
+                        }
+                        if(mContext != null){
+                            ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, listCategorias);
+                            categoriasAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+                            categoriasAdapter.notifyDataSetChanged();
+                            spinnerCategoriaGasto.setAdapter(categoriasAdapter);
+
+                        }
+
+                    } else {
+                        spinnerCategoriaGasto.setAdapter(null);
+                        spinnerCategoriaGasto.setEnabled(false);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
 
     }
 
@@ -193,6 +220,44 @@ public class GasteiFragment extends Fragment {
         editTextDescricaoGasto.setText("");
         editTextValorGasto.setText("");
         editTextDataSelecionadaGasto.setText("");
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        preencheSpinnerCategoria();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        preencheSpinnerCategoria();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        referencia.removeEventListener(valueEventListenerSpinner);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        referencia.removeEventListener(valueEventListenerSpinner);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        referencia.removeEventListener(valueEventListenerSpinner);
 
     }
 
