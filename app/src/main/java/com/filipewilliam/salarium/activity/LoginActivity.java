@@ -1,15 +1,19 @@
 package com.filipewilliam.salarium.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +26,9 @@ import com.filipewilliam.salarium.model.Usuario;
 import com.filipewilliam.salarium.service.MyFirebaseMessagingService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -33,6 +39,7 @@ public class    LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextSenha;
 
     TextView resetarSenha, reenviarEmail;
+    private EditText editTextReenviarEmail;
     private ProgressBar progressBarLogin;
     private Button buttonEntrar;
     private Usuario usuario;
@@ -129,6 +136,7 @@ public class    LoginActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(LoginActivity.this, excecao, Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
@@ -148,7 +156,7 @@ public class    LoginActivity extends AppCompatActivity {
 
     public void reenviarEmail(){
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        FirebaseUser user = autenticacao.getCurrentUser();
+        final FirebaseUser user = autenticacao.getCurrentUser();
 
         if(user != null){
             user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -156,6 +164,8 @@ public class    LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
+
+
                         Toast.makeText(LoginActivity.this,"Enviamos um novo e-mail para você!", Toast.LENGTH_LONG).show();
 
                     }else {

@@ -104,7 +104,7 @@ public class ConfiguracoesUsuarioFragment extends PreferenceFragmentCompat {
         editTextExcluirEmail = viewDialog.findViewById(R.id.editTextEmailExcluirUsuario);
         editTextExcluirSenha = viewDialog.findViewById(R.id.editTextSenhaExcluirUsuario);
         String mensagem = "Excluir a sua conta resultará na eliminação completa dos seus dados do Salarium." +
-                "\n\nPara exlcuir sua conta você precisa confirmar seu e-mail e senha:";
+                "\n\nPara excluir sua conta você precisa confirmar seu e-mail e senha:";
 
         alertDialog.setView(viewDialog)
                 .setTitle("Deseja mesmo excluir a sua conta?")

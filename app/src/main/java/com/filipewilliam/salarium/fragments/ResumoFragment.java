@@ -100,8 +100,6 @@ public class ResumoFragment extends Fragment {
                 double totalDespesaMes = 0;
                 double totalRecebidoMes = 0;
 
-                System.out.println("TESTE " + dataSnapshot.hasChildren());
-
                 if (dataSnapshot.hasChildren()) {
                     progressBarResumo.setVisibility(View.GONE);
                     textViewNadaARelatarResumo.setText("");
@@ -147,45 +145,9 @@ public class ResumoFragment extends Fragment {
 
     }
 
-    //recupera os totais de gastos e recebimentos e mostra saldo atual
-    /*public void recuperarResumo() {
-
-        DatabaseReference referencia = ConfiguracaoFirebase.getFirebaseDatabase();
-        //referencia.keepSynced(true);
-        referencia.child("usuarios").child(idUsuario).child("transacao").child(mesAtual).orderByChild("data").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaTransacoes.clear();
-                double totalDespesaMes = 0;
-                double totalRecebidoMes = 0;
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    Transacao transacao = dataSnapshot1.getValue(Transacao.class);
-                    listaTransacoes.add(transacao);
-
-                    if (dataSnapshot1.child("tipo").getValue().toString().equals("Gastei")) {
-                        totalDespesaMes = totalDespesaMes + Double.valueOf(transacao.getValor());
-
-                    } else {
-                        totalRecebidoMes = totalRecebidoMes + Double.valueOf(transacao.getValor());
-
-                    }
-
-                    atualizaDadosResumo(transacao, totalRecebidoMes, totalDespesaMes);
-                    gerarGrafico(totalDespesaMes);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }*/
-
     public void atualizaDadosResumo(Double saldoPositivo, Double saldoNegativo) {
 
-        Double saldoMes = saldoPositivo - saldoNegativo;
+        double saldoMes = saldoPositivo - saldoNegativo;
 
         textViewTotalRecebido.setText(FormatarValoresHelper.tratarValores(saldoPositivo));
         textViewTotalGasto.setText(FormatarValoresHelper.tratarValores(saldoNegativo));
@@ -232,7 +194,7 @@ public class ResumoFragment extends Fragment {
                     dados.setValueFormatter(new FormatarValoresHelper());
                     pieChartResumo.setData(dados);
 
-                    dataSet.setColors(new int[]{R.color.corFundoCardViewDespesa, R.color.corFundoCardViewRecebido}, getActivity());
+                    dataSet.setColors(new int[]{R.color.corFundoCardViewDespesa, R.color.corFundoCardViewRecebido}, getContext());
                     dataSet.setSliceSpace(2f);
                     dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
                     dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);

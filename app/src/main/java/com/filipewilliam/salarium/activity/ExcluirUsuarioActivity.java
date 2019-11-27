@@ -48,6 +48,8 @@ public class ExcluirUsuarioActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     uid = autenticacao.getUid();
                     referenciaFirebase.child("excluidos").child(uid).push().setValue(true);
+                    textViewExcluindo.setText("Excluindo usuário " + email + ", aguarde... \n\nEncerrando...");
+
                     usuarioFirebase.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task1) {

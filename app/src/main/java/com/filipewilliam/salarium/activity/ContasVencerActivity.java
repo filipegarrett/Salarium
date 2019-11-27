@@ -301,7 +301,7 @@ public class ContasVencerActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(ContasVencerActivity.this, MainActivity.class);
-                intent.putExtra("EXTRA", 1);
+                intent.putExtra("DESTINO", 2);
                 startActivity(intent);
             }
         });

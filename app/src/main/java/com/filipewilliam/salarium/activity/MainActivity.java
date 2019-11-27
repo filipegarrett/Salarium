@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GravityCompat;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
+    private int tipoDestino;
     private TextView textViewNomeUsuario, textViewEmailUsuario;
     private RecyclerView recyclerViewTransacoes; //recyclerView que cria a lista dinâmica de histórico de transações recentes do usuário na tela inicial
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -103,10 +107,17 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(adapterSmartTab);
         smartTabLayout.setViewPager(viewPager);
 
-        if (getIntent().getIntExtra("EXTRA", 0) == 1) {
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            tipoDestino = extras.getInt("DESTINO");
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.viewPager, new GasteiFragment()).commit();
-
+            if(tipoDestino == 2){
+                FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                GasteiFragment fragment = new GasteiFragment();
+                fragmentTransaction.add(R.id.viewPager, fragment);
+                fragmentTransaction.commit();
+            }
         }
 
     }
